@@ -6,7 +6,7 @@ import com.google.type.DateTime;
 
 import java.util.List;
 
-public abstract class Post implements IPostable {
+public abstract class Post implements IPostable,IUpVoteable {
     private DateTime timePosted;
     private String subject;
     private String description;
@@ -14,4 +14,6 @@ public abstract class Post implements IPostable {
     private DateTime timeOccurring;
     private Location location;
     private List<User> participants;
+    private int upVotes;
+    private List<Comment> comments;
 }
