@@ -6,14 +6,13 @@ import java.util.List;
 
 public class Game {
     private String gameName;
-    private int players;
-    private float rating;
-    private List<ePlatform> platform;
+    private int playersAmout;
+    private List<ePlatform> platforms;
 
     enum ePlatform {
         REALITY,
         PC,
-        PS,
+        PLAYSTATION,
         XBOX
     }
 }
