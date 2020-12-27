@@ -14,4 +14,11 @@ public class User {
     private Image profilePicture;
     private List<Float> favouriteGamesRatings;
     private List<Game> favouriteGames;
+
+    public User(String firstName, String lastName, String email, String password) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+    }
 }
