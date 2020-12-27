@@ -21,4 +21,10 @@ public class User {
         this.email = email;
         this.password = password;
     }
+    public User(String name, String email) {
+        String [] fullName =name.split(" ");
+        this.firstName = fullName[0];
+        this.lastName = fullName[1];
+        this.email = email;
+    }
 }

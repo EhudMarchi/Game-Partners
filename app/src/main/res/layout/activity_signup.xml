@@ -133,65 +133,27 @@
 
         </LinearLayout>
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="0.5"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
-
-                <Button
-                    android:id="@+id/ButtonFacebook"
-                    android:layout_width="65dp"
-                    android:layout_height="65dp"
-                    android:layout_marginEnd="68dp"
-                    android:layout_marginRight="68dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/common_google_signin_btn_icon_light"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.512" />
-
-                <Button
-                    android:id="@+id/buttonGoogle"
-                    android:layout_width="65dp"
-                    android:layout_height="65dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/common_google_signin_btn_icon_light_normal"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/ButtonFacebook"
-                    app:layout_constraintHorizontal_bias="0.398"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.41" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="bottom"
-            android:layout_weight="0.5"
-            android:orientation="horizontal">
+            android:layout_weight="0.5">
 
             <Button
-                android:id="@+id/buttonSignUp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:id="@+id/buttonSignUp2"
+                android:layout_width="225dp"
+                android:layout_height="47dp"
                 android:layout_weight="1"
                 android:background="@drawable/common_google_signin_btn_icon_dark_normal_background"
                 android:onClick="signUp"
                 android:text="Sign Up"
                 android:textColor="#000000"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
     </LinearLayout>
 </LinearLayout>

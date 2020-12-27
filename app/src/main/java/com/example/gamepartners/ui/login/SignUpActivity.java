@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -14,32 +15,44 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.gamepartners.R;
 import com.example.gamepartners.data.model.User;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 public class SignUpActivity extends AppCompatActivity {
+    private static final int RC_SIGN_IN = 100 ;
     private FirebaseAuth mAuth;
     EditText firstName;
     EditText lastName;
     EditText email;
     EditText password;
     DatabaseReference myRef;
-    FirebaseDatabase db;
+    FirebaseDatabase database;
     private ProgressDialog loadingBar;
+    private GoogleSignInClient mGoogleSignInClient;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
         mAuth = FirebaseAuth.getInstance();
         initializeFields();
-
+        //database = FirebaseDatabase.getInstance();
+        //DatabaseReference myRef = database.getReference("message");
     }
+
+
 
     private void initializeFields() {
         firstName = findViewById(R.id.editTextFirstName);
@@ -57,15 +70,18 @@ public class SignUpActivity extends AppCompatActivity {
     }
     private  void sendUserToLoginActivity()
     {
-        Intent intent =new Intent(SignUpActivity.this,LoginActivity.class);
+        Intent intent = new Intent(SignUpActivity.this,LoginActivity.class);
         startActivity(intent);
     }
+
+
+
     public void signUp(View view) {
         if(TextUtils.isEmpty(email.getText()))
         {
             Toast.makeText(SignUpActivity.this,"Please enter email",Toast.LENGTH_SHORT).show();
         }
-        if(TextUtils.isEmpty(password.getText()))
+        else if(TextUtils.isEmpty(password.getText()))
         {
             Toast.makeText(SignUpActivity.this,"Please enter password",Toast.LENGTH_SHORT).show();
         }
@@ -83,9 +99,7 @@ public class SignUpActivity extends AppCompatActivity {
 
                                 // Sign in success, update UI with the signed-in user's information
                                 String uid = mAuth.getCurrentUser().getUid();
-                                User newUser = new User(firstName.getText().toString(), lastName.getText().toString(), email.getText().toString(), password.getText().toString());
-                                myRef = db.getReference("users").child(uid);
-                                myRef.setValue(newUser);
+                                //writeNewUserToDB(uid,firstName.getText().toString(), lastName.getText().toString(), email.getText().toString(), password.getText().toString());
 
                                 Toast.makeText(SignUpActivity.this, "Account Created", Toast.LENGTH_LONG).show();
                                 loadingBar.dismiss();
@@ -101,5 +115,12 @@ public class SignUpActivity extends AppCompatActivity {
                         }
                     });
         }
+    }
+    private void writeNewUserToDB(String userId, String firstName, String lastName,String email, String password) {
+        myRef = database.getReference("Users").child(userId);
+        User newUser = new User(firstName, lastName, email, password);
+        myRef.setValue(newUser);
+
+        Toast.makeText(SignUpActivity.this, "Added to db", Toast.LENGTH_LONG).show();
     }
 }
