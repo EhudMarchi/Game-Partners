@@ -31,16 +31,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class SignUpActivity extends AppCompatActivity {
-    private static final int RC_SIGN_IN = 100 ;
     private FirebaseAuth mAuth;
     EditText firstName;
     EditText lastName;
     EditText email;
     EditText password;
-    DatabaseReference myRef;
-    FirebaseDatabase database;
     private ProgressDialog loadingBar;
-    private GoogleSignInClient mGoogleSignInClient;
+    //FirebaseDatabase database;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,8 +46,6 @@ public class SignUpActivity extends AppCompatActivity {
         setContentView(R.layout.activity_signup);
         mAuth = FirebaseAuth.getInstance();
         initializeFields();
-        //database = FirebaseDatabase.getInstance();
-        //DatabaseReference myRef = database.getReference("message");
     }
 
 
@@ -65,12 +61,12 @@ public class SignUpActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-    }
+            }
     private  void sendUserToLoginActivity()
     {
         Intent intent = new Intent(SignUpActivity.this,LoginActivity.class);
+        intent.putExtra("emailKey",email.getText().toString());
+        intent.putExtra("passwordKey",password.getText().toString());
         startActivity(intent);
     }
 
@@ -99,7 +95,7 @@ public class SignUpActivity extends AppCompatActivity {
 
                                 // Sign in success, update UI with the signed-in user's information
                                 String uid = mAuth.getCurrentUser().getUid();
-                                //writeNewUserToDB(uid,firstName.getText().toString(), lastName.getText().toString(), email.getText().toString(), password.getText().toString());
+                                writeNewUserToDB(uid,firstName.getText().toString(), lastName.getText().toString(), email.getText().toString(), password.getText().toString());
 
                                 Toast.makeText(SignUpActivity.this, "Account Created", Toast.LENGTH_LONG).show();
                                 loadingBar.dismiss();
@@ -117,10 +113,11 @@ public class SignUpActivity extends AppCompatActivity {
         }
     }
     private void writeNewUserToDB(String userId, String firstName, String lastName,String email, String password) {
-        myRef = database.getReference("Users").child(userId);
+        // Write a user to the database
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("users").child(userId);
         User newUser = new User(firstName, lastName, email, password);
         myRef.setValue(newUser);
-
-        Toast.makeText(SignUpActivity.this, "Added to db", Toast.LENGTH_LONG).show();
+        Toast.makeText(SignUpActivity.this, firstName+" Added to db", Toast.LENGTH_LONG).show();
     }
 }

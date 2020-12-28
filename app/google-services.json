@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "558790758346",
+    "firebase_url": "https://gamepartners-app-default-rtdb.firebaseio.com",
     "project_id": "gamepartners-app",
     "storage_bucket": "gamepartners-app.appspot.com"
   },
@@ -13,6 +14,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "558790758346-5dn4fq45rrn7ok0qu07jbutqkot3knfa.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.gamepartners",
+            "certificate_hash": "f8adceb0a2c54634e8aa5fbb030ca29570ed438c"
+          }
+        },
         {
           "client_id": "558790758346-5ko7839jt4s7ae53h2ega49i3qnpv1d3.apps.googleusercontent.com",
           "client_type": 3

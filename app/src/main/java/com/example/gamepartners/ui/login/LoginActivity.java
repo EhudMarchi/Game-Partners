@@ -14,6 +14,8 @@ import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.os.Handler;
+import android.os.Parcelable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -24,6 +26,7 @@ import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,11 +50,13 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class LoginActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 100 ;
+    private static int SPLASH_SCREEN = 3500;
     private FirebaseAuth mAuth;
     EditText email;
     EditText password;
-    DatabaseReference myRef;
-    FirebaseDatabase db;
+    ImageView logoImage;
+    Animation fadeOutAnimation;
+    Animation logoAnimation;
     private GoogleSignInClient mGoogleSignInClient;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +65,15 @@ public class LoginActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         email =findViewById(R.id.editTextEmail);
         password =findViewById(R.id.editTextPassword);
+        logoImage = findViewById(R.id.imageViewLogo);
         createGoogleRequest();
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            email.setText(extras.getString("emailKey"));
+            password.setText(extras.getString("passwordKey"));
+        }
+        //transitionScreen();
+
     }
     private void createGoogleRequest() {
         // Configure Google Sign In
@@ -77,6 +90,28 @@ public class LoginActivity extends AppCompatActivity {
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
     }
+    private void transitionScreen()
+    {
+        fadeOutAnimation = AnimationUtils.loadAnimation(this, R.anim.fadeout_animation);
+        logoAnimation = AnimationUtils.loadAnimation(this, R.anim.logo_animation);
+        findViewById(R.id.buttonSignIn).startAnimation(fadeOutAnimation);
+        findViewById(R.id.buttonGoogle).startAnimation(fadeOutAnimation);
+        findViewById(R.id.buttonFacebook).startAnimation(fadeOutAnimation);
+        findViewById(R.id.textViewRegisterQuestion).startAnimation(fadeOutAnimation);
+        findViewById(R.id.textViewRegister).startAnimation(fadeOutAnimation);
+        email.startAnimation(fadeOutAnimation);
+        password.startAnimation(fadeOutAnimation);
+        logoImage.startAnimation(logoAnimation);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Intent intent =new Intent(LoginActivity.this,MainActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        },SPLASH_SCREEN);
+    }
 
     public void signIn(View view) {
         mAuth.signInWithEmailAndPassword(email.getText().toString(), password.getText().toString())
@@ -87,8 +122,9 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             FirebaseUser user = mAuth.getCurrentUser();
+                            transitionScreen();
                             Toast.makeText(LoginActivity.this,"Success",Toast.LENGTH_LONG).show();
-                            sendUserToMainActivity();
+                            //sendUserToMainActivity();
                         } else {
                             // If sign in fails, display a message to the user.
                             Toast.makeText(LoginActivity.this, "Authentication failed.",
@@ -144,13 +180,6 @@ public class LoginActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d("result", "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-//                            String uid = mAuth.getCurrentUser().getUid();
-//                            User newUser = new User(user.getDisplayName(), user.getEmail());
-//                            myRef = db.getReference("users").child(uid);
-//                            myRef.setValue(newUser);
-//                            Intent intent =new Intent(LoginActivity.this,SignUpActivity.class);
-//                            startActivity(intent);
-//                           Toast.makeText(LoginActivity.this, "Account Created", Toast.LENGTH_LONG).show();
                             sendUserToMainActivity();
                         } else {
                             // If sign in fails, display a message to the user.
@@ -163,7 +192,7 @@ public class LoginActivity extends AppCompatActivity {
     }
     private  void sendUserToMainActivity()
     {
-        Intent intent =new Intent(LoginActivity.this,TransitionActivity.class);
+        Intent intent =new Intent(LoginActivity.this,MainActivity.class);
         startActivity(intent);
     }
 
