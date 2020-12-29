@@ -16,15 +16,25 @@ public  class Post implements IPostable, ILikeable {
     private Game game;
     private DateTime timeOccurring;
     private Location location;
+    private String city;
     private List<User> participants;
     private int likes;
     private ArrayList<Comment> comments;
 
-    public Post( User publisher,Date timePosted, String description, int likes,ArrayList<Comment> comments ) {
+    public Post( User publisher,Date timePosted, String description, int likes, String city,ArrayList<Comment> comments ) {
         this.timePosted = timePosted;
         this.publisher = publisher;
         this.description = description;
         this.likes = likes;
+        this.city = city;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
     }
 
     public Date getTimePosted() {

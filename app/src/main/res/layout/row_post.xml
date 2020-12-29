@@ -1,24 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/purple"
     android:layout_marginBottom="15dp">
 
     <RelativeLayout
+
         android:id="@+id/relativeLayoutUser"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         android:layout_marginRight="15dp"
-        android:layout_marginLeft="15dp">
+        android:layout_marginLeft="15dp"
+>
         <ImageView
             android:id="@+id/imgView_profilePic"
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:adjustViewBounds="true"
             android:scaleType="fitCenter"
-            android:src="@mipmap/ic_launcher_round" />
+            app:srcCompat="@drawable/default_user"/>
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -29,10 +33,11 @@
                 android:id="@+id/username"
                 android:layout_width="wrap_content"
                 android:text="User Name"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:textSize="17sp"
                 android:fontFamily="sans-serif-medium"
                 android:layout_height="wrap_content"/>
+
             <TextView
                 android:id="@+id/time"
                 android:layout_width="wrap_content"
@@ -40,31 +45,82 @@
                 android:textColor="@color/grey"
                 android:textSize="13sp"
                 android:fontFamily="sans-serif"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"/>
+
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:orientation="vertical"
+            android:layout_alignParentRight="true">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+
+                android:layout_alignParentRight="true">
+                <ImageView
+                    android:id="@+id/locationIcon"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="3dp"
+                    app:srcCompat="@drawable/location"
+                    android:layout_toLeftOf="@id/city"/>
+            <TextView
+                android:id="@+id/city"
+                android:layout_width="wrap_content"
+                android:text="City"
+                android:textColor="@color/white"
+                android:textSize="17sp"
+                android:fontFamily="sans-serif-medium"
+                android:layout_height="wrap_content"
+                />
+
+            </LinearLayout>
+            <TextView
+                android:id="@+id/location"
+                android:layout_width="wrap_content"
+                android:text="location"
+                android:textColor="@color/grey"
+                android:textSize="13sp"
+                android:fontFamily="sans-serif"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_gravity="center"
+                android:layout_marginLeft="11dp"
+                android:layout_marginRight="10dp"/>
+
+
+        </LinearLayout>
     </RelativeLayout>
     <TextView
         android:id="@+id/description"
         android:layout_width="match_parent"
         android:text="Game Description"
-        android:textColor="@color/black"
+        android:textColor="@color/glowCyan"
         android:textSize="16sp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="10dp"
         android:layout_marginRight="15dp"
         android:layout_marginLeft="15dp"
+        android:layout_marginBottom="5dp"
         android:layout_below="@id/relativeLayoutUser"
         android:fontFamily="sans-serif-medium"
         android:layout_height="wrap_content"/>
+
     <ImageView
         android:id="@+id/imgView_postpic"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="405dp"
         android:layout_below="@id/description"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="4dp"
         android:adjustViewBounds="true"
-        android:scaleType="fitCenter"
-        android:src="@mipmap/ic_launcher"/>
+        android:background="@drawable/default_game"
+        android:scaleType="fitCenter" />
+
     <RelativeLayout
         android:id="@+id/relativeLayoutPostInfo"
         android:layout_below="@id/imgView_postpic"
@@ -79,20 +135,20 @@
             <ImageView
                 android:layout_width="15dp"
                 android:layout_height="15dp"
-                android:src="@drawable/common_google_signin_btn_icon_light_focused"/>
+                app:srcCompat="@drawable/like"/>
             <TextView
                 android:id="@+id/likes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
                 android:text="15"
-                android:textColor="@color/black"
+                android:textColor="@color/grey"
                 android:textSize="13sp"/>
         </LinearLayout>
         <TextView
             android:id="@+id/comments"
             android:layout_width="wrap_content"
-            android:textColor="@color/black"
+            android:textColor="@color/grey"
             android:textSize="13sp"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
@@ -118,15 +174,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
                 <ImageView
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     android:adjustViewBounds="true"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/common_google_signin_btn_icon_dark_normal"/>
+                    app:srcCompat="@drawable/like"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:text="Like"
-                    android:textColor="@color/black"
+                    android:textColor="@color/white"
                     android:layout_marginLeft="10dp"
                     android:textSize="13sp"
                     android:fontFamily="sans-serif-medium"
@@ -142,15 +198,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
                 <ImageView
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     android:adjustViewBounds="true"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/common_google_signin_btn_icon_dark_normal"/>
+                    app:srcCompat="@drawable/comment"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:text="Comment"
-                    android:textColor="@color/black"
+                    android:textColor="@color/white"
                     android:layout_marginLeft="10dp"
                     android:textSize="13sp"
                     android:fontFamily="sans-serif-medium"
@@ -166,15 +222,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
                 <ImageView
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     android:adjustViewBounds="true"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/common_google_signin_btn_icon_dark_normal"/>
+                    app:srcCompat="@drawable/join"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:text="Join"
-                    android:textColor="@color/black"
+                    android:textColor="@color/white"
                     android:layout_marginLeft="10dp"
                     android:textSize="13sp"
                     android:fontFamily="sans-serif-medium"

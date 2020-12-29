@@ -17,7 +17,8 @@
             android:id="@+id/tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary" />
+            android:background="@color/lightPurple"
+            />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -33,5 +34,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@drawable/abc_vector_test" />
+        app:backgroundTint="@color/glowPink"
+        app:srcCompat="@drawable/create" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

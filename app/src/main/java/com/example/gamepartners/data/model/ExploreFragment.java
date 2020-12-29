@@ -1,5 +1,8 @@
 package com.example.gamepartners.data.model;
 
+import android.annotation.SuppressLint;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -7,11 +10,16 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.gamepartners.R;
+import com.example.gamepartners.ui.login.LoginActivity;
+import com.example.gamepartners.ui.login.MainActivity;
 import com.google.type.DateTime;
 
 import java.util.ArrayList;
@@ -78,11 +86,13 @@ public class ExploreFragment extends Fragment {
     }
 
     private void populateRecycleView() {
-        Post post = new Post(new User("Ehud", "Marchi", "Ehud@gmail.com", "123456"), Calendar.getInstance().getTime(), "This is a post template", 18,new ArrayList<Comment>());
+        Post post = new Post(new User("Ehud", "Marchi", "Ehud@gmail.com", "123456"), Calendar.getInstance().getTime(), "This is a post template",18,"Ashdod",new ArrayList<Comment>());
         postsArrayList.add(post);
-        post = new Post(new User("Yossi", "Cohen", "Yosi@gmail.com", "13513"),Calendar.getInstance().getTime(), "This is a post template 2", 7,new ArrayList<Comment>());
+        post = new Post(new User("Yossi", "Cohen", "Yosi@gmail.com", "13513"),Calendar.getInstance().getTime(), "This is a post template 2", 7,"Tel Aviv",new ArrayList<Comment>());
         postsArrayList.add(post);
-        post = new Post(new User("Avraham", "Levii", "AVVI@gmail.com", "143436"),Calendar.getInstance().getTime(), "This is a post template 3 ", 11,new ArrayList<Comment>());
+        post = new Post(new User("Avraham", "Levi", "AVVI@gmail.com", "143436"),Calendar.getInstance().getTime(), "This is a post template 3 ", 11,"Holon",new ArrayList<Comment>());
+        postsArrayList.add(post);
+        post = new Post(new User("Dana", "Meron", "danam@gmail.com", "00020225"),Calendar.getInstance().getTime(), "This is a post template 4 ", 22,"Jerusalem",new ArrayList<Comment>());
         postsArrayList.add(post);
         exploreAdapter.notifyDataSetChanged();
     }
@@ -105,5 +115,11 @@ public class ExploreFragment extends Fragment {
         postsRecyclerView.setAdapter(exploreAdapter);
 
         populateRecycleView();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        postsArrayList.clear();
     }
 }

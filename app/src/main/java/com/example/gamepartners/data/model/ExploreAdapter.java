@@ -56,15 +56,18 @@ public class ExploreAdapter extends RecyclerView.Adapter<ExploreAdapter.MyViewHo
         likesTextView.setText(String.valueOf(post.getLikes()));
         TextView commentsTextView = holder.comments;
         //commentsTextView.setText(post.getComments().size() + " comments");
+        TextView cityTextView = holder.city;
+        cityTextView.setText(String.valueOf(post.getCity()));
+        TextView locationTextView = holder.location;
+        locationTextView.setText(String.valueOf(post.getLocation()));
 
-
-//        glide.load(post.getPublisher().getProfilePicture()).into(holder.imgViewProfilePic);
+        glide.load(post.getPublisher().getProfilePicture()).into(holder.imgViewProfilePic);
 //        if(post.getGame().getGameImage()==0) {
 //        holder.getImgViewPostPic.setVisibility(View.GONE);
 //        }
 //        else {
 //            holder.getImgViewPostPic.setVisibility(View.VISIBLE);
-//            glide.load(post.getGame().getGameImage()).into(holder.getImgViewPostPic);
+            //glide.load(post.getGame().getGameImage()).into(holder.getImgViewPostPic);
 //        }
 
     }
@@ -75,7 +78,7 @@ public class ExploreAdapter extends RecyclerView.Adapter<ExploreAdapter.MyViewHo
     }
     public class MyViewHolder extends RecyclerView.ViewHolder
     {
-        TextView username, time, likes, comments, description;
+        TextView username, time, likes, comments, description, city, location;
         ImageView imgViewProfilePic, getImgViewPostPic;
 
         public MyViewHolder(@NonNull View itemView) {
@@ -88,6 +91,8 @@ public class ExploreAdapter extends RecyclerView.Adapter<ExploreAdapter.MyViewHo
             description = (TextView)itemView.findViewById(R.id.description);
             likes = (TextView)itemView.findViewById(R.id.likes);
             comments = (TextView)itemView.findViewById(R.id.comments);
+            city = (TextView)itemView.findViewById(R.id.city);
+            location = (TextView)itemView.findViewById(R.id.location);
         }
     }
 }

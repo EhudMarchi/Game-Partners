@@ -26,6 +26,9 @@ public class TabAccessorAdapter extends FragmentPagerAdapter {
             case  2:
                 GamesFragment gamesFragment = new GamesFragment();
                 return  gamesFragment;
+            case  3:
+                UserProfileFragment userProfileFragment = new UserProfileFragment();
+                return  userProfileFragment;
 
             default:
                 return null;
@@ -34,7 +37,7 @@ public class TabAccessorAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 3;
+        return 4;
     }
 
     @Nullable
@@ -48,6 +51,8 @@ public class TabAccessorAdapter extends FragmentPagerAdapter {
                 return  "Explore";
             case  2:
                 return  "Games";
+            case  3:
+                return  "Profile";
 
             default:
                 return null;

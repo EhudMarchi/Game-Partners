@@ -5,4 +5,13 @@
     <color name="colorAccent">#03DAC5</color>
     <color name="black">#000000</color>
     <color name="grey">#B0B5B1</color>
+    <color name="darkPurple">#190032</color>
+    <color name="purple">#240047</color>
+    <color name="lightPurple">#2A0053</color>
+    <color name="glowCyan">#00efb2</color>
+    <color name="glowPink">#DB18F0</color>
+    <color name="white">#ffffff</color>
+    <color name="solidCircle">#AAFFFFFF</color>
+    <color name="gradEnd">#6700CC</color>
+    <color name="gradStart">#2A0053</color>
 </resources>

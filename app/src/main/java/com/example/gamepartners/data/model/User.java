@@ -1,11 +1,8 @@
 package com.example.gamepartners.data.model;
 
-import android.graphics.drawable.Drawable;
-import android.media.Image;
-
 import com.example.gamepartners.R;
-import com.example.gamepartners.data.model.Game;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class User {
@@ -13,6 +10,8 @@ public class User {
     private String lastName;
     private String email;
     private String password;
+    private ArrayList<User> following;
+    private ArrayList<User> followers;
     private int profilePicture = R.drawable.default_user;
 
     public String getFirstName() {
@@ -85,5 +84,21 @@ public class User {
         this.firstName = fullName[0];
         this.lastName = fullName[1];
         this.email = email;
+    }
+
+    public ArrayList<User> getFollowing() {
+        return following;
+    }
+
+    public void setFollowing(ArrayList<User> following) {
+        this.following = following;
+    }
+
+    public ArrayList<User> getFollowers() {
+        return followers;
+    }
+
+    public void setFollowers(ArrayList<User> followers) {
+        this.followers = followers;
     }
 }
