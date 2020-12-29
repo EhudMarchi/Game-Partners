@@ -1,6 +1,6 @@
 package com.example.gamepartners.data.model;
 
-public class Comment implements IPostable,IUpVoteable {
+public class Comment implements IPostable, ILikeable {
     private String content;
     private int upVotes;
 
@@ -20,12 +20,12 @@ public class Comment implements IPostable,IUpVoteable {
     }
 
     @Override
-    public void UpVote() {
+    public void Like() {
 
     }
 
     @Override
-    public void DownVote() {
+    public void Dislike() {
 
     }
 }

@@ -1,7 +1,9 @@
 package com.example.gamepartners.data.model;
 
+import android.graphics.drawable.Drawable;
 import android.media.Image;
 
+import com.example.gamepartners.R;
 import com.example.gamepartners.data.model.Game;
 
 import java.util.List;
@@ -11,7 +13,7 @@ public class User {
     private String lastName;
     private String email;
     private String password;
-    private Image profilePicture;
+    private int profilePicture = R.drawable.default_user;
 
     public String getFirstName() {
         return firstName;
@@ -45,11 +47,11 @@ public class User {
         this.password = password;
     }
 
-    public Image getProfilePicture() {
+    public int getProfilePicture() {
         return profilePicture;
     }
 
-    public void setProfilePicture(Image profilePicture) {
+    public void setProfilePicture(int profilePicture) {
         this.profilePicture = profilePicture;
     }
 

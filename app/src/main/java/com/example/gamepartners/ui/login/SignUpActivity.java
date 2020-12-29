@@ -37,8 +37,6 @@ public class SignUpActivity extends AppCompatActivity {
     EditText email;
     EditText password;
     private ProgressDialog loadingBar;
-    //FirebaseDatabase database;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +45,6 @@ public class SignUpActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         initializeFields();
     }
-
-
 
     private void initializeFields() {
         firstName = findViewById(R.id.editTextFirstName);
@@ -118,6 +114,5 @@ public class SignUpActivity extends AppCompatActivity {
         DatabaseReference myRef = database.getReference("users").child(userId);
         User newUser = new User(firstName, lastName, email, password);
         myRef.setValue(newUser);
-        Toast.makeText(SignUpActivity.this, firstName+" Added to db", Toast.LENGTH_LONG).show();
     }
 }

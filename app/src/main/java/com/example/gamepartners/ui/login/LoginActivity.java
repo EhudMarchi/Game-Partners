@@ -6,7 +6,10 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -20,7 +23,9 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
@@ -45,8 +50,11 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class LoginActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 100 ;
@@ -57,7 +65,9 @@ public class LoginActivity extends AppCompatActivity {
     ImageView logoImage;
     Animation fadeOutAnimation;
     Animation logoAnimation;
+    boolean isExist = false;
     private GoogleSignInClient mGoogleSignInClient;
+    private DatabaseReference myRef;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,9 +82,36 @@ public class LoginActivity extends AppCompatActivity {
             email.setText(extras.getString("emailKey"));
             password.setText(extras.getString("passwordKey"));
         }
-        //transitionScreen();
+        // Read from the database
+        myRef = FirebaseDatabase.getInstance().getReference();
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                //isExist=usernameExists(dataSnapshot);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+            }
+        });
 
     }
+
+    private boolean usernameExists(DataSnapshot dataSnapshot) {
+        boolean isExist = false;
+        for (DataSnapshot ds:dataSnapshot.getChildren()) {
+            if(ds.child(mAuth.getCurrentUser().getUid()).getValue(User.class)!=null)
+            {
+                isExist = true;
+            }
+
+        }
+        return isExist;
+    }
+
     private void createGoogleRequest() {
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -106,8 +143,7 @@ public class LoginActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent intent =new Intent(LoginActivity.this,MainActivity.class);
-                startActivity(intent);
+                sendUserToMainActivity();
                 finish();
             }
         },SPLASH_SCREEN);
@@ -161,6 +197,13 @@ public class LoginActivity extends AppCompatActivity {
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
 
+                 if(!isExist) {
+                    enterAccountPassword(this, account);
+                }
+                else
+                {
+                    transitionScreen();
+                }
                 firebaseAuthWithGoogle(account.getIdToken());
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
@@ -168,6 +211,24 @@ public class LoginActivity extends AppCompatActivity {
                 // ...
             }
         }
+    }
+
+    private void enterAccountPassword(Context context, final GoogleSignInAccount account) {
+        final EditText taskEditText = new EditText(context);
+        AlertDialog dialog = new AlertDialog.Builder(context)
+                .setTitle("Create Game Partners Account Password")
+                .setMessage("Password:")
+                .setView(taskEditText)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                     writeNewGoogleUserToDB(account.getId(),account.getGivenName(),account.getFamilyName(),account.getEmail(),String.valueOf(taskEditText.getText()));
+                        transitionScreen();
+                    }
+                })
+                .create();
+        dialog.show();
+
     }
 
     private void firebaseAuthWithGoogle(String idToken) {
@@ -180,7 +241,8 @@ public class LoginActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d("result", "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            sendUserToMainActivity();
+
+                            //sendUserToMainActivity();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w("result", "signInWithCredential:failure", task.getException());
@@ -189,6 +251,13 @@ public class LoginActivity extends AppCompatActivity {
                         // ...
                     }
                 });
+    }
+    private void writeNewGoogleUserToDB(String userId, String firstName, String lastName,String email, String password) {
+        // Write a Google user to the database
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        myRef = database.getReference("users").child(userId);
+        User newUser = new User(firstName, lastName, email, password);
+        myRef.setValue(newUser);
     }
     private  void sendUserToMainActivity()
     {
