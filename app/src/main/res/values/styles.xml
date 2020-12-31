@@ -16,4 +16,15 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="AppSearchView" parent="Widget.AppCompat.SearchView" >
+        <!-- Query Text Color -->
+        <item name="android:textColorPrimary">@color/white</item>
+        <!-- Hint Color -->
+        <item name="android:textColorHint">@color/grey</item>
+        <!-- Icon Color -->
+        <item name="android:tint">@color/white</item>
+    </style>
+    <style name="CustomChipStyle" parent="Widget.MaterialComponents.Chip.Filter">
+        <item name="chipBackgroundColor">@color/purple</item>
+    </style>
 </resources>

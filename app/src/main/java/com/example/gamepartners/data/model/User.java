@@ -1,5 +1,7 @@
 package com.example.gamepartners.data.model;
 
+import android.provider.ContactsContract;
+
 import com.example.gamepartners.R;
 
 import java.util.ArrayList;
@@ -10,9 +12,15 @@ public class User {
     private String lastName;
     private String email;
     private String password;
-    private ArrayList<User> following;
-    private ArrayList<User> followers;
+    private String phone = "";
+    private String facebookUsername = "";
+    private ArrayList<User> following = new ArrayList<>();
+    private ArrayList<User> followers = new ArrayList<>();
     private int profilePicture = R.drawable.default_user;
+
+    public User() {
+
+    }
 
     public String getFirstName() {
         return firstName;
@@ -52,6 +60,14 @@ public class User {
 
     public void setProfilePicture(int profilePicture) {
         this.profilePicture = profilePicture;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public List<Float> getFavouriteGamesRatings() {

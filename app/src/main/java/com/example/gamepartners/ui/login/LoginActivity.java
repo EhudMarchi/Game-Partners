@@ -56,6 +56,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+
 public class LoginActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 100 ;
     private static int SPLASH_SCREEN = 3500;
@@ -65,8 +67,10 @@ public class LoginActivity extends AppCompatActivity {
     ImageView logoImage;
     Animation fadeOutAnimation;
     Animation logoAnimation;
-    boolean isExist = false;
+    Animation iconsAnimation;
+    ArrayList<View> icons;
     private GoogleSignInClient mGoogleSignInClient;
+    FirebaseDatabase database;
     private DatabaseReference myRef;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +80,7 @@ public class LoginActivity extends AppCompatActivity {
         email =findViewById(R.id.editTextEmail);
         password =findViewById(R.id.editTextPassword);
         logoImage = findViewById(R.id.imageViewLogo);
+        initializeIconsList();
         createGoogleRequest();
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -100,16 +105,16 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    private boolean usernameExists(DataSnapshot dataSnapshot) {
-        boolean isExist = false;
-        for (DataSnapshot ds:dataSnapshot.getChildren()) {
-            if(ds.child(mAuth.getCurrentUser().getUid()).getValue(User.class)!=null)
-            {
-                isExist = true;
-            }
-
-        }
-        return isExist;
+    private void initializeIconsList() {
+        icons = new ArrayList<View>();
+        icons.add(findViewById(R.id.controller));
+        icons.add(findViewById(R.id.controller2));
+        icons.add(findViewById(R.id.baseball));
+        icons.add(findViewById(R.id.basketball));
+        icons.add(findViewById(R.id.table_tennis));
+        icons.add(findViewById(R.id.soccer_field));
+        icons.add(findViewById(R.id.chess));
+        iconsAnimation = AnimationUtils.loadAnimation(this,R.anim.icons_start);
     }
 
     private void createGoogleRequest() {
@@ -139,6 +144,9 @@ public class LoginActivity extends AppCompatActivity {
         email.startAnimation(fadeOutAnimation);
         password.startAnimation(fadeOutAnimation);
         logoImage.startAnimation(logoAnimation);
+        for (View icon:icons) {
+            icon.startAnimation(iconsAnimation);
+        }
 
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -157,7 +165,6 @@ public class LoginActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            FirebaseUser user = mAuth.getCurrentUser();
                             transitionScreen();
                             Toast.makeText(LoginActivity.this,"Success",Toast.LENGTH_LONG).show();
                             //sendUserToMainActivity();
@@ -196,8 +203,7 @@ public class LoginActivity extends AppCompatActivity {
             try {
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
-
-                 if(!isExist) {
+                 if(!checkIfGoogleUserExist()) {
                     enterAccountPassword(this, account);
                 }
                 else
@@ -222,7 +228,7 @@ public class LoginActivity extends AppCompatActivity {
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                     writeNewGoogleUserToDB(account.getId(),account.getGivenName(),account.getFamilyName(),account.getEmail(),String.valueOf(taskEditText.getText()));
+                     writeNewGoogleUserToDB(mAuth.getCurrentUser().getUid(),account.getGivenName(),account.getFamilyName(),account.getEmail(),String.valueOf(taskEditText.getText()));
                         transitionScreen();
                     }
                 })
@@ -240,9 +246,6 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d("result", "signInWithCredential:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
-
-                            //sendUserToMainActivity();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w("result", "signInWithCredential:failure", task.getException());
@@ -252,12 +255,42 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 });
     }
+
+    private boolean checkIfGoogleUserExist() {
+        final boolean[] isExist = {false};
+        database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference().child("users");
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                //This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                    if(dataSnapshot.child(mAuth.getCurrentUser().getUid()).getValue(User.class).getEmail()!= "")
+                    {
+                        isExist[0] = true;
+                        Toast.makeText(LoginActivity.this, "EXIST", Toast.LENGTH_LONG).show();
+                    }
+                //followers.setText(user.getFollowers().size());
+                //following.setText(user.getFollowing().size());
+                //}
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        return isExist[0];
+    }
+
     private void writeNewGoogleUserToDB(String userId, String firstName, String lastName,String email, String password) {
         // Write a Google user to the database
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         myRef = database.getReference("users").child(userId);
         User newUser = new User(firstName, lastName, email, password);
         myRef.setValue(newUser);
+        myRef.child("followers").setValue(new ArrayList<User>());
+        myRef.child("following").setValue(new ArrayList<User>());
     }
     private  void sendUserToMainActivity()
     {

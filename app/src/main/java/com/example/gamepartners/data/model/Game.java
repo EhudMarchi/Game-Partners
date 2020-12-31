@@ -19,6 +19,11 @@ public class Game {
         XBOX
     }
 
+    public Game(String gameName, int gameImage) {
+        this.gameName = gameName;
+        this.gameImage = gameImage;
+    }
+
     public String getGameName() {
         return gameName;
     }

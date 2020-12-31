@@ -2,8 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/baseLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/login_gradient"
     tools:context=".SignUpActivity">
 
     <LinearLayout
@@ -25,6 +27,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="Create New Account"
+                android:textColor="@color/darkPurple"
                 android:textSize="24sp"
                 android:textStyle="bold" />
         </LinearLayout>
@@ -143,10 +146,11 @@
                 android:layout_width="225dp"
                 android:layout_height="47dp"
                 android:layout_weight="1"
-                android:background="@drawable/common_google_signin_btn_icon_dark_normal_background"
+                android:background="@color/darkPurple"
                 android:onClick="signUp"
                 android:text="Sign Up"
-                android:textColor="#000000"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
                 android:textSize="18sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

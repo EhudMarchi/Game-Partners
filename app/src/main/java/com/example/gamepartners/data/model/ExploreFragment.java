@@ -1,6 +1,7 @@
 package com.example.gamepartners.data.model;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -18,8 +19,11 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.gamepartners.R;
+import com.example.gamepartners.ui.login.CreatePostActivity;
 import com.example.gamepartners.ui.login.LoginActivity;
 import com.example.gamepartners.ui.login.MainActivity;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.type.DateTime;
 
 import java.util.ArrayList;
@@ -110,10 +114,18 @@ public class ExploreFragment extends Fragment {
         postsRecyclerView = (RecyclerView) getView().findViewById(R.id.recyclerView);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getContext());
         postsRecyclerView.setLayoutManager(layoutManager);
-
+        FloatingActionButton fab = getView().findViewById(R.id.fab);
         exploreAdapter = new ExploreAdapter(this.getContext(),postsArrayList);
         postsRecyclerView.setAdapter(exploreAdapter);
-
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Create New Game Post", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+                Intent intent =new Intent(getContext(), CreatePostActivity.class);
+                startActivity(intent);
+            }
+        });
         populateRecycleView();
     }
 
