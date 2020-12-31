@@ -10,7 +10,7 @@
     <RelativeLayout
         android:id="@+id/selected_relative_layout"
         android:layout_width="match_parent"
-        android:layout_height="182dp"
+        android:layout_height="222dp"
         android:background="@drawable/gradient"
         android:paddingBottom="20dp">
 
@@ -26,8 +26,8 @@
 
             <ImageView
                 android:id="@+id/game_pic"
-                android:layout_width="120dp"
-                android:layout_height="120dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:layout_margin="9dp"
                 android:adjustViewBounds="true"
                 android:background="@drawable/circle"
@@ -44,6 +44,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginLeft="20dp"
             android:layout_marginTop="20sp"
+            android:textStyle="bold"
             android:layout_toRightOf="@+id/imgGame"
             android:fontFamily="sans-serif-light"
             android:text="Game Name"
@@ -51,42 +52,57 @@
             android:textSize="20sp" />
 
 
-        <TextView
-            android:id="@+id/platform"
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/platforms"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/gameName"
-            android:layout_centerHorizontal="true"
+            android:layout_marginTop="5dp"
             android:layout_marginLeft="20dp"
-            android:layout_toRightOf="@+id/imgGame"
-            android:fontFamily="sans-serif"
-            android:text="City, Country"
-            android:textAllCaps="true"
-            android:textColor="@color/glowCyan"
-            android:textSize="14sp" />
+            android:layout_centerInParent="true"
+            android:layout_marginRight="20dp"
+            android:layout_alignParentBottom="true">
 
-       <RelativeLayout
-           android:id="@+id/platforms"
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:layout_toRightOf="@+id/imgGame"
-           android:layout_above="@id/buttonCreate"
-           android:layout_marginLeft="20dp"
-           android:layout_marginRight="20dp">
+            <com.google.android.material.chip.Chip
+                android:id="@+id/reality"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Reality"
+                android:theme="@style/CustomChipStyle" />
+            <com.google.android.material.chip.Chip
+                android:id="@+id/pc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="PC"
+                android:theme="@style/CustomChipStyle" />
+            <com.google.android.material.chip.Chip
+                android:id="@+id/playstation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="PlayStation"
+                android:theme="@style/CustomChipStyle" />
 
-       </RelativeLayout>
+            <com.google.android.material.chip.Chip
+                android:id="@+id/xbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Xbox"
+                android:theme="@style/CustomChipStyle" />
+
+        </com.google.android.material.chip.ChipGroup>
 
         <Button
-            android:id="@+id/buttonCreate"
+            android:id="@+id/buttonChoose"
             android:layout_width="wrap_content"
             android:layout_height="54dp"
             android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="true"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_toRightOf="@+id/imgGame"
-            android:text="Create Game Post"
+            android:text="Choose Game"
+            android:layout_below="@+id/gameName"
+            android:layout_marginTop="20dp"
             android:textAllCaps="false" />
+
 
     </RelativeLayout>
 
@@ -107,14 +123,16 @@
             android:gravity="center"
             android:paddingBottom="5dp"
             android:paddingTop="5dp">
-
             <SearchView
                 android:id="@+id/search"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:scrollbarThumbHorizontal="@color/white"
                 android:scrollbarThumbVertical="@color/white"
-                android:theme="@style/AppSearchView" />
+                android:theme="@style/AppSearchView"
+                android:queryHint="Search"
+                app:actionViewClass="android.widget.SearchView"
+                app:showAsAction="ifRoom|collapseActionView"/>
         </RelativeLayout>
 
     </LinearLayout>

@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,6 +37,7 @@ import java.util.List;
  * create an instance of this fragment.
  */
 public class ExploreFragment extends Fragment {
+    private static final int WAIT = 1100;
     RecyclerView postsRecyclerView;
     ArrayList<Post> postsArrayList = new ArrayList<>();
     ExploreAdapter exploreAdapter;
@@ -122,8 +124,14 @@ public class ExploreFragment extends Fragment {
             public void onClick(View view) {
                 Snackbar.make(view, "Create New Game Post", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
-                Intent intent =new Intent(getContext(), CreatePostActivity.class);
-                startActivity(intent);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Intent intent =new Intent(getContext(), CreatePostActivity.class);
+                        startActivity(intent);
+                    }
+                },WAIT);
+
             }
         });
         populateRecycleView();

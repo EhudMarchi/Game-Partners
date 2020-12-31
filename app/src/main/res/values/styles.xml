@@ -24,7 +24,8 @@
         <!-- Icon Color -->
         <item name="android:tint">@color/white</item>
     </style>
-    <style name="CustomChipStyle" parent="Widget.MaterialComponents.Chip.Filter">
-        <item name="chipBackgroundColor">@color/purple</item>
+    <style name="CustomChipStyle" parent="Theme.MaterialComponents.Light">
+        <item name="chipBackgroundColor" >@color/purple</item>
+        <item name="android:textSize">5dp</item>
     </style>
 </resources>

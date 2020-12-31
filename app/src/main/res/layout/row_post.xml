@@ -157,10 +157,11 @@
     <ImageView
         android:id="@+id/imgViewLine"
         android:layout_width="match_parent"
-        android:layout_height="0.5dp"
+        android:layout_height="1dp"
         android:layout_below="@id/relativeLayoutPostInfo"
+        android:alpha="0.3"
         android:layout_marginTop="10dp"
-        android:background="@color/cardview_light_background"/>
+        android:background="@drawable/seperator"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_below="@id/imgViewLine"
