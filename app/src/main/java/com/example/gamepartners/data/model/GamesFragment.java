@@ -2,13 +2,21 @@ package com.example.gamepartners.data.model;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.SearchView;
 
 import com.example.gamepartners.R;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -16,34 +24,19 @@ import com.example.gamepartners.R;
  * create an instance of this fragment.
  */
 public class GamesFragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private ArrayList<Game> games;
+    private RecyclerView gamesRecyclerView;
+    private GameAdapter recyclerViewAdapter;
+    private RecyclerView.LayoutManager recyclerViewLayoutManager;
+    SearchView searchView;
 
     public GamesFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment GamesFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static GamesFragment newInstance(String param1, String param2) {
         GamesFragment fragment = new GamesFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -51,10 +44,14 @@ public class GamesFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        fillGames();
+        setUpGamesRecyclerView();
+        setSearchFilter();
     }
 
     @Override
@@ -62,5 +59,49 @@ public class GamesFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_games, container, false);
+    }
+    private void setSearchFilter() {
+        searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                recyclerViewAdapter.getFilter().filter(newText);
+                return false;
+            }
+        });
+    }
+
+    private void setUpGamesRecyclerView() {
+        searchView = (SearchView)getView().findViewById(R.id.search);
+        gamesRecyclerView = getView().findViewById(R.id.gamesRecyclerView);
+        gamesRecyclerView.setHasFixedSize(true);
+        recyclerViewLayoutManager = new LinearLayoutManager(getContext());
+        recyclerViewAdapter = new GameAdapter(getContext(),games);
+        gamesRecyclerView.setLayoutManager(recyclerViewLayoutManager);
+        gamesRecyclerView.setAdapter(recyclerViewAdapter);
+    }
+
+    private void fillGames() {
+        games = new ArrayList<>();
+        games.add(new Game("Basketball",R.drawable.default_game, Game.ePlatform.REALITY));
+        games.add(new Game("FIFA 21",R.drawable.default_game, Game.ePlatform.XBOX));
+        games.add(new Game("Chess",R.drawable.default_game, Game.ePlatform.REALITY));
+        games.add(new Game("GTA V Online",R.drawable.default_game, Game.ePlatform.PLAYSTATION));
+        games.add(new Game("Soccer",R.drawable.default_game, Game.ePlatform.REALITY));
+        games.add(new Game("Tennis",R.drawable.default_game, Game.ePlatform.REALITY));
+        games.add(new Game("Call of Duty:WARZONE",R.drawable.default_game, Game.ePlatform.PC));
+        games.add(new Game("Baseball",R.drawable.default_game, Game.ePlatform.REALITY));
+        games.add(new Game("League of Legends",R.drawable.default_game, Game.ePlatform.PC));
+        games.add(new Game("Table Tennis",R.drawable.default_game, Game.ePlatform.REALITY));
+        games.add(new Game("NBA 2K21",R.drawable.default_game, Game.ePlatform.PLAYSTATION));
+        games.add(new Game("Fortnite",R.drawable.default_game, Game.ePlatform.XBOX));
+        games.add(new Game("Apex Legends",R.drawable.default_game, Game.ePlatform.PC));
+        games.add(new Game("World of Warcraft",R.drawable.default_game, Game.ePlatform.PC));
+        games.add(new Game("Red Dead Online",R.drawable.default_game, Game.ePlatform.PC));
+        games.add(new Game("Beach Volleyball",R.drawable.default_game, Game.ePlatform.REALITY));
     }
 }

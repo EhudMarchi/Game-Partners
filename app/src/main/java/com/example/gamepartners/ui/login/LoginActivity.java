@@ -11,6 +11,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -55,6 +56,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.protobuf.StringValue;
 
 import java.util.ArrayList;
 
@@ -62,6 +64,7 @@ public class LoginActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 100 ;
     private static int SPLASH_SCREEN = 3500;
     private FirebaseAuth mAuth;
+    GoogleSignInAccount googleAccount;
     EditText email;
     EditText password;
     ImageView logoImage;
@@ -70,38 +73,35 @@ public class LoginActivity extends AppCompatActivity {
     Animation iconsAnimation;
     ArrayList<View> icons;
     private GoogleSignInClient mGoogleSignInClient;
-    FirebaseDatabase database;
     private DatabaseReference myRef;
+    SharedPreferences sharedPreferences;
+    boolean isExist = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         mAuth = FirebaseAuth.getInstance();
+        sharedPreferences = getPreferences(MODE_PRIVATE);
         email =findViewById(R.id.editTextEmail);
         password =findViewById(R.id.editTextPassword);
         logoImage = findViewById(R.id.imageViewLogo);
         initializeIconsList();
-        createGoogleRequest();
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             email.setText(extras.getString("emailKey"));
             password.setText(extras.getString("passwordKey"));
         }
+        if (sharedPreferences.getString("KeyEmail", null) != null) {
+            email.setText(sharedPreferences.getString("KeyEmail", null));
+            password.setText(sharedPreferences.getString("KeyPassword", null));
+            if(sharedPreferences.getString("KeyType", null).equals("Google")) {
+                signUpWithGoogle(findViewById(R.id.buttonGoogle));
+            }
+            else {
+                signIn(findViewById(R.id.buttonSignIn));
+            }
+        }
         // Read from the database
-        myRef = FirebaseDatabase.getInstance().getReference();
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                //isExist=usernameExists(dataSnapshot);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-            }
-        });
 
     }
 
@@ -116,7 +116,14 @@ public class LoginActivity extends AppCompatActivity {
         icons.add(findViewById(R.id.chess));
         iconsAnimation = AnimationUtils.loadAnimation(this,R.anim.icons_start);
     }
-
+    private void autoLogin(String type)
+    {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("KeyEmail",email.getText().toString());
+        editor.putString("KeyPassword",password.getText().toString());
+        editor.putString("KeyType",type);
+        editor.apply();
+    }
     private void createGoogleRequest() {
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -158,12 +165,14 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void signIn(View view) {
-        mAuth.signInWithEmailAndPassword(email.getText().toString(), password.getText().toString())
+        if(!(email.getText().toString().equals(""))&&!(password.getText().toString().equals("")))
+        { mAuth.signInWithEmailAndPassword(email.getText().toString(), password.getText().toString())
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
 
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+                            autoLogin("Normal");
                             // Sign in success, update UI with the signed-in user's information
                             transitionScreen();
                             Toast.makeText(LoginActivity.this,"Success",Toast.LENGTH_LONG).show();
@@ -173,9 +182,14 @@ public class LoginActivity extends AppCompatActivity {
                             Toast.makeText(LoginActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                         }
-
                     }
                 });
+        }
+        else
+        {
+            Toast.makeText(LoginActivity.this, "Please enter valid email and password",
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void signUp(View view) {
@@ -190,8 +204,19 @@ public class LoginActivity extends AppCompatActivity {
     }
     public void signUpWithGoogle(View view)
     {
+        createGoogleRequest();
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
+    public void checkIfGoogleAccountExist()
+    {
+        if(!isExist) {
+            enterAccountPassword(this, googleAccount);
+        }
+        else
+        {
+            transitionScreen();
+        }
     }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -202,14 +227,35 @@ public class LoginActivity extends AppCompatActivity {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
                 // Google Sign In was successful, authenticate with Firebase
-                GoogleSignInAccount account = task.getResult(ApiException.class);
-                 if(!checkIfGoogleUserExist()) {
-                    enterAccountPassword(this, account);
-                }
-                else
-                {
-                    transitionScreen();
-                }
+                final GoogleSignInAccount account = task.getResult(ApiException.class);
+                googleAccount = account;
+                myRef = FirebaseDatabase.getInstance().getReference().child("users");
+                myRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                            int i =0;
+                            for (DataSnapshot user :dataSnapshot.getChildren()) {
+                                Log.d("result", "iteration "+String.valueOf(i++));
+                                Log.d("result", user.getValue(User.class).getEmail());
+                                Log.d("result", googleAccount.getEmail());
+                                if(user.getValue(User.class).getEmail().equals(googleAccount.getEmail()))
+                                {
+                                    email.setText(googleAccount.getEmail());
+                                    password.setText(user.getValue(User.class).getPassword());
+                                    isExist = true;
+                                    break;
+                                }
+                            }
+                        checkIfGoogleAccountExist();
+
+
+                            Log.d("result", "is exist: "+String.valueOf(isExist));
+                    }
+                    @Override
+                    public void onCancelled(DatabaseError error) {
+                        // Failed to read value
+                    }
+                });
                 firebaseAuthWithGoogle(account.getIdToken());
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
@@ -229,6 +275,7 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                      writeNewGoogleUserToDB(mAuth.getCurrentUser().getUid(),account.getGivenName(),account.getFamilyName(),account.getEmail(),String.valueOf(taskEditText.getText()));
+                     password.setText(String.valueOf(taskEditText.getText()));
                         transitionScreen();
                     }
                 })
@@ -244,7 +291,6 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
                             Log.d("result", "signInWithCredential:success");
                         } else {
                             // If sign in fails, display a message to the user.
@@ -254,33 +300,6 @@ public class LoginActivity extends AppCompatActivity {
                         // ...
                     }
                 });
-    }
-
-    private boolean checkIfGoogleUserExist() {
-        final boolean[] isExist = {false};
-        database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference().child("users");
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                //This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                    if(dataSnapshot.child(mAuth.getCurrentUser().getUid()).getValue(User.class).getEmail()!= "")
-                    {
-                        isExist[0] = true;
-                        Toast.makeText(LoginActivity.this, "EXIST", Toast.LENGTH_LONG).show();
-                    }
-                //followers.setText(user.getFollowers().size());
-                //following.setText(user.getFollowing().size());
-                //}
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-        return isExist[0];
     }
 
     private void writeNewGoogleUserToDB(String userId, String firstName, String lastName,String email, String password) {
@@ -294,6 +313,7 @@ public class LoginActivity extends AppCompatActivity {
     }
     private  void sendUserToMainActivity()
     {
+        autoLogin("Google");
         Intent intent =new Intent(LoginActivity.this,MainActivity.class);
         startActivity(intent);
     }

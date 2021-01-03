@@ -22,16 +22,26 @@
             android:layout_marginTop="20dp"
             android:background="@drawable/circle_border">
 
-            <ImageView
-                android:id="@+id/profile_pic"
+            <androidx.cardview.widget.CardView
+                android:id="@+id/myCardView"
                 android:layout_width="120dp"
                 android:layout_height="120dp"
-                android:layout_margin="9dp"
-                android:adjustViewBounds="true"
-                android:background="@drawable/circle"
-                android:padding="3dp"
-                android:scaleType="centerInside"
-                app:srcCompat="@drawable/default_user" />
+                android:layout_margin="5dp"
+                android:layout_centerInParent="true"
+                app:cardBackgroundColor="#00FFFFFF"
+                app:cardCornerRadius="50dp">
+
+                <ImageView
+                    android:id="@+id/profile_pic"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:adjustViewBounds="true"
+                    android:background="@drawable/circle"
+                    android:padding="3dp"
+                    android:scaleType="centerCrop"
+                    app:shapeAppearanceOverlay="@style/roundedImageViewRounded"
+                    app:srcCompat="@drawable/default_user" />
+            </androidx.cardview.widget.CardView>
 
         </RelativeLayout>
 

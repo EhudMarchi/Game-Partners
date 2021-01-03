@@ -3,16 +3,34 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".data.model.GamesFragment"
     android:background="@color/darkPurple">
-
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:id="@+id/searchLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Games"
-        android:textSize="32dp"
-        android:textColor="@color/glowCyan"
-        android:layout_gravity="center"/>
+        android:layout_weight="1"
+>
+        <SearchView
+            android:id="@+id/search"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="@color/lightPurple"
+            android:scrollbarThumbHorizontal="@color/white"
+            android:scrollbarThumbVertical="@color/white"
+            android:theme="@style/AppSearchView"
+            android:queryHint="Search"
+            app:actionViewClass="android.widget.SearchView"
+            app:showAsAction="ifRoom|collapseActionView"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/gamesRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/search"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="0dp" />
+    </RelativeLayout>
+
 
 </FrameLayout>

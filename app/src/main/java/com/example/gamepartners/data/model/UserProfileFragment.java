@@ -1,8 +1,14 @@
 package com.example.gamepartners.data.model;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -13,13 +19,24 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.gamepartners.R;
-import com.example.gamepartners.ui.login.SignUpActivity;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.UUID;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,7 +46,10 @@ import com.google.firebase.database.ValueEventListener;
 public class UserProfileFragment extends Fragment {
     TextView username, followers, following, email, facebook, phone, location;
     ImageView imgViewProfilePic;
+    public Uri imageUri;
     private FirebaseAuth mAuth;
+    private FirebaseStorage mStorage;
+    private StorageReference mStorageRef;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -75,6 +95,8 @@ public class UserProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_user_profile, container, false);
+        mStorage = FirebaseStorage.getInstance();
+        mStorageRef= mStorage.getReference();
         imgViewProfilePic = view.findViewById(R.id.profile_pic);
         username = view.findViewById(R.id.username);
         email = view.findViewById(R.id.email);
@@ -83,8 +105,78 @@ public class UserProfileFragment extends Fragment {
         followers = view.findViewById(R.id.followers);
         following = view.findViewById(R.id.following);
         location = view.findViewById(R.id.location);
+        imgViewProfilePic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog dialog = new AlertDialog.Builder(getContext())
+                        .setTitle("Change Profile Picture?")
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                            }
+                        })
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                choosePicture();
+                            }
+                        })
+                        .create();
+                dialog.show();
+            }
+        });
         fillUserData();
         return view;
+    }
+
+    private void choosePicture() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent,1);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 1 && data!= null && data.getData()!= null)
+        {
+            imageUri=data.getData();
+            imgViewProfilePic.setImageURI(imageUri);
+            uploadProfilePic();
+        }
+
+    }
+
+    private void uploadProfilePic() {
+        final ProgressDialog uploadProgress= new ProgressDialog(getContext());
+        uploadProgress.setTitle("Uploading Image...");
+        uploadProgress.show();
+
+        //final String randomKey = UUID.randomUUID().toString();
+        StorageReference profilePicRef = mStorageRef.child("images/" + mAuth.getCurrentUser().getEmail());
+
+        profilePicRef.putFile(imageUri)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        uploadProgress.dismiss();
+                        Snackbar.make(getView(), "Image Uploaded", Snackbar.LENGTH_LONG).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        uploadProgress.dismiss();
+                        Toast.makeText(getContext(), "Image Upload Failed", Toast.LENGTH_LONG).show();
+                    }
+                }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
+                double progressPercent = (100.00 * snapshot.getBytesTransferred()/ snapshot.getTotalByteCount());
+                uploadProgress.setMessage(progressPercent + "%");
+            }
+        });
     }
 
     private void fillUserData() {
@@ -104,11 +196,6 @@ public class UserProfileFragment extends Fragment {
                 //following.setText(user.getFollowing().size());
                 //}
 
-
-
-
-
-
             }
 
             @Override
@@ -117,4 +204,5 @@ public class UserProfileFragment extends Fragment {
             }
         });
     }
+
 }

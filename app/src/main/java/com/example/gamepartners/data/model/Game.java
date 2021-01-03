@@ -1,27 +1,33 @@
 package com.example.gamepartners.data.model;
 
 import android.media.Image;
+import android.net.Uri;
+import android.widget.ImageView;
 
 import com.example.gamepartners.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Game {
     private String gameName;
     private int playersAmout;
     private int gameImage = R.drawable.default_game;
-    private List<ePlatform> platforms;
+    private ImageView img;
+    private ArrayList<ePlatform> platforms;
 
-    enum ePlatform {
+    public enum ePlatform {
         REALITY,
         PC,
         PLAYSTATION,
         XBOX
     }
 
-    public Game(String gameName, int gameImage) {
+    public Game(String gameName, int gameImage, ePlatform platform) {
         this.gameName = gameName;
         this.gameImage = gameImage;
+        this.platforms = new ArrayList<ePlatform>();
+        platforms.add(platform);
     }
 
     public String getGameName() {
@@ -48,11 +54,11 @@ public class Game {
         this.gameImage = gameImage;
     }
 
-    public List<ePlatform> getPlatforms() {
+    public ArrayList<ePlatform> getPlatforms() {
         return platforms;
     }
 
-    public void setPlatforms(List<ePlatform> platforms) {
+    public void setPlatforms(ArrayList<ePlatform> platforms) {
         this.platforms = platforms;
     }
 }

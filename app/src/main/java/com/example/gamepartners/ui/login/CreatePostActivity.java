@@ -9,18 +9,24 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.AttributeSet;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.SearchView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.gamepartners.R;
 import com.example.gamepartners.data.model.Game;
 import com.example.gamepartners.data.model.GameAdapter;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class CreatePostActivity extends AppCompatActivity {
     private ArrayList<Game> games;
@@ -28,6 +34,8 @@ public class CreatePostActivity extends AppCompatActivity {
     private GameAdapter recyclerViewAdapter;
     private RecyclerView.LayoutManager recyclerViewLayoutManager;
     SearchView searchView;
+    private FirebaseStorage mStorage;
+    private StorageReference mStorageRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,22 +73,22 @@ public class CreatePostActivity extends AppCompatActivity {
 
     private void fillGames() {
         games = new ArrayList<>();
-        games.add(new Game("Basketball",R.drawable.default_game));
-        games.add(new Game("FIFA 21",R.drawable.default_game));
-        games.add(new Game("Chess",R.drawable.default_game));
-        games.add(new Game("GTA V Online",R.drawable.default_game));
-        games.add(new Game("Soccer",R.drawable.default_game));
-        games.add(new Game("Tennis",R.drawable.default_game));
-        games.add(new Game("Call of Duty:WARZONE",R.drawable.default_game));
-        games.add(new Game("Baseball",R.drawable.default_game));
-        games.add(new Game("League of Legends",R.drawable.default_game));
-        games.add(new Game("Table Tennis",R.drawable.default_game));
-        games.add(new Game("NBA 2K21",R.drawable.default_game));
-        games.add(new Game("Fortnite",R.drawable.default_game));
-        games.add(new Game("Apex Legends",R.drawable.default_game));
-        games.add(new Game("World of Warcraft",R.drawable.default_game));
-        games.add(new Game("Red Dead Online",R.drawable.default_game));
-        games.add(new Game("Beach Volleyball",R.drawable.default_game));
+        games.add(new Game("Basketball",R.drawable.default_game, Game.ePlatform.REALITY));
+        games.add(new Game("FIFA 21",R.drawable.default_game, Game.ePlatform.XBOX));
+        games.add(new Game("Chess",R.drawable.default_game, Game.ePlatform.REALITY));
+        games.add(new Game("GTA V Online",R.drawable.default_game, Game.ePlatform.PLAYSTATION));
+        games.add(new Game("Soccer",R.drawable.default_game, Game.ePlatform.REALITY));
+        games.add(new Game("Tennis",R.drawable.default_game, Game.ePlatform.REALITY));
+        games.add(new Game("Call of Duty:WARZONE",R.drawable.default_game, Game.ePlatform.PC));
+        games.add(new Game("Baseball",R.drawable.default_game, Game.ePlatform.REALITY));
+        games.add(new Game("League of Legends",R.drawable.default_game, Game.ePlatform.PC));
+        games.add(new Game("Table Tennis",R.drawable.default_game, Game.ePlatform.REALITY));
+        games.add(new Game("NBA 2K21",R.drawable.default_game, Game.ePlatform.PLAYSTATION));
+        games.add(new Game("Fortnite",R.drawable.default_game, Game.ePlatform.XBOX));
+        games.add(new Game("Apex Legends",R.drawable.default_game, Game.ePlatform.PC));
+        games.add(new Game("World of Warcraft",R.drawable.default_game, Game.ePlatform.PC));
+        games.add(new Game("Red Dead Online",R.drawable.default_game, Game.ePlatform.PC));
+        games.add(new Game("Beach Volleyball",R.drawable.default_game, Game.ePlatform.REALITY));
     }
 
 }
