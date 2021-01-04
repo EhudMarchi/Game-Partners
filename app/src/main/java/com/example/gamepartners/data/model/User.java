@@ -1,13 +1,13 @@
 package com.example.gamepartners.data.model;
 
-import android.provider.ContactsContract;
-
 import com.example.gamepartners.R;
+import com.example.gamepartners.data.model.Game.Game;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class User {
+    private String uid;
     private String firstName;
     private String lastName;
     private String email;
@@ -16,10 +16,19 @@ public class User {
     private String facebookUsername = "";
     private ArrayList<User> following = new ArrayList<>();
     private ArrayList<User> followers = new ArrayList<>();
+    private ArrayList<Group> groups = new ArrayList<>();
     private int profilePicture = R.drawable.default_user;
 
     public User() {
 
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     public String getFirstName() {

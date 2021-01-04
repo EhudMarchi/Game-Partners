@@ -1,19 +1,13 @@
-package com.example.gamepartners.data.model;
-
-import android.media.Image;
-import android.net.Uri;
-import android.widget.ImageView;
+package com.example.gamepartners.data.model.Game;
 
 import com.example.gamepartners.R;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Game {
     private String gameName;
     private int playersAmout;
     private int gameImage = R.drawable.default_game;
-    private ImageView img;
     private ArrayList<ePlatform> platforms;
 
     public enum ePlatform {

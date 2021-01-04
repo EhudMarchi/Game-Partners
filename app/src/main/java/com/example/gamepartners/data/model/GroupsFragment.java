@@ -1,14 +1,26 @@
 package com.example.gamepartners.data.model;
 
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.gamepartners.R;
+import com.example.gamepartners.ui.login.CreatePostActivity;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
+
+import java.util.ArrayList;
+import java.util.Calendar;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -16,7 +28,10 @@ import com.example.gamepartners.R;
  * create an instance of this fragment.
  */
 public class GroupsFragment extends Fragment {
-
+    private static final int WAIT = 1100;
+    RecyclerView groupsRecyclerView;
+    ArrayList<Group> groupsArrayList = new ArrayList<>();
+    GroupsAdapter groupsAdapter;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -62,5 +77,45 @@ public class GroupsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_groups, container, false);
+    }
+    private void populateRecycleView() {
+        Group group = new Group("Group1");
+        groupsArrayList.add(group);
+        group = new Group("Group2");
+        groupsArrayList.add(group);
+        group = new Group("Group3");
+        groupsArrayList.add(group);
+        groupsAdapter.notifyDataSetChanged();
+    }
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        groupsRecyclerView = (RecyclerView) getView().findViewById(R.id.recyclerView);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getContext());
+        groupsRecyclerView.setLayoutManager(layoutManager);
+        FloatingActionButton fab = getView().findViewById(R.id.fab);
+        groupsAdapter = new GroupsAdapter(this.getContext(),groupsArrayList);
+        groupsRecyclerView.setAdapter(groupsAdapter);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Create New Group", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        //Intent intent =new Intent(getContext(), CreatePostActivity.class);
+                        //startActivity(intent);
+                    }
+                },WAIT);
+
+            }
+        });
+        populateRecycleView();
+    }
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        groupsArrayList.clear();
     }
 }

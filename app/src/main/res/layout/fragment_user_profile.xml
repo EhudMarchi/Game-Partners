@@ -37,7 +37,6 @@
                     android:layout_height="120dp"
                     android:adjustViewBounds="true"
                     android:background="@drawable/circle"
-                    android:padding="3dp"
                     android:scaleType="centerCrop"
                     app:shapeAppearanceOverlay="@style/roundedImageViewRounded"
                     app:srcCompat="@drawable/default_user" />

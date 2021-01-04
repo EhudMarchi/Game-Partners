@@ -1,32 +1,20 @@
 package com.example.gamepartners.ui.login;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.util.AttributeSet;
-import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.SearchView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.gamepartners.R;
-import com.example.gamepartners.data.model.Game;
-import com.example.gamepartners.data.model.GameAdapter;
+import com.example.gamepartners.data.model.Game.Game;
+import com.example.gamepartners.data.model.Game.GameAdapter;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class CreatePostActivity extends AppCompatActivity {
     private ArrayList<Game> games;

@@ -76,6 +76,7 @@ public class LoginActivity extends AppCompatActivity {
     private DatabaseReference myRef;
     SharedPreferences sharedPreferences;
     boolean isExist = false;
+    private ProgressDialog uploadProgress;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,6 +86,8 @@ public class LoginActivity extends AppCompatActivity {
         email =findViewById(R.id.editTextEmail);
         password =findViewById(R.id.editTextPassword);
         logoImage = findViewById(R.id.imageViewLogo);
+        uploadProgress= new ProgressDialog(this);
+        uploadProgress.setTitle("Signing in...");
         initializeIconsList();
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -104,7 +107,6 @@ public class LoginActivity extends AppCompatActivity {
         // Read from the database
 
     }
-
     private void initializeIconsList() {
         icons = new ArrayList<View>();
         icons.add(findViewById(R.id.controller));
@@ -141,6 +143,7 @@ public class LoginActivity extends AppCompatActivity {
     }
     private void transitionScreen()
     {
+        uploadProgress.dismiss();
         fadeOutAnimation = AnimationUtils.loadAnimation(this, R.anim.fadeout_animation);
         logoAnimation = AnimationUtils.loadAnimation(this, R.anim.logo_animation);
         findViewById(R.id.buttonSignIn).startAnimation(fadeOutAnimation);
@@ -165,8 +168,11 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void signIn(View view) {
+
         if(!(email.getText().toString().equals(""))&&!(password.getText().toString().equals("")))
-        { mAuth.signInWithEmailAndPassword(email.getText().toString(), password.getText().toString())
+        {
+            uploadProgress.show();
+            mAuth.signInWithEmailAndPassword(email.getText().toString(), password.getText().toString())
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
 
                     @Override
@@ -175,7 +181,6 @@ public class LoginActivity extends AppCompatActivity {
                             autoLogin("Normal");
                             // Sign in success, update UI with the signed-in user's information
                             transitionScreen();
-                            Toast.makeText(LoginActivity.this,"Success",Toast.LENGTH_LONG).show();
                             //sendUserToMainActivity();
                         } else {
                             // If sign in fails, display a message to the user.
@@ -285,6 +290,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void firebaseAuthWithGoogle(String idToken) {
+        uploadProgress.show();
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {

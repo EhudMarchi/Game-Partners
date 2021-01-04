@@ -30,7 +30,7 @@ public class ExploreAdapter extends RecyclerView.Adapter<ExploreAdapter.MyViewHo
     public ExploreAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         LayoutInflater  inflater = LayoutInflater.from(context);
-        View postsView = inflater.inflate(R.layout.row_post, parent, false);
+        View postsView = inflater.inflate(R.layout.post_item, parent, false);
         MyViewHolder viewHolder = new MyViewHolder(postsView);
 
         return viewHolder;

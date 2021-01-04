@@ -15,6 +15,8 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.SearchView;
 
 import com.example.gamepartners.R;
+import com.example.gamepartners.data.model.Game.Game;
+import com.example.gamepartners.data.model.Game.GameAdapter;
 
 import java.util.ArrayList;
 
@@ -53,12 +55,12 @@ public class GamesFragment extends Fragment {
         setUpGamesRecyclerView();
         setSearchFilter();
     }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_games, container, false);
+
     }
     private void setSearchFilter() {
         searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);

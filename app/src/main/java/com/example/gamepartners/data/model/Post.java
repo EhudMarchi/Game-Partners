@@ -2,6 +2,7 @@ package com.example.gamepartners.data.model;
 
 import android.location.Location;
 
+import com.example.gamepartners.data.model.Game.Game;
 import com.google.type.DateTime;
 
 import java.util.ArrayList;

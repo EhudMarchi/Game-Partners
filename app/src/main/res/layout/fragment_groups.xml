@@ -1,18 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".data.model.GroupsFragment"
     android:background="@color/darkPurple">
+        <SearchView
+            android:id="@+id/search"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="@color/lightPurple"
+            android:scrollbarThumbHorizontal="@color/white"
+            android:scrollbarThumbVertical="@color/white"
+            android:theme="@style/AppSearchView"
+            android:queryHint="Search"
+            app:actionViewClass="android.widget.SearchView"
+            app:showAsAction="ifRoom|collapseActionView"/>
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="wrap_content"
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Groups"
-        android:textSize="32dp"
-        android:textColor="@color/glowCyan"
-        android:layout_gravity="center"/>
+        android:layout_below="@+id/search">
 
-</FrameLayout>
+    </androidx.recyclerview.widget.RecyclerView>
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="@dimen/fab_margin"
+            app:backgroundTint="@color/glowCyan"
+            app:srcCompat="@drawable/create" />
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</RelativeLayout>
