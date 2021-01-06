@@ -1,6 +1,7 @@
 package com.example.gamepartners.data.model;
 
 import com.example.gamepartners.R;
+import com.example.gamepartners.data.model.Chat.Chat;
 
 import java.util.List;
 
@@ -9,6 +10,7 @@ public class Group implements IJoinable{
     private int groupImage = R.drawable.default_user;
     private String adminUID;
     private List<User> groupFriends;
+    private Chat chat;
 
     public Group() {
     }

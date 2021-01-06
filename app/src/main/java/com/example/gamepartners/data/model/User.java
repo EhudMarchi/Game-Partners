@@ -1,5 +1,7 @@
 package com.example.gamepartners.data.model;
 
+import android.graphics.Bitmap;
+
 import com.example.gamepartners.R;
 import com.example.gamepartners.data.model.Game.Game;
 
@@ -12,6 +14,7 @@ public class User {
     private String lastName;
     private String email;
     private String password;
+    String status;
     private String phone = "";
     private String facebookUsername = "";
     private ArrayList<User> following = new ArrayList<>();
@@ -41,6 +44,14 @@ public class User {
 
     public String getLastName() {
         return lastName;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public void setLastName(String lastName) {

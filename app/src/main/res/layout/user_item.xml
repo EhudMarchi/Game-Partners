@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="10dp"
+    app:cardUseCompatPadding="true"
+    app:contentPadding="5dp"
+    app:cardCornerRadius="8dp"
+    android:paddingBottom="10dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:paddingTop="10dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:id="@+id/card_view_layout_chat"
+    >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:id="@+id/profile_image_user_item"
+            android:layout_gravity="center"
+            android:src="@mipmap/ic_launcher"/>
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            app:civ_border_width="10dp"
+            app:civ_border_color="#05df29"
+            android:id="@+id/img_on"
+            android:visibility="gone"
+            android:src="@mipmap/ic_launcher"
+            android:layout_marginTop="40dp"
+            android:layout_marginLeft="-15dp"
+            android:layout_toRightOf="@id/profile_image_user_item"
+            android:layout_toEndOf="@id/profile_image_user_item"/>
+
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            app:civ_border_width="10dp"
+            app:civ_border_color="#bfbfbf"
+            android:id="@+id/img_off"
+            android:visibility="gone"
+            android:src="@mipmap/ic_launcher"
+            android:layout_marginTop="40dp"
+            android:layout_marginLeft="-15dp"
+            android:layout_toRightOf="@id/profile_image_user_item"
+            android:layout_toEndOf="@id/profile_image_user_item"/>
+
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginStart="50dp"
+            android:layout_marginLeft="50dp">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/userName"
+                android:textColor="@color/black"
+                android:id="@+id/username_user_item"
+                android:layout_marginStart="20dp"
+                android:textSize="22sp"
+                android:layout_marginLeft="20dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/last_message"
+                android:layout_marginTop="5dp"
+                android:id="@+id/last_message"
+                android:layout_marginStart="20dp"
+                android:textSize="16sp"
+                android:layout_marginLeft="20dp" />
+        </LinearLayout>
+
+
+
+
+
+
+
+
+    </RelativeLayout>
+
+
+
+
+
+</androidx.cardview.widget.CardView>

@@ -4,19 +4,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".data.model.GamesFragment"
-    android:background="@color/darkPurple">
+    tools:context=".data.model.GamesFragment">
     <RelativeLayout
         android:id="@+id/searchLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
 >
         <SearchView
             android:id="@+id/search"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:background="@color/lightPurple"
+            android:background="@color/purple"
             android:scrollbarThumbHorizontal="@color/white"
             android:scrollbarThumbVertical="@color/white"
             android:theme="@style/AppSearchView"
@@ -29,7 +27,8 @@
             android:layout_height="match_parent"
             android:layout_below="@+id/search"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="0dp" />
+            android:layout_marginBottom="0dp"
+            android:background="@color/darkPurple"/>
     </RelativeLayout>
 
 

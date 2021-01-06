@@ -21,7 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TableLayout;
 
-import com.example.gamepartners.ui.login.ui.main.SectionsPagerAdapter;
+
 
 public class MainActivity extends AppCompatActivity {
     private ViewPager viewPager;

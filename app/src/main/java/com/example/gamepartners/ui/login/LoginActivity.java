@@ -104,8 +104,6 @@ public class LoginActivity extends AppCompatActivity {
                 signIn(findViewById(R.id.buttonSignIn));
             }
         }
-        // Read from the database
-
     }
     private void initializeIconsList() {
         icons = new ArrayList<View>();

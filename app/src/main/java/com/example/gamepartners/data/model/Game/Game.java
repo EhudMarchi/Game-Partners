@@ -1,7 +1,16 @@
 package com.example.gamepartners.data.model.Game;
 
-import com.example.gamepartners.R;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
+import com.example.gamepartners.R;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Game {
@@ -9,7 +18,7 @@ public class Game {
     private int playersAmout;
     private int gameImage = R.drawable.default_game;
     private ArrayList<ePlatform> platforms;
-
+    private Bitmap gamePicture = null;
     public enum ePlatform {
         REALITY,
         PC,

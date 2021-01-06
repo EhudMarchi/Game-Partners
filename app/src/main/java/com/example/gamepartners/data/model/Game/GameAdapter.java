@@ -38,6 +38,7 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
             xboxIcon = itemView.findViewById(R.id.xboxIcon);
         }
 
+
     }
     public GameAdapter(Context context, ArrayList<Game> gamesList) {
         games = gamesList;
@@ -61,7 +62,7 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
     }
     @SuppressLint("ResourceAsColor")
     @Override
-    public void onBindViewHolder(GameViewHolder holder, final int position) {
+    public void onBindViewHolder(final GameViewHolder holder, final int position) {
         Game currentGame = games.get(position);
         holder.gameImage.setImageResource(currentGame.getGameImage());
         holder.gameName.setText(currentGame.getGameName());
@@ -84,16 +85,11 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
             @Override
             public void onClick(View view) {
                 selectedItemIndex=position;
-                notifyDataSetChanged();
+                //view.setBackgroundColor(R.color.glowCyan);
+                notifyItemChanged(selectedItemIndex);
+                //notifyDataSetChanged();
             }
         });
-        if(selectedItemIndex==position){
-            holder.itemView.setBackgroundColor(R.color.glowCyan);
-        }
-        else
-        {
-            holder.itemView.setBackgroundColor(R.color.darkPurple);
-        }
     }
     public Game getSelectedGame()
     {

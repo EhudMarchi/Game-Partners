@@ -1,6 +1,5 @@
 package com.example.gamepartners.data.model.Chat;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,60 +11,84 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.gamepartners.R;
-import com.example.gamepartners.ui.login.ChatActivity;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
-import java.util.ArrayList;
+import java.util.List;
 
-public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageViewHolder> {
-    private ArrayList<Message> messages;
-    Context context;
-    int selectedItemIndex=0;
+public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
+
+    public static final int FRIEND_MESSAGE = 0;
+    public static final int MY_MESSAGE = 1;
+
+    private Context mContext;
+    private List<Message> mChat;
 
 
-    public class MessageViewHolder extends RecyclerView.ViewHolder{
-        public TextView senderName, text;
-        public MessageViewHolder(View itemView) {
-            super(itemView);
-            itemView.setClickable(true);
-            senderName = itemView.findViewById(R.id.sender);
-            text = itemView.findViewById(R.id.message);
-        }
+    FirebaseUser user;
 
-    }
-    public MessageAdapter(ChatActivity context, ArrayList<Message> messages) {
-        this.messages = messages;
-        this.context = context;
+    public MessageAdapter( List<Message> mChat) {
+        this.mChat = mChat;
     }
 
+
+    @NonNull
     @Override
-    public MessageViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public MessageAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         LayoutInflater  inflater = LayoutInflater.from(context);
-        View gamesView = inflater.inflate(R.layout.message_item, parent, false);
-        MessageAdapter.MessageViewHolder viewHolder = new MessageAdapter.MessageViewHolder(gamesView);
-
+        View messagesView;
+        if (viewType == MY_MESSAGE) {
+            messagesView = inflater.inflate(R.layout.my_message_item, parent, false);
+        }
+        else {
+            messagesView = inflater.inflate(R.layout.friend_message_item, parent, false);        }
+        MessageAdapter.ViewHolder viewHolder = new MessageAdapter.ViewHolder(messagesView);
         return viewHolder;
+//        if (viewType == MY_MESSAGE) {
+//            View view = LayoutInflater.from(mContext).inflate(R.layout.my_message_item, parent, false);
+//            return new MessageAdapter.ViewHolder(view);
+//        } else {
+//            View view = LayoutInflater.from(mContext).inflate(R.layout.friend_message_item, parent, false);
+//            return new MessageAdapter.ViewHolder(view);
+//        }
     }
-
+    public int getItemViewType(int position) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (mChat.get(position).getSenderUID().equals(user.getUid())){
+            return MY_MESSAGE;
+        } else {
+            return FRIEND_MESSAGE;
+        }
+    }
     @Override
-    public void onViewRecycled(@NonNull MessageViewHolder holder) {
-        super.onViewRecycled(holder);
-    }
-    @SuppressLint("ResourceAsColor")
-    @Override
-    public void onBindViewHolder(MessageViewHolder holder, final int position) {
-        Message currentMessage = messages.get(position);
-//        holder.gameImage.setImageResource(currentGame.getGameImage());
-//        holder.gameName.setText(currentGame.getGameName());
-    }
-    public Message getSelectedMessage()
-    {
-        return messages.get(selectedItemIndex);
+    public void onBindViewHolder(@NonNull final MessageAdapter.ViewHolder holder, int position) {
+        final Message message = mChat.get(position);
+        holder.show_message.setText(message.getText());
     }
 
     @Override
     public int getItemCount() {
-        return messages.size();
+        return mChat.size();
     }
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
+
+        TextView show_message;
+        ImageView profile_image;
+        //public TextView txt_seen;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+
+            show_message = itemView.findViewById(R.id.show_message);
+            //profile_image = itemView.findViewById(R.id.chat_image_left);
+            //txt_seen = itemView.findViewById(R.id.txt_seen);
+
+        }
+
+
+    }
+
 
 }

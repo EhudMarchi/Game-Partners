@@ -2,28 +2,35 @@ package com.example.gamepartners.data.model;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.example.gamepartners.R;
+import com.example.gamepartners.ui.login.ChatActivity;
+import com.example.gamepartners.ui.login.LoginActivity;
+import com.example.gamepartners.ui.login.MainActivity;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 
 public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHolder> {
-    Context context;
-    private ArrayList<Group> groupsArrayList;
+    Context mContext;
+    private ArrayList<Group> mGroups;
     RequestManager glide;
-    public GroupsAdapter(Context context, ArrayList<Group> groupsArrayList)
+    public GroupsAdapter(Context mContext, ArrayList<Group> mGroups)
     {
-        this.context = context;
-        this.groupsArrayList = groupsArrayList;
-        glide = Glide.with(context);
+        this.mContext = mContext;
+        this.mGroups = mGroups;
+        glide = Glide.with(mContext);
     }
     @NonNull
     @Override
@@ -38,18 +45,25 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void onBindViewHolder(@NonNull GroupsAdapter.MyViewHolder holder, int position) {
-        final Group group = groupsArrayList.get(position);
-
-        TextView groupNameTextView = holder.groupName;
-        groupNameTextView.setText(group.getGroupName());
+    public void onBindViewHolder(@NonNull GroupsAdapter.MyViewHolder holder, final int position) {
+        final Group group = mGroups.get(position);
+        holder.groupName.setText(group.getGroupName());
         glide.load(group.getGroupImage()).into(holder.imgViewGroupImage);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
+                notifyItemChanged(position);
+                Intent intent =new Intent(mContext, ChatActivity.class);
+                intent.putExtra("GroupName",group.getGroupName());
+                mContext.startActivity(intent);
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
-        return groupsArrayList.size();
+        return mGroups.size();
     }
     public class MyViewHolder extends RecyclerView.ViewHolder
     {
