@@ -35,7 +35,7 @@ public class ChatActivity extends AppCompatActivity {
     String groupName;
     TextView groupNameView;
     EditText inputMessage;
-    ImageButton send;
+    ImageButton send, backButton;;
     ArrayList<Message> m_ChatMessages;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +51,14 @@ public class ChatActivity extends AppCompatActivity {
         m_ChatMessages= new ArrayList<>();
         groupName= getIntent().getExtras().getString("GroupName");
         groupNameView.setText(groupName);
+        backButton = findViewById(R.id.back_chat);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+
+            }
+        });
         fetchMessages();
         send.setOnClickListener(new View.OnClickListener() {
             @Override

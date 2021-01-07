@@ -47,6 +47,7 @@ public class GroupsFragment extends Fragment {
     RecyclerView groupsRecyclerView;
     ArrayList<Group> groupsArrayList = new ArrayList<>();
     GroupsAdapter groupsAdapter;
+    HashMap<String, String> userGroups;
 
     public GroupsFragment() {
         // Required empty public constructor
@@ -113,7 +114,7 @@ public class GroupsFragment extends Fragment {
         });
     }
 
-    private void createNewGroup(String i_GroupName) {
+    private void createNewGroup(final String i_GroupName) {
         FirebaseAuth mAuth =FirebaseAuth.getInstance();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("groups").child(i_GroupName);
         HashMap<String, String> hashMap = new HashMap<>();
@@ -129,6 +130,12 @@ public class GroupsFragment extends Fragment {
                 }
             }
         });
+        reference = FirebaseDatabase.getInstance().getReference("users").child(mAuth.getUid()).child("userGroups").child(i_GroupName);
+        userGroups = new HashMap<>();
+        userGroups.put("adminUID",mAuth.getUid());
+        userGroups.put("groupName",i_GroupName);
+        userGroups.put("chat",i_GroupName+mAuth.getUid());
+        reference.setValue(userGroups);
     }
 
     private void fetchGroups() {

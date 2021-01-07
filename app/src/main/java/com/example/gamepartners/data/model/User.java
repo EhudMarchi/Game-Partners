@@ -19,7 +19,7 @@ public class User {
     private String facebookUsername = "";
     private ArrayList<User> following = new ArrayList<>();
     private ArrayList<User> followers = new ArrayList<>();
-    private ArrayList<Group> groups = new ArrayList<>();
+    private ArrayList<Group> userGroups = new ArrayList<>();
     private int profilePicture = R.drawable.default_user;
 
     public User() {
