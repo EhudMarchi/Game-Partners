@@ -69,8 +69,12 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
         if(currentGame.getPlatforms().contains(Game.ePlatform.REALITY))
         {
             holder.realityIcon.setVisibility(View.VISIBLE);
+            holder.pcIcon.setVisibility(View.GONE);
+            holder.playstaionIcon.setVisibility(View.GONE);
+            holder.xboxIcon.setVisibility(View.GONE);
         }
         else {
+            holder.realityIcon.setVisibility(View.GONE);
             if (currentGame.getPlatforms().contains(Game.ePlatform.PC)) {
                 holder.pcIcon.setVisibility(View.VISIBLE);
             }

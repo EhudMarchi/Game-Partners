@@ -12,14 +12,21 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.example.gamepartners.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-public class ExploreAdapter extends RecyclerView.Adapter<ExploreAdapter.MyViewHolder> {
+public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> {
     Context context;
+    String postId;
     private ArrayList<Post> postArrayList;
     RequestManager glide;
-    public ExploreAdapter(Context context, ArrayList<Post> postArrayList)
+    public PostAdapter(Context context, ArrayList<Post> postArrayList)
     {
         this.context = context;
         this.postArrayList = postArrayList;
@@ -27,7 +34,7 @@ public class ExploreAdapter extends RecyclerView.Adapter<ExploreAdapter.MyViewHo
     }
     @NonNull
     @Override
-    public ExploreAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public PostAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         LayoutInflater  inflater = LayoutInflater.from(context);
         View postsView = inflater.inflate(R.layout.post_item, parent, false);
@@ -38,9 +45,13 @@ public class ExploreAdapter extends RecyclerView.Adapter<ExploreAdapter.MyViewHo
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void onBindViewHolder(@NonNull ExploreAdapter.MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull PostAdapter.MyViewHolder holder, int position) {
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        DatabaseReference myRef;
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        //myRef = database.getInstance().getReference().child("posts");
         final Post post = postArrayList.get(position);
-
+        postId = post.getPostID();
 //        holder.username.setText(post.getPublisher().getFirstName()+" "+post.getPublisher().getLastName());
 //        holder.time.setText(post.getTimePosted().toString());
 //        holder.description.setText(post.getDescription());
@@ -61,7 +72,7 @@ public class ExploreAdapter extends RecyclerView.Adapter<ExploreAdapter.MyViewHo
         TextView locationTextView = holder.location;
         locationTextView.setText(String.valueOf(post.getLocation()));
 
-        glide.load(post.getPublisher().getProfilePicture()).into(holder.imgViewProfilePic);
+        glide.load(post.getPublisher().getProflieImageURL()).into(holder.imgViewProfilePic);
 //        if(post.getGame().getGameImage()==0) {
 //        holder.getImgViewPostPic.setVisibility(View.GONE);
 //        }
@@ -70,6 +81,17 @@ public class ExploreAdapter extends RecyclerView.Adapter<ExploreAdapter.MyViewHo
             //glide.load(post.getGame().getGameImage()).into(holder.getImgViewPostPic);
 //        }
 
+//        myRef.child(postId).addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
     }
 
     @Override

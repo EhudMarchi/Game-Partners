@@ -12,8 +12,8 @@
     android:layout_margin="4dp">
     <ImageView
         android:id="@+id/game_image"
-        android:layout_width="42dp"
-        android:layout_height="42dp"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:padding="2dp"/>
 
     <TextView
@@ -23,12 +23,12 @@
         android:layout_alignParentTop="true"
         android:layout_centerInParent="true"
         android:layout_marginLeft="5dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="7dp"
         android:layout_toRightOf="@+id/game_image"
         android:text="Game Name"
         android:shadowColor="@color/black"
         android:textColor="@color/white"
-        android:textSize="17sp"
+        android:textSize="16sp"
         android:textStyle="bold" />
     <RelativeLayout
         android:layout_width="match_parent"
@@ -38,28 +38,28 @@
         android:layout_marginLeft="5dp">
         <ImageView
             android:id="@+id/realityIcon"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="17dp"
+            android:layout_height="17dp"
             android:visibility="gone"
             android:background="@drawable/reality" />
         <ImageView
             android:id="@+id/pcIcon"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="17dp"
+            android:layout_height="17dp"
             android:visibility="gone"
             android:layout_toRightOf="@id/realityIcon"
             android:background="@drawable/pc" />
         <ImageView
             android:id="@+id/playstationIcon"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="17dp"
+            android:layout_height="17dp"
             android:visibility="gone"
             android:layout_toRightOf="@+id/pcIcon"
             android:background="@drawable/playstation" />
         <ImageView
             android:id="@+id/xboxIcon"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="17dp"
+            android:layout_height="17dp"
             android:visibility="gone"
             android:layout_toRightOf="@+id/playstationIcon"
             android:background="@drawable/xbox" />

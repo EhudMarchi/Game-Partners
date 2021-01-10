@@ -46,18 +46,17 @@
         </RelativeLayout>
 
         <TextView
-            android:id="@+id/gameName"
+            android:id="@+id/selectedGameName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
             android:layout_marginLeft="20dp"
             android:layout_marginTop="20sp"
-            android:textStyle="bold"
             android:layout_toRightOf="@+id/imgGame"
             android:fontFamily="sans-serif-light"
             android:text="Game Name"
             android:textColor="@color/white"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
 
         <com.google.android.material.chip.ChipGroup
@@ -98,18 +97,27 @@
         </com.google.android.material.chip.ChipGroup>
 
         <Button
-            android:id="@+id/buttonChoose"
+            android:id="@+id/chooseDate"
             android:layout_width="wrap_content"
-            android:layout_height="54dp"
+            android:layout_height="42dp"
             android:layout_alignParentRight="true"
+            android:layout_below="@+id/selectedGameName"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_toRightOf="@+id/imgGame"
-            android:text="Choose Game"
-            android:layout_below="@+id/gameName"
-            android:layout_marginTop="20dp"
+            android:text="Choose Date"
             android:textAllCaps="false" />
-
+        <Button
+            android:id="@+id/chooseTime"
+            android:layout_width="wrap_content"
+            android:layout_height="42dp"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/chooseDate"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_toRightOf="@+id/imgGame"
+            android:text="Choose Time"
+            android:textAllCaps="false" />
 
     </RelativeLayout>
 
@@ -160,5 +168,17 @@
             android:background="@null"/>
 
     </RelativeLayout>
-
+    <Button
+        android:id="@+id/post"
+        android:layout_width="wrap_content"
+        android:layout_height="54dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="20dp"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone"
+        android:onClick="createPost"
+        android:text="Post"
+        android:textAllCaps="false" />
 </RelativeLayout>

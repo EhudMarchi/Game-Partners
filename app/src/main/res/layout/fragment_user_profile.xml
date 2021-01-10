@@ -18,8 +18,9 @@
             android:id="@+id/imgUser"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dp"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="15dp"
             android:background="@drawable/circle_border">
 
             <androidx.cardview.widget.CardView
@@ -48,28 +49,31 @@
             android:id="@+id/username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/imgUser"
+            android:layout_toRightOf="@+id/imgUser"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="15sp"
+            android:layout_marginLeft="15dp"
             android:fontFamily="sans-serif-light"
             android:text="User Name"
             android:textColor="@color/white"
-            android:textSize="32sp" />
-
-
+            android:textSize="24sp" />
         <TextView
-            android:id="@+id/location"
+            android:id="@+id/email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/username"
+            android:layout_toRightOf="@+id/imgUser"
+            android:layout_below="@id/username"
             android:layout_centerHorizontal="true"
-            android:fontFamily="sans-serif"
-            android:text="City, Country"
-            android:textAllCaps="true"
-            android:textColor="@color/glowCyan"
-            android:textSize="14sp" />
+            android:layout_marginTop="15sp"
+            android:layout_marginLeft="15dp"
+            android:fontFamily="sans-serif-light"
+            android:text="Email"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
+
 
         <ImageView
+            android:id="@+id/settings"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_alignParentRight="true"
@@ -79,221 +83,46 @@
             android:scaleType="fitCenter"
             app:srcCompat="@drawable/settings" />
 
-    </RelativeLayout>
-
-    <LinearLayout
-        android:id="@+id/linlay1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/base_relative_layout"
-        android:orientation="horizontal"
-        android:background="@color/purple">
-
         <RelativeLayout
-            android:layout_width="match_parent"
+            android:id="@+id/settingsLayout"
+            android:layout_width="109dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:background="@color/lightPurple"
-            android:gravity="center"
-            android:paddingBottom="5dp"
-            android:paddingTop="5dp">
+            android:layout_below="@id/settings"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="bottom|end"
+            android:visibility="gone">
 
-            <LinearLayout
-                android:layout_width="wrap_content"
+            <Button
+                android:id="@+id/logout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:orientation="vertical">
+                android:layout_below="@id/editProfile"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="15dp"
+                android:text="Logout"
+                android:textAllCaps="false"
+                app:backgroundTint="@color/glowCyan" />
 
-                <TextView
-                    android:id="@+id/followers"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-light"
-                    android:text="0"
-                    android:textColor="@color/white"
-                    android:textSize="25sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-light"
-                    android:text="followers"
-                    android:textAllCaps="true"
-                    android:textColor="@color/white"
-                    android:textSize="13sp" />
-
-            </LinearLayout>
-
+            <Button
+                android:id="@+id/editProfile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_gravity="bottom|end"
+                android:layout_marginRight="15dp"
+                android:text="Edit Profile"
+                android:textAllCaps="false"
+                android:textColor="#000000"
+                app:backgroundTint="@color/glowCyan" />
         </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:background="@color/purple"
-            android:gravity="center"
-            android:paddingBottom="5dp"
-            android:paddingTop="5dp">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/following"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-light"
-                    android:text="0"
-                    android:textColor="@color/white"
-                    android:textSize="25sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-light"
-                    android:text="following"
-                    android:textAllCaps="true"
-                    android:textColor="@color/white"
-                    android:textSize="13sp" />
-
-            </LinearLayout>
-
-        </RelativeLayout>
-
-    </LinearLayout>
-
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/linlay1"
-        android:layout_marginTop="0dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_marginLeft="30dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginRight="30dp"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center">
-
-                <Button
-                    android:layout_width="200dp"
-                    android:layout_height="match_parent"
-                    android:text="Follow"
-                    android:textColor="@color/grey"
-                    android:layout_gravity="center"
-                    android:textSize="18sp" />
-
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Email"
-                    android:textColor="@color/glowCyan"
-                    android:textSize="18sp" />
-
-                <TextView
-                    android:id="@+id/email"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-light"
-                    android:text="example@gmail.com"
-                    android:textColor="@color/white"
-                    android:textSize="18sp" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="15dp"
-                    android:background="@color/grey" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Phone"
-                    android:textColor="@color/glowCyan"
-                    android:textSize="18sp" />
-
-                <TextView
-                    android:id="@+id/phone"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-light"
-                    android:text="050-0000000"
-                    android:textColor="@color/white"
-                    android:textSize="18sp" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="15dp"
-                    android:background="@color/grey" />
-
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Facebook"
-                    android:textColor="@color/glowCyan"
-                    android:textSize="18sp" />
-
-                <TextView
-                    android:id="@+id/facebook"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-light"
-                    android:text="facebook.com/username"
-                    android:textColor="@color/white"
-                    android:textSize="18sp" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="15dp"
-                    android:background="@color/grey" />
-
-            </LinearLayout>
-
-
-        </LinearLayout>
-
     </RelativeLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_below="@+id/base_relative_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </androidx.recyclerview.widget.RecyclerView>
+
 
 </RelativeLayout>

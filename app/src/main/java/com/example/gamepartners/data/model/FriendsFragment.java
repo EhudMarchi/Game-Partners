@@ -5,8 +5,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.SearchView;
+import android.widget.TextView;
 
 import com.example.gamepartners.R;
 import com.example.gamepartners.data.model.Game.Game;
@@ -24,22 +23,23 @@ import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link GamesFragment#newInstance} factory method to
+ * Use the {@link FriendsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class GamesFragment extends Fragment {
+public class FriendsFragment extends Fragment {
     private ArrayList<Game> games;
     private RecyclerView gamesRecyclerView;
     private GameAdapter recyclerViewAdapter;
     private RecyclerView.LayoutManager recyclerViewLayoutManager;
+    TextView selectedGameName;
     SearchView searchView;
 
-    public GamesFragment() {
+    public FriendsFragment() {
         // Required empty public constructor
     }
 
-    public static GamesFragment newInstance(String param1, String param2) {
-        GamesFragment fragment = new GamesFragment();
+    public static FriendsFragment newInstance(String param1, String param2) {
+        FriendsFragment fragment = new FriendsFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -53,16 +53,24 @@ public class GamesFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        selectedGameName = getView().findViewById(R.id.selectedGameName);
         fillGames();
         setUpGamesRecyclerView();
         setSearchFilter();
+        gamesRecyclerView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectedGameName.setText(recyclerViewAdapter.getSelectedGame().getGameName());
+            }
+        });
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_games, container, false);
+        return inflater.inflate(R.layout.fragment_friends, container, false);
 
     }
     private void setSearchFilter() {

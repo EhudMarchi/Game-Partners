@@ -24,7 +24,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.example.gamepartners.data.model.Chat.Message;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 
 public class ChatActivity extends AppCompatActivity {
@@ -64,27 +68,33 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //add message
-                final Message message = new Message(user.getUid(),user.getDisplayName(),inputMessage.getText().toString());
-                m_ChatMessages.add(message);
-                reference = FirebaseDatabase.getInstance().getReference("groups").child(groupNameView.getText().toString()).child("chat").child("message"+m_ChatMessages.size());
-                reference.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        HashMap<String, String> hashMap = new HashMap<>();
-                        hashMap.put("senderUID",user.getUid());
-                        hashMap.put("senderDisplayName",user.getDisplayName());
-                        hashMap.put("text",message.getText());
-                        reference.setValue(hashMap);
-                    }
+                final Message message = new Message(user.getUid(), user.getDisplayName(), inputMessage.getText().toString());
+                if (!message.getText().equals("")) {
+                    m_ChatMessages.add(message);
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
+                    reference = FirebaseDatabase.getInstance().getReference("groups").child(groupNameView.getText().toString()).child("chat");
+                    HashMap<String, String> hashMap = new HashMap<>();
+                    hashMap.put("senderUID", user.getUid());
+                    hashMap.put("senderDisplayName", user.getDisplayName());
+                    hashMap.put("text", message.getText());
+                    reference.push().setValue(hashMap);
+                    reference.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                    }
-                });
-                inputMessage.setText("");
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+                    inputMessage.setText("");
+                }
             }
         });
+
     }
     private void fetchMessages() {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("groups").child(groupName).child("chat");

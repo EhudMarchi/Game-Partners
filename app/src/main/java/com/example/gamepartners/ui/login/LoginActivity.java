@@ -93,6 +93,13 @@ public class LoginActivity extends AppCompatActivity {
         if (extras != null) {
             email.setText(extras.getString("emailKey"));
             password.setText(extras.getString("passwordKey"));
+            String mode = extras.getString("Mode");
+            if(mode.equals("LoggedOut"))
+            {
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.clear();
+                editor.apply();
+            }
         }
         if (sharedPreferences.getString("KeyEmail", null) != null) {
             email.setText(sharedPreferences.getString("KeyEmail", null));
@@ -209,6 +216,7 @@ public class LoginActivity extends AppCompatActivity {
     {
         createGoogleRequest();
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        autoLogin("Google");
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
     public void checkIfGoogleAccountExist()
@@ -317,7 +325,6 @@ public class LoginActivity extends AppCompatActivity {
     }
     private  void sendUserToMainActivity()
     {
-        autoLogin("Google");
         Intent intent =new Intent(LoginActivity.this,MainActivity.class);
         startActivity(intent);
     }

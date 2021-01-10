@@ -18,14 +18,14 @@ public class TabAccessorAdapter extends FragmentPagerAdapter {
         switch (position)
         {
             case  0:
-                GroupsFragment groupsFragment = new GroupsFragment();
-                return  groupsFragment;
-            case  1:
                 ExploreFragment exploreFragment = new ExploreFragment();
                 return  exploreFragment;
+            case  1:
+                GroupsFragment groupsFragment = new GroupsFragment();
+                return  groupsFragment;
             case  2:
-                GamesFragment gamesFragment = new GamesFragment();
-                return  gamesFragment;
+                FriendsFragment friendsFragment = new FriendsFragment();
+                return friendsFragment;
             case  3:
                 UserProfileFragment userProfileFragment = new UserProfileFragment();
                 return  userProfileFragment;
@@ -46,11 +46,11 @@ public class TabAccessorAdapter extends FragmentPagerAdapter {
         switch (position)
         {
             case  0:
-                return  "Groups";
-            case  1:
                 return  "Explore";
+            case  1:
+                return  "Groups";
             case  2:
-                return  "Games";
+                return  "Friends";
             case  3:
                 return  "Profile";
 

@@ -10,11 +10,13 @@ import java.util.Date;
 import java.util.List;
 
 public  class Post implements IPostable, ILikeable {
+    private String postID;
     private Date timePosted;
     private User publisher;
     private String subject;
     private String description;
     private Game game;
+    private String gameName;
     private DateTime timeOccurring;
     private Location location;
     private String city;
@@ -22,7 +24,24 @@ public  class Post implements IPostable, ILikeable {
     private int likes;
     private ArrayList<Comment> comments;
 
-    public Post( User publisher,Date timePosted, String description, int likes, String city,ArrayList<Comment> comments ) {
+    public Post() {
+    }
+
+    public Post(User publisher, String gameName, int likes) {
+        this.publisher = publisher;
+        this.gameName = gameName;
+        this.likes = likes;
+    }
+
+    public String getPostID() {
+        return postID;
+    }
+
+    public void setPostID(String postID) {
+        this.postID = postID;
+    }
+
+    public Post(User publisher, Date timePosted, String description, int likes, String city, ArrayList<Comment> comments ) {
         this.timePosted = timePosted;
         this.publisher = publisher;
         this.description = description;

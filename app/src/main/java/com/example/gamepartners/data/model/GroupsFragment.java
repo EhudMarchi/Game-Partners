@@ -78,13 +78,14 @@ public class GroupsFragment extends Fragment {
         groupsRecyclerView = (RecyclerView) getView().findViewById(R.id.recyclerView);
         groupsRecyclerView.setHasFixedSize(true);
         groupsRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
-        FloatingActionButton fab = getView().findViewById(R.id.fab);
+        final FloatingActionButton fab = getView().findViewById(R.id.fab);
 
         groupsArrayList = new ArrayList<>();
         fetchGroups();
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                fab.setClickable(false);
                 Snackbar.make(view, "Create New Group", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
                 new Handler().postDelayed(new Runnable() {
@@ -107,6 +108,7 @@ public class GroupsFragment extends Fragment {
                                 })
                                 .create();
                         dialog.show();
+                        fab.setClickable(true);
                     }
                 },WAIT);
 
@@ -139,7 +141,8 @@ public class GroupsFragment extends Fragment {
     }
 
     private void fetchGroups() {
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("groups");
+        FirebaseAuth mAuth =FirebaseAuth.getInstance();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users").child(mAuth.getUid()).child("userGroups");
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

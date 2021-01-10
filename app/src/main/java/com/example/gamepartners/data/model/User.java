@@ -17,13 +17,21 @@ public class User {
     String status;
     private String phone = "";
     private String facebookUsername = "";
-    private ArrayList<User> following = new ArrayList<>();
-    private ArrayList<User> followers = new ArrayList<>();
     private ArrayList<Group> userGroups = new ArrayList<>();
-    private int profilePicture = R.drawable.default_user;
+    private ArrayList<User> userFriends = new ArrayList<>();
+    private ArrayList<Post> userPosts = new ArrayList<>();
+    private String proflieImageURL;
 
     public User() {
 
+    }
+
+    public ArrayList<Post> getUserPosts() {
+        return userPosts;
+    }
+
+    public void setUserPosts(ArrayList<Post> userPosts) {
+        this.userPosts = userPosts;
     }
 
     public String getUid() {
@@ -74,14 +82,6 @@ public class User {
         this.password = password;
     }
 
-    public int getProfilePicture() {
-        return profilePicture;
-    }
-
-    public void setProfilePicture(int profilePicture) {
-        this.profilePicture = profilePicture;
-    }
-
     public String getPhone() {
         return phone;
     }
@@ -120,21 +120,14 @@ public class User {
         this.firstName = fullName[0];
         this.lastName = fullName[1];
         this.email = email;
+        userPosts = new ArrayList<>();
     }
 
-    public ArrayList<User> getFollowing() {
-        return following;
+    public String getProflieImageURL() {
+        return proflieImageURL;
     }
 
-    public void setFollowing(ArrayList<User> following) {
-        this.following = following;
-    }
-
-    public ArrayList<User> getFollowers() {
-        return followers;
-    }
-
-    public void setFollowers(ArrayList<User> followers) {
-        this.followers = followers;
+    public void setProflieImageURL(String proflieImageURL) {
+        this.proflieImageURL = proflieImageURL;
     }
 }

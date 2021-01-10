@@ -4,23 +4,31 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.gamepartners.R;
+import com.example.gamepartners.ui.login.LoginActivity;
+import com.example.gamepartners.ui.login.MainActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -36,6 +44,8 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.UUID;
 
 /**
@@ -44,39 +54,25 @@ import java.util.UUID;
  * create an instance of this fragment.
  */
 public class UserProfileFragment extends Fragment {
-    TextView username, followers, following, email, facebook, phone, location;
-    ImageView imgViewProfilePic;
+    TextView username, email;
+    ImageView imgViewProfilePic , profileSettingsPic;
+    RelativeLayout settingsLayout;
+    Button editProfile,logout;
+    RecyclerView postsRecyclerView;
+    ArrayList<Post> postsArrayList = new ArrayList<>();
+    PostAdapter postAdapter;
     public Uri imageUri;
     private FirebaseAuth mAuth;
     private FirebaseStorage mStorage;
     private StorageReference mStorageRef;
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     public UserProfileFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment UserProfileFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static UserProfileFragment newInstance(String param1, String param2) {
         UserProfileFragment fragment = new UserProfileFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -84,10 +80,29 @@ public class UserProfileFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        postsRecyclerView = (RecyclerView) getView().findViewById(R.id.recyclerView);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getContext());
+        postsRecyclerView.setLayoutManager(layoutManager);
+        postAdapter = new PostAdapter(this.getContext(),postsArrayList);
+        postsRecyclerView.setAdapter(postAdapter);
+        populateRecycleView();
+    }
+
+    private void populateRecycleView() {
+        Post post = new Post(new User("Ehud", "Marchi", "Ehud@gmail.com", "123456"), Calendar.getInstance().getTime(), "This is a post template",18,"Ashdod",new ArrayList<Comment>());
+        postsArrayList.add(post);
+        post = new Post(new User("Yossi", "Cohen", "Yosi@gmail.com", "13513"),Calendar.getInstance().getTime(), "This is a post template 2", 7,"Tel Aviv",new ArrayList<Comment>());
+        postsArrayList.add(post);
+        post = new Post(new User("Avraham", "Levi", "AVVI@gmail.com", "143436"),Calendar.getInstance().getTime(), "This is a post template 3 ", 11,"Holon",new ArrayList<Comment>());
+        postsArrayList.add(post);
+        post = new Post(new User("Dana", "Meron", "danam@gmail.com", "00020225"),Calendar.getInstance().getTime(), "This is a post template 4 ", 22,"Jerusalem",new ArrayList<Comment>());
+        postsArrayList.add(post);
+        postAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -100,11 +115,30 @@ public class UserProfileFragment extends Fragment {
         imgViewProfilePic = view.findViewById(R.id.profile_pic);
         username = view.findViewById(R.id.username);
         email = view.findViewById(R.id.email);
-        phone = view.findViewById(R.id.phone);
-        facebook = view.findViewById(R.id.facebook);
-        followers = view.findViewById(R.id.followers);
-        following = view.findViewById(R.id.following);
-        location = view.findViewById(R.id.location);
+        profileSettingsPic = view.findViewById(R.id.settings);
+        settingsLayout = view.findViewById(R.id.settingsLayout);
+        editProfile = view.findViewById(R.id.editProfile);
+        logout = view.findViewById(R.id.logout);
+        profileSettingsPic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(settingsLayout.getVisibility() != View.VISIBLE) {
+                    settingsLayout.setVisibility(View.VISIBLE);
+                }
+                else
+                {
+                    settingsLayout.setVisibility(View.GONE);
+                }
+            }
+        });
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent =new Intent(getContext(), LoginActivity.class);
+                intent.putExtra("Mode","LoggedOut");
+                startActivity(intent);
+            }
+        });
         imgViewProfilePic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
