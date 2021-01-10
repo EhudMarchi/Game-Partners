@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.format.Time;
@@ -32,18 +33,21 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.protobuf.StringValue;
+import com.shivtechs.maplocationpicker.LocationPickerActivity;
+import com.shivtechs.maplocationpicker.MapUtility;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 
 public class CreatePostActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+    private static final int ADDRESS_PICKER_REQUEST = 50;
     private ArrayList<Game> games;
     private RecyclerView gamesRecyclerView;
     private GameAdapter recyclerViewAdapter;
     private RecyclerView.LayoutManager recyclerViewLayoutManager;
     SearchView searchView;
-    Button chooseDate, chooseTime;
+    Button chooseDate, chooseTime, chooseLocation;
     private FirebaseStorage mStorage;
     private StorageReference mStorageRef;
 
@@ -53,6 +57,7 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
         setContentView(R.layout.activity_create_post);
         chooseDate = findViewById(R.id.chooseDate);
         chooseTime = findViewById(R.id.chooseTime);
+        chooseLocation = findViewById(R.id.chooseLocation);
         fillGames();
         setUpGamesRecyclerView();
         setSearchFilter();
@@ -68,6 +73,18 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
                 showTimePickerDialog();
             }
         });
+        chooseLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showLocationPicker();
+            }
+        });
+    }
+
+    private void showLocationPicker() {
+        MapUtility.apiKey = getResources().getString(R.string.api_key);
+        Intent intent =new Intent(this, LocationPickerActivity.class);
+        startActivityForResult(intent, ADDRESS_PICKER_REQUEST);
     }
 
     private void setSearchFilter() {

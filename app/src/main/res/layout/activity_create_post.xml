@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="222dp"
         android:background="@drawable/gradient"
-        android:paddingBottom="20dp">
+        android:paddingBottom="5dp">
 
         <RelativeLayout
             android:id="@+id/imgGame"
@@ -58,8 +58,8 @@
             android:textSize="20sp"
             android:textStyle="bold" />
 
-
         <com.google.android.material.chip.ChipGroup
+            android:layout_below="@id/chooseLocation"
             android:id="@+id/platforms"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -99,24 +99,45 @@
         <Button
             android:id="@+id/chooseDate"
             android:layout_width="wrap_content"
-            android:layout_height="42dp"
+            android:layout_height="32dp"
             android:layout_alignParentRight="true"
             android:layout_below="@+id/selectedGameName"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
+            android:layout_marginTop="5dp"
             android:layout_toRightOf="@+id/imgGame"
             android:text="Choose Date"
+            android:textColor="@color/white"
+            android:background="@drawable/choose_button"
             android:textAllCaps="false" />
         <Button
             android:id="@+id/chooseTime"
             android:layout_width="wrap_content"
-            android:layout_height="42dp"
+            android:layout_height="32dp"
             android:layout_alignParentRight="true"
             android:layout_below="@+id/chooseDate"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
+            android:layout_marginTop="5dp"
             android:layout_toRightOf="@+id/imgGame"
             android:text="Choose Time"
+            android:textColor="@color/white"
+            android:background="@drawable/choose_button"
+            android:textAllCaps="false" />
+
+        <Button
+            android:id="@+id/chooseLocation"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:layout_below="@+id/chooseTime"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="5dp"
+            android:layout_toRightOf="@+id/imgGame"
+            android:text="Choose Location"
+            android:textColor="@color/white"
+            android:background="@drawable/choose_button"
             android:textAllCaps="false" />
 
     </RelativeLayout>
