@@ -14,9 +14,12 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -24,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.gamepartners.R;
+import com.example.gamepartners.ui.login.CreatePostActivity;
 import com.example.gamepartners.ui.login.LoginActivity;
 import com.example.gamepartners.ui.login.MainActivity;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -65,6 +69,7 @@ public class UserProfileFragment extends Fragment {
     private FirebaseAuth mAuth;
     private FirebaseStorage mStorage;
     private StorageReference mStorageRef;
+    Animation settingsAnimation;
 
     public UserProfileFragment() {
         // Required empty public constructor
@@ -91,17 +96,18 @@ public class UserProfileFragment extends Fragment {
         postAdapter = new PostAdapter(this.getContext(),postsArrayList);
         postsRecyclerView.setAdapter(postAdapter);
         populateRecycleView();
+        settingsAnimation = AnimationUtils.loadAnimation(getContext(),R.anim.settings_in);
     }
 
     private void populateRecycleView() {
-        Post post = new Post(new User("Ehud", "Marchi", "Ehud@gmail.com", "123456"), Calendar.getInstance().getTime(), "This is a post template",18,"Ashdod",new ArrayList<Comment>());
+        User user = new User("Loyal", "Pirate", "loyalpiratemusic@gmail.com", "123456");
+        Post post = new Post(user, Calendar.getInstance().getTime(), "This is a post template",18,"Ashdod",new ArrayList<Comment>());
         postsArrayList.add(post);
-        post = new Post(new User("Yossi", "Cohen", "Yosi@gmail.com", "13513"),Calendar.getInstance().getTime(), "This is a post template 2", 7,"Tel Aviv",new ArrayList<Comment>());
+        post = new Post(user,Calendar.getInstance().getTime(), "This is a post template 2", 7,"Tel Aviv",new ArrayList<Comment>());
         postsArrayList.add(post);
-        post = new Post(new User("Avraham", "Levi", "AVVI@gmail.com", "143436"),Calendar.getInstance().getTime(), "This is a post template 3 ", 11,"Holon",new ArrayList<Comment>());
+        post = new Post(user,Calendar.getInstance().getTime(), "This is a post template 3 ", 11,"Holon",new ArrayList<Comment>());
         postsArrayList.add(post);
-        post = new Post(new User("Dana", "Meron", "danam@gmail.com", "00020225"),Calendar.getInstance().getTime(), "This is a post template 4 ", 22,"Jerusalem",new ArrayList<Comment>());
-        postsArrayList.add(post);
+
         postAdapter.notifyDataSetChanged();
     }
 
@@ -122,13 +128,32 @@ public class UserProfileFragment extends Fragment {
         profileSettingsPic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                profileSettingsPic.setClickable(false);
                 if(settingsLayout.getVisibility() != View.VISIBLE) {
                     settingsLayout.setVisibility(View.VISIBLE);
+                    settingsLayout.startAnimation(settingsAnimation);
+                    settingsAnimation = AnimationUtils.loadAnimation(getContext(),R.anim.settings_out);
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            profileSettingsPic.setClickable(true);
+                        }
+                    },1000);
                 }
                 else
                 {
-                    settingsLayout.setVisibility(View.GONE);
+                    settingsLayout.startAnimation(settingsAnimation);
+                    settingsAnimation = AnimationUtils.loadAnimation(getContext(),R.anim.settings_in);
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            settingsLayout.setVisibility(View.GONE);
+                            profileSettingsPic.setClickable(true);
+                        }
+                    },1000);
+
                 }
+
             }
         });
         logout.setOnClickListener(new View.OnClickListener() {
@@ -237,6 +262,11 @@ public class UserProfileFragment extends Fragment {
 
             }
         });
+    }
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        postsArrayList.clear();
     }
 
 }

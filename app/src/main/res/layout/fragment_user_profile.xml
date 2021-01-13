@@ -25,8 +25,8 @@
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/myCardView"
-                android:layout_width="120dp"
-                android:layout_height="120dp"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
                 android:layout_margin="5dp"
                 android:layout_centerInParent="true"
                 app:cardBackgroundColor="#00FFFFFF"
@@ -34,8 +34,8 @@
 
                 <ImageView
                     android:id="@+id/profile_pic"
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:adjustViewBounds="true"
                     android:background="@drawable/circle"
                     android:scaleType="centerCrop"
@@ -56,7 +56,7 @@
             android:fontFamily="sans-serif-light"
             android:text="User Name"
             android:textColor="@color/white"
-            android:textSize="24sp" />
+            android:textSize="22sp" />
         <TextView
             android:id="@+id/email"
             android:layout_width="wrap_content"
@@ -64,12 +64,12 @@
             android:layout_toRightOf="@+id/imgUser"
             android:layout_below="@id/username"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="15sp"
+            android:layout_marginTop="5sp"
             android:layout_marginLeft="15dp"
             android:fontFamily="sans-serif-light"
             android:text="Email"
-            android:textColor="@color/white"
-            android:textSize="18sp" />
+            android:textColor="@color/grey"
+            android:textSize="15sp" />
 
 
         <ImageView
@@ -95,25 +95,28 @@
             <Button
                 android:id="@+id/logout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="30dp"
                 android:layout_below="@id/editProfile"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="15dp"
                 android:text="Logout"
-                android:textAllCaps="false"
-                app:backgroundTint="@color/glowCyan" />
+                android:textColor="@color/white"
+                android:background="@drawable/choose_button"
+                android:textAllCaps="false" />
 
             <Button
                 android:id="@+id/editProfile"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="30dp"
                 android:layout_alignParentRight="true"
                 android:layout_gravity="bottom|end"
                 android:layout_marginRight="15dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="5dp"
                 android:text="Edit Profile"
-                android:textAllCaps="false"
-                android:textColor="#000000"
-                app:backgroundTint="@color/glowCyan" />
+                android:textColor="@color/white"
+                android:background="@drawable/choose_button"
+                android:textAllCaps="false" />
         </RelativeLayout>
     </RelativeLayout>
     <androidx.recyclerview.widget.RecyclerView

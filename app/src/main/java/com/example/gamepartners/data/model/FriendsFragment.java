@@ -17,7 +17,6 @@ import android.widget.TextView;
 
 import com.example.gamepartners.R;
 import com.example.gamepartners.data.model.Game.Game;
-import com.example.gamepartners.data.model.Game.GameAdapter;
 
 import java.util.ArrayList;
 
@@ -27,11 +26,11 @@ import java.util.ArrayList;
  * create an instance of this fragment.
  */
 public class FriendsFragment extends Fragment {
-    private ArrayList<Game> games;
-    private RecyclerView gamesRecyclerView;
-    private GameAdapter recyclerViewAdapter;
+    private ArrayList<User> users;
+    private RecyclerView usersRecyclerView;
+    private UserAdapter recyclerViewAdapter;
     private RecyclerView.LayoutManager recyclerViewLayoutManager;
-    TextView selectedGameName;
+    TextView selectedUserName;
     SearchView searchView;
 
     public FriendsFragment() {
@@ -53,14 +52,14 @@ public class FriendsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        selectedGameName = getView().findViewById(R.id.selectedGameName);
-        fillGames();
-        setUpGamesRecyclerView();
+        selectedUserName = getView().findViewById(R.id.selectedGameName);
+        fillFriends();
+        setUpFriendsRecyclerView();
         setSearchFilter();
-        gamesRecyclerView.setOnClickListener(new View.OnClickListener() {
+        usersRecyclerView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                selectedGameName.setText(recyclerViewAdapter.getSelectedGame().getGameName());
+                selectedUserName.setText(recyclerViewAdapter.getSelectedUser().getFirstName());
             }
         });
 
@@ -88,33 +87,21 @@ public class FriendsFragment extends Fragment {
         });
     }
 
-    private void setUpGamesRecyclerView() {
+    private void setUpFriendsRecyclerView() {
         searchView = (SearchView)getView().findViewById(R.id.search);
-        gamesRecyclerView = getView().findViewById(R.id.gamesRecyclerView);
-        gamesRecyclerView.setHasFixedSize(true);
+        usersRecyclerView = getView().findViewById(R.id.friendsRecyclerView);
+        usersRecyclerView.setHasFixedSize(true);
         recyclerViewLayoutManager = new LinearLayoutManager(getContext());
-        recyclerViewAdapter = new GameAdapter(getContext(),games);
-        gamesRecyclerView.setLayoutManager(recyclerViewLayoutManager);
-        gamesRecyclerView.setAdapter(recyclerViewAdapter);
+        recyclerViewAdapter = new UserAdapter(getContext(), users);
+        usersRecyclerView.setLayoutManager(recyclerViewLayoutManager);
+        usersRecyclerView.setAdapter(recyclerViewAdapter);
     }
 
-    private void fillGames() {
-        games = new ArrayList<>();
-        games.add(new Game("Basketball",R.drawable.default_game, Game.ePlatform.REALITY));
-        games.add(new Game("FIFA 21",R.drawable.default_game, Game.ePlatform.XBOX));
-        games.add(new Game("Chess",R.drawable.default_game, Game.ePlatform.REALITY));
-        games.add(new Game("GTA V Online",R.drawable.default_game, Game.ePlatform.PLAYSTATION));
-        games.add(new Game("Soccer",R.drawable.default_game, Game.ePlatform.REALITY));
-        games.add(new Game("Tennis",R.drawable.default_game, Game.ePlatform.REALITY));
-        games.add(new Game("Call of Duty:WARZONE",R.drawable.default_game, Game.ePlatform.PC));
-        games.add(new Game("Baseball",R.drawable.default_game, Game.ePlatform.REALITY));
-        games.add(new Game("League of Legends",R.drawable.default_game, Game.ePlatform.PC));
-        games.add(new Game("Table Tennis",R.drawable.default_game, Game.ePlatform.REALITY));
-        games.add(new Game("NBA 2K21",R.drawable.default_game, Game.ePlatform.PLAYSTATION));
-        games.add(new Game("Fortnite",R.drawable.default_game, Game.ePlatform.XBOX));
-        games.add(new Game("Apex Legends",R.drawable.default_game, Game.ePlatform.PC));
-        games.add(new Game("World of Warcraft",R.drawable.default_game, Game.ePlatform.PC));
-        games.add(new Game("Red Dead Online",R.drawable.default_game, Game.ePlatform.PC));
-        games.add(new Game("Beach Volleyball",R.drawable.default_game, Game.ePlatform.REALITY));
+    private void fillFriends() {
+        users = new ArrayList<>();
+        users.add(new User("Leo", "Messi", "leomessi@gmail.com", "123456"));
+        users.add(new User("Adam", "Cohen", "adam515@gmail.com", "1234511016"));
+        users.add(new User("David", "Williams", "diwi11@gmail.com", "0025edd6"));
+        users.add(new User("Shalom", "Israel", "shaloooom@gmail.com", "1@#$23456"));
     }
 }

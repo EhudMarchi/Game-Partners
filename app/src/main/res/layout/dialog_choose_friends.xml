@@ -3,13 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".data.model.FriendsFragment">
+    android:background="@color/darkPurple"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <RelativeLayout
         android:id="@+id/searchLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
->
+        android:paddingBottom="15dp"
+        >
         <SearchView
             android:id="@+id/search"
             android:layout_width="match_parent"
@@ -21,14 +22,28 @@
             android:queryHint="Search"
             app:actionViewClass="android.widget.SearchView"
             app:showAsAction="ifRoom|collapseActionView"/>
+
+
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/friendsRecyclerView"
+            android:id="@+id/friendsSelectionRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/search"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="0dp"
-            android:background="@color/darkPurple"/>
+            android:background="@color/darkPurple"
+            android:layout_below="@+id/search"/>
+
+        <Button
+                android:id="@+id/addSelected"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:background="@drawable/choose_button"
+                android:text="Add selected"
+                android:layout_marginRight="15dp"
+            android:layout_marginLeft="15dp"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="18dp"/>
     </RelativeLayout>
 
 

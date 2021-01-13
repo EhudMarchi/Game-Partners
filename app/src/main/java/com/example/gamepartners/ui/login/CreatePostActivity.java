@@ -12,6 +12,8 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.format.Time;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -58,24 +60,28 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
         chooseDate = findViewById(R.id.chooseDate);
         chooseTime = findViewById(R.id.chooseTime);
         chooseLocation = findViewById(R.id.chooseLocation);
+        final Animation zoominAnimation = AnimationUtils.loadAnimation(getBaseContext(),R.anim.zoom_in);
         fillGames();
         setUpGamesRecyclerView();
         setSearchFilter();
         chooseDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                chooseDate.startAnimation(zoominAnimation);
                 showDatePickerDialog();
             }
         });
         chooseTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                chooseTime.startAnimation(zoominAnimation);
                 showTimePickerDialog();
             }
         });
         chooseLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                chooseLocation.startAnimation(zoominAnimation);
                 showLocationPicker();
             }
         });

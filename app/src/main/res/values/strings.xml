@@ -20,4 +20,5 @@
     <string name="userName">User Name</string>
     <string name="last_message">Last Message</string>
     <string name="api_key">AIzaSyCeNMs1DFpjauHSAjih8wpf230GF4NZr58</string>
+    <string name="title_activity_maps">Map</string>
 </resources>

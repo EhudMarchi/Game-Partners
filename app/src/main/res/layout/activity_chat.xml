@@ -20,19 +20,45 @@
             >
 
             <LinearLayout
+                android:id="@+id/back_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:gravity="start">
+                android:layout_marginRight="15dp">
 
                 <ImageButton
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:id="@+id/back_chat"
-                    android:layout_marginStart="5dp"
                     android:background="@drawable/ic_baseline_arrow_back_24"
                     android:layout_marginLeft="5dp" />
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/add_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp">
 
+                <ImageButton
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:id="@+id/add"
+                    android:layout_marginStart="5dp"
+                    android:background="@drawable/ic_add"
+                    android:layout_marginLeft="5dp" />
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/participants_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp">
+
+                <ImageButton
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:id="@+id/participants"
+                    android:layout_marginStart="5dp"
+                    android:background="@drawable/ic_participants"
+                    android:layout_marginLeft="5dp" />
             </LinearLayout>
 
             <LinearLayout

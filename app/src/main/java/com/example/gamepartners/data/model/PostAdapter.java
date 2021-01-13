@@ -58,7 +58,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
 //        holder.likes.setText(post.getLikes());
 //        holder.comments.setText(post.getComments().size()+ " comments");
         TextView usernameTextView = holder.username;
-        usernameTextView.setText(post.getPublisher().getFirstName());
+        usernameTextView.setText(post.getPublisher().getFirstName() +" "+ post.getPublisher().getLastName());
         TextView timeTextView = holder.time;
         timeTextView.setText(post.getTimePosted().toString());
         TextView descriptionTextView = holder.description;
