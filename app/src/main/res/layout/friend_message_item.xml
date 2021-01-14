@@ -4,25 +4,47 @@
     android:layout_width="300dp"
     android:layout_height="wrap_content"
     android:padding="8dp">
-
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
     <de.hdodenhof.circleimageview.CircleImageView
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:id="@+id/chat_image_left"
         android:src="@mipmap/ic_launcher"/>
-
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/chat_image_left"
+            android:layout_toRightOf="@id/chat_image_left"
+            android:background="@drawable/background_left">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:text="Name"
+            android:textColor="@color/white"
+            android:paddingTop="8dp"
+            android:paddingRight="10dp"
+            android:paddingLeft="8dp"
+            android:translationZ="2dp"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:id="@+id/senderName"
+            android:layout_marginLeft="5dp" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@id/chat_image_left"
         android:layout_marginStart="5dp"
+        android:layout_below="@id/senderName"
         android:text="@string/hello"
         android:textColor="@color/white"
-        android:padding="8dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="8dp"
+        android:paddingLeft="8dp"
         android:textSize="18sp"
         android:id="@+id/show_message"
-        android:background="@drawable/background_left"
-        android:layout_toRightOf="@id/chat_image_left"
         android:layout_marginLeft="5dp" />
-
+</RelativeLayout>
+    </RelativeLayout>
 </RelativeLayout>

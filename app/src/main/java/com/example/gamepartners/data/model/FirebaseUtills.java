@@ -19,6 +19,7 @@ public class FirebaseUtills {
     private static FirebaseAuth mAuth;
     private static FirebaseUser mUser;
     private static DatabaseReference myRef;
+    public static User connedtedUser;
     public static FirebaseUtills GetInstance()
     {
         if(mSingleInstance == null)

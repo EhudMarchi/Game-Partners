@@ -25,6 +25,7 @@ import android.widget.TextView;
 
 import com.example.gamepartners.R;
 import com.example.gamepartners.data.model.Chat.MessageAdapter;
+import com.example.gamepartners.data.model.FirebaseUtills;
 import com.example.gamepartners.data.model.Group;
 import com.example.gamepartners.data.model.GroupsAdapter;
 import com.example.gamepartners.data.model.User;
@@ -72,6 +73,7 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         user = FirebaseAuth.getInstance().getCurrentUser();
+        User sender = new User();
         groupNameView = findViewById(R.id.chat_groupname);
         inputMessage = findViewById(R.id.chat_text_input);
         send = findViewById(R.id.chat_btn_send);
@@ -101,12 +103,18 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
         addParticipants = findViewById(R.id.add);
-        addParticipants.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addParticipants();
-            }
-        });
+        addParticipants.setAlpha(0.5f);
+        addParticipants.setEnabled(false);
+        if(FirebaseUtills.connedtedUser.getUid().equals(adminUID)) {
+            addParticipants.setEnabled(true);
+            addParticipants.setAlpha(1f);
+            addParticipants.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    addParticipants();
+                }
+            });
+        }
         viewParticipants = findViewById(R.id.participants);
         viewParticipants.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,8 +133,8 @@ public class ChatActivity extends AppCompatActivity {
 
                     reference = FirebaseDatabase.getInstance().getReference("groups").child(groupNameView.getText().toString()).child("chat");
                     HashMap<String, String> hashMap = new HashMap<>();
-                    hashMap.put("senderUID", user.getUid());
-                    hashMap.put("senderDisplayName", user.getDisplayName());
+                    hashMap.put("senderUID", FirebaseUtills.connedtedUser.getUid());
+                    hashMap.put("senderDisplayName", FirebaseUtills.connedtedUser.getFirstName()+" "+FirebaseUtills.connedtedUser.getLastName());
                     hashMap.put("text", message.getText());
                     reference.push().setValue(hashMap);
                     reference.addValueEventListener(new ValueEventListener() {

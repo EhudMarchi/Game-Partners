@@ -45,13 +45,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             messagesView = inflater.inflate(R.layout.friend_message_item, parent, false);        }
         MessageAdapter.ViewHolder viewHolder = new MessageAdapter.ViewHolder(messagesView);
         return viewHolder;
-//        if (viewType == MY_MESSAGE) {
-//            View view = LayoutInflater.from(mContext).inflate(R.layout.my_message_item, parent, false);
-//            return new MessageAdapter.ViewHolder(view);
-//        } else {
-//            View view = LayoutInflater.from(mContext).inflate(R.layout.friend_message_item, parent, false);
-//            return new MessageAdapter.ViewHolder(view);
-//        }
     }
     public int getItemViewType(int position) {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -65,6 +58,11 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     public void onBindViewHolder(@NonNull final MessageAdapter.ViewHolder holder, int position) {
         final Message message = mChat.get(position);
         holder.show_message.setText(message.getText());
+        final FirebaseAuth mAuth =FirebaseAuth.getInstance();
+        if(!message.getSenderUID().equals(mAuth.getUid()))
+        {
+            holder.senderName.setText(message.getSenderDisplayName());
+        }
     }
 
     @Override
@@ -74,7 +72,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView show_message;
+        TextView show_message, senderName;
         ImageView profile_image;
         //public TextView txt_seen;
 
@@ -82,6 +80,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             super(itemView);
 
             show_message = itemView.findViewById(R.id.show_message);
+            senderName = itemView.findViewById(R.id.senderName);
             //profile_image = itemView.findViewById(R.id.chat_image_left);
             //txt_seen = itemView.findViewById(R.id.txt_seen);
 
