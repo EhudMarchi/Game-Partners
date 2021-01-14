@@ -147,6 +147,7 @@
                 android:layout_height="47dp"
                 android:layout_weight="1"
                 android:background="@color/darkPurple"
+                android:foreground="?attr/selectableItemBackgroundBorderless"
                 android:onClick="signUp"
                 android:text="Sign Up"
                 android:textAllCaps="false"

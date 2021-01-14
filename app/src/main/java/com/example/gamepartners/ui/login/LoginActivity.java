@@ -319,6 +319,7 @@ public class LoginActivity extends AppCompatActivity {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         myRef = database.getReference("users").child(userId);
         User newUser = new User(firstName, lastName, email, password);
+        newUser.setUid(userId);
         myRef.setValue(newUser);
         myRef.child("followers").setValue(new ArrayList<User>());
         myRef.child("following").setValue(new ArrayList<User>());

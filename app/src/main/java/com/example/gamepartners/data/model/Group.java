@@ -29,6 +29,10 @@ public class Group implements IJoinable{
 
     }
 
+    public String getAdminUID() {
+        return adminUID;
+    }
+
     public String getGroupName() {
         return groupName;
     }

@@ -17,6 +17,12 @@ import android.widget.TextView;
 
 import com.example.gamepartners.R;
 import com.example.gamepartners.data.model.Game.Game;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -92,16 +98,32 @@ public class FriendsFragment extends Fragment {
         usersRecyclerView = getView().findViewById(R.id.friendsRecyclerView);
         usersRecyclerView.setHasFixedSize(true);
         recyclerViewLayoutManager = new LinearLayoutManager(getContext());
-        recyclerViewAdapter = new UserAdapter(getContext(), users);
+        recyclerViewAdapter = new UserAdapter(getContext(), users, false);
         usersRecyclerView.setLayoutManager(recyclerViewLayoutManager);
         usersRecyclerView.setAdapter(recyclerViewAdapter);
     }
 
     private void fillFriends() {
         users = new ArrayList<>();
-        users.add(new User("Leo", "Messi", "leomessi@gmail.com", "123456"));
-        users.add(new User("Adam", "Cohen", "adam515@gmail.com", "1234511016"));
-        users.add(new User("David", "Williams", "diwi11@gmail.com", "0025edd6"));
-        users.add(new User("Shalom", "Israel", "shaloooom@gmail.com", "1@#$23456"));
+        final FirebaseAuth mAuth =FirebaseAuth.getInstance();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users");
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                users.clear();
+                for (DataSnapshot ds:snapshot.getChildren()) {
+                    User user = ds.getValue(User.class);
+                    assert user !=null;
+                    if(!user.getUid().equals(mAuth.getCurrentUser().getUid())) {
+                        //**HERE CHECK IF FRIENDS***
+                        users.add(user);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
     }
 }

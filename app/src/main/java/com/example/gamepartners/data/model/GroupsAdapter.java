@@ -3,6 +3,7 @@ package com.example.gamepartners.data.model;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import com.example.gamepartners.ui.login.LoginActivity;
 import com.example.gamepartners.ui.login.MainActivity;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHolder> {
@@ -56,6 +58,7 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
                 notifyItemChanged(position);
                 Intent intent =new Intent(mContext, ChatActivity.class);
                 intent.putExtra("GroupName",group.getGroupName());
+                intent.putExtra("AdminUID",group.getAdminUID());
                 mContext.startActivity(intent);
             }
         });

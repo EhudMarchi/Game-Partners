@@ -30,6 +30,7 @@
                     android:layout_height="30dp"
                     android:id="@+id/back_chat"
                     android:background="@drawable/ic_baseline_arrow_back_24"
+                    android:foreground="?attr/selectableItemBackgroundBorderless"
                     android:layout_marginLeft="5dp" />
             </LinearLayout>
             <LinearLayout
@@ -44,8 +45,10 @@
                     android:id="@+id/add"
                     android:layout_marginStart="5dp"
                     android:background="@drawable/ic_add"
+                    android:foreground="?attr/selectableItemBackgroundBorderless"
                     android:layout_marginLeft="5dp" />
             </LinearLayout>
+
             <LinearLayout
                 android:id="@+id/participants_layout"
                 android:layout_width="wrap_content"
@@ -58,6 +61,8 @@
                     android:id="@+id/participants"
                     android:layout_marginStart="5dp"
                     android:background="@drawable/ic_participants"
+                    android:foreground="?attr/selectableItemBackgroundBorderless"
+
                     android:layout_marginLeft="5dp" />
             </LinearLayout>
 
@@ -142,6 +147,7 @@
             android:layout_alignParentEnd="true"
             android:layout_centerInParent="true"
             android:background="@drawable/ic_action_name"
+            android:foreground="?attr/selectableItemBackgroundBorderless"
             android:layout_alignParentRight="true" />
 
 

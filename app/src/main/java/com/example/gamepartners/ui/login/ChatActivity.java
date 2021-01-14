@@ -54,13 +54,19 @@ public class ChatActivity extends AppCompatActivity {
     RecyclerView messagesRecyclerView;
     MessageAdapter messagesAdapter;
     String groupName;
+    String adminUID;
     TextView groupNameView;
     EditText inputMessage;
+    Group group;
     private ArrayList<User> users;
+    ArrayList<User> selectedUsers;
     ImageButton send, backButton, addParticipants, viewParticipants;
     ArrayList<Message> m_ChatMessages;
     ArrayList<User> selectedFriends = new ArrayList();
     ArrayList<User> userFriends = new ArrayList();
+    RecyclerView usersRecyclerView;
+    LinearLayoutManager recyclerViewLayoutManager;
+    UserAdapter recyclerViewAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +79,16 @@ public class ChatActivity extends AppCompatActivity {
         messagesRecyclerView.setHasFixedSize(true);
         messagesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         m_ChatMessages= new ArrayList<>();
+        selectedUsers = new ArrayList<>();
+        Intent intent= getIntent();
+        Bundle b = intent.getExtras();
+
+        if(b!=null)
+        {
+            groupName = (String) b.get("GroupName");
+            adminUID = (String) b.get("AdminUID");
+        }
+
         fillFriends();
         groupName= getIntent().getExtras().getString("GroupName");
         groupNameView.setText(groupName);
@@ -95,7 +111,7 @@ public class ChatActivity extends AppCompatActivity {
         viewParticipants.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewParticipants();
+                //viewParticipants();
             }
         });
         fetchMessages();
@@ -133,7 +149,34 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void viewParticipants() {
-
+        Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.dialog_choose_friends);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        users = new ArrayList<>();
+        final FirebaseAuth mAuth =FirebaseAuth.getInstance();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("groups").child(groupName);
+//        reference.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                users.clear();
+//                for (DataSnapshot ds:snapshot.getChildren()) {
+//                    User user = ds.getValue(User.class);
+//                    assert user !=null;
+//                    if(!user.getUid().equals(mAuth.getCurrentUser().getUid())) {
+//                        //**HERE CHECK IF FRIENDS***
+//                        users.add(user);
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
+        SearchView searchView = (SearchView)dialog.findViewById(R.id.search);
+        setUpFriendsRecyclerView(dialog, searchView);
+        dialog.show();
     }
 
     private void addParticipants() {
@@ -146,11 +189,26 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Snackbar.make(v, "Add Selected", Snackbar.LENGTH_LONG).show();
+                selectedUsers = recyclerViewAdapter.getSelectedUsers();
+                for (User selectedUser:selectedUsers) {
+                    //**NEED TO SET UID**
+                    reference = FirebaseDatabase.getInstance().getReference("users").child(selectedUser.getUid()).child("userGroups").child(groupName);
+                    HashMap userGroups = new HashMap<>();
+                    userGroups.put("adminUID",adminUID);
+                    userGroups.put("groupName",groupName);
+                    userGroups.put("chat",groupName+" "+adminUID);
+                    reference.setValue(userGroups);
+                    reference = FirebaseDatabase.getInstance().getReference("groups").child(groupName).child("groupFriends");
+                    HashMap<String, String> groupFriendsMap = new HashMap<>();
+                    groupFriendsMap.put("uid",selectedUser.getEmail());
+                    reference.child(selectedUser.getUid()).setValue(groupFriendsMap);
+                }
             }
         });
         SearchView searchView = (SearchView)dialog.findViewById(R.id.search);
         setUpFriendsRecyclerView(dialog, searchView);
         dialog.show();
+
     }
     private void setSearchFilter(SearchView searchView, final UserAdapter recyclerViewAdapter) {
         searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
@@ -167,20 +225,37 @@ public class ChatActivity extends AppCompatActivity {
         });
     }
     private void setUpFriendsRecyclerView(Dialog dialog,SearchView searchView) {
-        RecyclerView usersRecyclerView = dialog.findViewById(R.id.friendsSelectionRecyclerView);
+        usersRecyclerView = dialog.findViewById(R.id.friendsSelectionRecyclerView);
         usersRecyclerView.setHasFixedSize(true);
-        LinearLayoutManager recyclerViewLayoutManager = new LinearLayoutManager(this);
-        UserAdapter recyclerViewAdapter = new UserAdapter(this, users);
+        recyclerViewLayoutManager = new LinearLayoutManager(this);
+        recyclerViewAdapter = new UserAdapter(this, users, true);
         usersRecyclerView.setLayoutManager(recyclerViewLayoutManager);
         usersRecyclerView.setAdapter(recyclerViewAdapter);
         setSearchFilter(searchView, recyclerViewAdapter);
     }
     private void fillFriends() {
         users = new ArrayList<>();
-        users.add(new User("Leo", "Messi", "leomessi@gmail.com", "123456"));
-        users.add(new User("Adam", "Cohen", "adam515@gmail.com", "1234511016"));
-        users.add(new User("David", "Williams", "diwi11@gmail.com", "0025edd6"));
-        users.add(new User("Shalom", "Israel", "shaloooom@gmail.com", "1@#$23456"));
+        final FirebaseAuth mAuth =FirebaseAuth.getInstance();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users");
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                users.clear();
+                for (DataSnapshot ds:snapshot.getChildren()) {
+                    User user = ds.getValue(User.class);
+                    assert user !=null;
+                    if(!user.getUid().equals(mAuth.getCurrentUser().getUid())) {
+                        //**HERE CHECK IF FRIENDS***
+                        users.add(user);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
     private void fetchMessages() {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("groups").child(groupName).child("chat");
@@ -202,31 +277,5 @@ public class ChatActivity extends AppCompatActivity {
 
             }
         });
-    }
-    public class AddParticipantsDialogFragment extends DialogFragment {
-        @SuppressLint("ResourceType")
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            selectedFriends = new ArrayList();  // Where we track the selected items
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            // Set the dialog title
-            builder.setTitle("Add Participants")
-                    .setMultiChoiceItems(R.layout.friend_item, null,
-                            new DialogInterface.OnMultiChoiceClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which,
-                                                    boolean isChecked) {
-                                    if (isChecked) {
-                                        // If the user checked the item, add it to the selected items
-                                        selectedFriends.add(userFriends.get(which));
-                                    } else if (selectedFriends.contains(which)) {
-                                        // Else, if the item is already in the array, remove it
-                                        selectedFriends.remove(Integer.valueOf(which));
-                                    }
-                                }
-                            });
-
-            return builder.create();
-        }
     }
 }
