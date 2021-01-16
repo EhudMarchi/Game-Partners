@@ -29,7 +29,15 @@
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="0dp"
             android:background="@color/darkPurple"/>
+
     </RelativeLayout>
 
-
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabSearch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        app:backgroundTint="@color/glowCyan"
+        app:srcCompat="@drawable/ic_search_black_24dp" />
 </FrameLayout>

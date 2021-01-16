@@ -202,4 +202,17 @@
         android:onClick="createPost"
         android:text="Post"
         android:textAllCaps="false" />
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabContinue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="@dimen/fab_margin"
+            app:backgroundTint="@color/glowCyan"
+            app:srcCompat="@drawable/ic_action_name" />
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </RelativeLayout>

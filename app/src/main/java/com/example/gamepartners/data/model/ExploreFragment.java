@@ -18,15 +18,16 @@ import com.example.gamepartners.R;
 import com.example.gamepartners.ui.login.CreatePostActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ExploreFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class ExploreFragment extends Fragment {
     private static final int WAIT = 1100;
     RecyclerView postsRecyclerView;
@@ -59,17 +60,38 @@ public class ExploreFragment extends Fragment {
     }
 
     private void populateRecycleView() {
-        Post post = new Post(new User("Ehud", "Marchi", "Ehud@gmail.com", "123456"), Calendar.getInstance().getTime(), "This is a post template",18,"Ashdod",new ArrayList<Comment>());
+        Post post = new Post(new User("Ehud", "Marchi", "Ehud@gmail.com", "123456","https://www.joystickplus.co.il/images/itempics/5030944122532_28072019112124.jpg"), Calendar.getInstance().getTime(), "This is a post template",18,"Ashdod",new ArrayList<Comment>());
         postsArrayList.add(post);
-        post = new Post(new User("Yossi", "Cohen", "Yosi@gmail.com", "13513"),Calendar.getInstance().getTime(), "This is a post template 2", 7,"Tel Aviv",new ArrayList<Comment>());
+        post = new Post(new User("Yossi", "Cohen", "Yosi@gmail.com", "13513","https://www.joystickplus.co.il/images/itempics/5030944122532_28072019112124.jpg"),Calendar.getInstance().getTime(), "This is a post template 2", 7,"Tel Aviv",new ArrayList<Comment>());
         postsArrayList.add(post);
-        post = new Post(new User("Avraham", "Levi", "AVVI@gmail.com", "143436"),Calendar.getInstance().getTime(), "This is a post template 3 ", 11,"Holon",new ArrayList<Comment>());
+        post = new Post(new User("Avraham", "Levi", "AVVI@gmail.com", "143436","https://www.joystickplus.co.il/images/itempics/5030944122532_28072019112124.jpg"),Calendar.getInstance().getTime(), "This is a post template 3 ", 11,"Holon",new ArrayList<Comment>());
         postsArrayList.add(post);
-        post = new Post(new User("Dana", "Meron", "danam@gmail.com", "00020225"),Calendar.getInstance().getTime(), "This is a post template 4 ", 22,"Jerusalem",new ArrayList<Comment>());
+        post = new Post(new User("Dana", "Meron", "danam@gmail.com", "00020225","https://www.joystickplus.co.il/images/itempics/5030944122532_28072019112124.jpg"),Calendar.getInstance().getTime(), "This is a post template 4 ", 22,"Jerusalem",new ArrayList<Comment>());
         postsArrayList.add(post);
         postAdapter.notifyDataSetChanged();
     }
+    private void fetchPosts() {
+        FirebaseAuth mAuth =FirebaseAuth.getInstance();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("posts");
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                postsArrayList.clear();
+                for (DataSnapshot ds:snapshot.getChildren()) {
+                    Post post =ds.getValue(Post.class);
+                    assert post !=null;
+                    postsArrayList.add(post);
+                }
+                postAdapter = new PostAdapter(getContext(),postsArrayList);
+                postsRecyclerView.setAdapter(postAdapter);
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -103,7 +125,8 @@ public class ExploreFragment extends Fragment {
 
             }
         });
-        populateRecycleView();
+        fetchPosts();
+        //populateRecycleView();
     }
 
     @Override

@@ -112,7 +112,7 @@ public class SignUpActivity extends AppCompatActivity {
         // Write a user to the database
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("users").child(userId);
-        User newUser = new User(firstName, lastName, email, password);
+        User newUser = new User(firstName, lastName, email, password,"");
         newUser.setUid(userId);
         myRef.setValue(newUser);
     }

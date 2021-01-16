@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/searchLayout"
+        android:layout_width="match_parent"
+        android:layout_height="475dp"
+        android:paddingBottom="15dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="12dp"
+        android:padding="10dp"
+        android:layout_marginRight="12dp"
+        android:background="@drawable/dialog">
+        <TextView
+            android:id="@+id/subjectLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="24dp"
+            android:text="Post Subject"
+            android:layout_marginBottom="10dp"/>
+        <EditText
+            android:padding="15dp"
+            android:id="@+id/subject"
+            style="@style/Widget.AppCompat.EditText"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/input"
+            android:gravity="top"
+            android:layout_below="@id/subjectLabel"
+            android:layout_marginStart="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="10dp"
+            android:alpha="0.95"/>
+        <TextView
+            android:id="@+id/descriptionLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:layout_below="@id/subject"
+            android:textSize="24dp"
+            android:text="Post Description"
+            android:layout_marginBottom="10dp"/>
+        <EditText
+            android:padding="15dp"
+            android:id="@+id/description"
+            style="@style/Widget.AppCompat.EditText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true"
+            android:layout_above="@id/post"
+            android:background="@drawable/input"
+            android:gravity="top"
+            android:layout_below="@id/descriptionLabel"
+            android:layout_marginStart="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="20dp"
+            android:alpha="0.95"/>
+
+        <Button
+            android:id="@+id/post"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/choose_button"
+            android:foreground="?attr/selectableItemBackgroundBorderless"
+            android:text="Post"
+            android:textAllCaps="false"
+            android:translationZ="2dp"
+            android:textColor="@color/white"
+            android:textSize="18dp" />
+    </RelativeLayout>
+
+
+</RelativeLayout>

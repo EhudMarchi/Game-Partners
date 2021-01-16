@@ -8,26 +8,38 @@
     android:layout_marginBottom="15dp">
 
     <RelativeLayout
-
         android:id="@+id/relativeLayoutUser"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginLeft="15dp"
->
+        android:layout_marginTop="10dp"
+        android:paddingTop="3dp"
+        android:paddingBottom="3dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginLeft="5dp"
+        android:paddingRight="20dp"
+        android:paddingLeft="5dp"
+        android:background="@drawable/dialog"
+>  <androidx.cardview.widget.CardView
+        android:id="@+id/imgView_profilePicOut"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        app:cardBackgroundColor="#00FFFFFF"
+        app:cardCornerRadius="50dp">
+
         <ImageView
             android:id="@+id/imgView_profilePic"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:adjustViewBounds="true"
-            android:scaleType="fitCenter"
-            app:srcCompat="@drawable/default_user"/>
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/circle"
+            android:scaleType="centerCrop"
+            app:shapeAppearanceOverlay="@style/roundedImageViewRounded"
+            app:srcCompat="@drawable/default_user" />
+    </androidx.cardview.widget.CardView>
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:layout_toRightOf="@id/imgView_profilePic"
+            android:layout_toRightOf="@id/imgView_profilePicOut"
             android:orientation="vertical">
             <TextView
                 android:id="@+id/username"

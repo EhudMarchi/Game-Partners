@@ -285,7 +285,7 @@ public class LoginActivity extends AppCompatActivity {
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                     writeNewGoogleUserToDB(mAuth.getCurrentUser().getUid(),account.getGivenName(),account.getFamilyName(),account.getEmail(),String.valueOf(taskEditText.getText()));
+                     writeNewGoogleUserToDB(mAuth.getCurrentUser().getUid(),account.getGivenName(),account.getFamilyName(),account.getEmail(),String.valueOf(taskEditText.getText()),account.getPhotoUrl().toString());
                      password.setText(String.valueOf(taskEditText.getText()));
                         transitionScreen();
                     }
@@ -314,11 +314,11 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }
 
-    private void writeNewGoogleUserToDB(String userId, String firstName, String lastName,String email, String password) {
+    private void writeNewGoogleUserToDB(String userId, String firstName, String lastName,String email, String password , String proflieImageURL) {
         // Write a Google user to the database
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         myRef = database.getReference("users").child(userId);
-        User newUser = new User(firstName, lastName, email, password);
+        User newUser = new User(firstName, lastName, email, password , proflieImageURL);
         newUser.setUid(userId);
         myRef.setValue(newUser);
         myRef.child("followers").setValue(new ArrayList<User>());

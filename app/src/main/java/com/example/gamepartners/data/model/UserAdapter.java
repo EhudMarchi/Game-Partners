@@ -15,6 +15,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
 import com.example.gamepartners.R;
 
 import java.util.ArrayList;
@@ -70,7 +72,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         holder.userImage.setImageResource(R.drawable.default_user);
         holder.userName.setText(currentUser.getFirstName() +" "+currentUser.getLastName());
         holder.userEmail.setText(currentUser.getEmail());
-
+        Glide.with(context).load(currentUser.getProflieImageURL()).into(holder.userImage);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

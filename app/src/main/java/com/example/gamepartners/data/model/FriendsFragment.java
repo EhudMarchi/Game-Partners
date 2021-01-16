@@ -1,5 +1,8 @@
 package com.example.gamepartners.data.model;
 
+import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,11 +15,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.example.gamepartners.R;
 import com.example.gamepartners.data.model.Game.Game;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -25,6 +31,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -32,6 +39,7 @@ import java.util.ArrayList;
  * create an instance of this fragment.
  */
 public class FriendsFragment extends Fragment {
+    DatabaseReference reference;
     private ArrayList<User> users;
     private RecyclerView usersRecyclerView;
     private UserAdapter recyclerViewAdapter;
@@ -68,7 +76,18 @@ public class FriendsFragment extends Fragment {
                 selectedUserName.setText(recyclerViewAdapter.getSelectedUser().getFirstName());
             }
         });
-
+        final FloatingActionButton fab = getView().findViewById(R.id.fabSearch);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                fab.setClickable(false);
+                Dialog dialog = new Dialog(getContext());
+                dialog.setContentView(R.layout.dialog_choose_friends);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.show();
+                fab.setClickable(true);
+            }
+        });
     }
 
     @Override

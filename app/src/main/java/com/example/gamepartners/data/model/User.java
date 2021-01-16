@@ -1,9 +1,8 @@
 package com.example.gamepartners.data.model;
 
-import android.graphics.Bitmap;
-
-import com.example.gamepartners.R;
 import com.example.gamepartners.data.model.Game.Game;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -109,11 +108,12 @@ public class User {
     private List<Float> favouriteGamesRatings;
     private List<Game> favouriteGames;
 
-    public User(String firstName, String lastName, String email, String password) {
+    public User(String firstName, String lastName, String email, String password, String proflieImageURL) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
+        this.proflieImageURL = proflieImageURL;
     }
     public User(String name, String email) {
         String [] fullName =name.split(" ");
@@ -129,5 +129,6 @@ public class User {
 
     public void setProflieImageURL(String proflieImageURL) {
         this.proflieImageURL = proflieImageURL;
+        FirebaseUtills.ChangeProfileImageUrl(proflieImageURL);
     }
 }

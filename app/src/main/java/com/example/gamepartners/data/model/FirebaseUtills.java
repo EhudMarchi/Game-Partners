@@ -29,7 +29,12 @@ public class FirebaseUtills {
 
         return mSingleInstance;
     }
-
+    public static void ChangeProfileImageUrl(String url)
+    {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("users").child(GetCurrentUser().getUid()).child("proflieImageURL");
+        myRef.setValue(url);
+    }
     public static FirebaseAuth AuthInitialization()
     {
         mAuth = FirebaseAuth.getInstance();

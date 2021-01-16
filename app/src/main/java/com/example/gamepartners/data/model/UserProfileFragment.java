@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,12 +27,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.gamepartners.R;
 import com.example.gamepartners.ui.login.CreatePostActivity;
 import com.example.gamepartners.ui.login.LoginActivity;
 import com.example.gamepartners.ui.login.MainActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
@@ -48,6 +51,7 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.UUID;
@@ -100,7 +104,7 @@ public class UserProfileFragment extends Fragment {
     }
 
     private void populateRecycleView() {
-        User user = new User("Loyal", "Pirate", "loyalpiratemusic@gmail.com", "123456");
+        User user = new User("Loyal", "Pirate", "loyalpiratemusic@gmail.com", "123456",FirebaseUtills.connedtedUser.getProflieImageURL());
         Post post = new Post(user, Calendar.getInstance().getTime(), "This is a post template",18,"Ashdod",new ArrayList<Comment>());
         postsArrayList.add(post);
         post = new Post(user,Calendar.getInstance().getTime(), "This is a post template 2", 7,"Tel Aviv",new ArrayList<Comment>());
@@ -164,6 +168,13 @@ public class UserProfileFragment extends Fragment {
                 startActivity(intent);
             }
         });
+        if(FirebaseUtills.connedtedUser.getProflieImageURL().equals("")) {
+            getProfileImage();
+        }
+        else
+        {
+            Glide.with(getContext()).load(FirebaseUtills.connedtedUser.getProflieImageURL()).into(imgViewProfilePic);
+        }
         imgViewProfilePic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -188,6 +199,21 @@ public class UserProfileFragment extends Fragment {
         return view;
     }
 
+    private void getProfileImage(){
+        mStorageRef = mStorage.getReference();
+        mStorageRef.child("images/" + FirebaseUtills.GetCurrentUser().getEmail()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Log.e("Url", "url: " + uri.toString());
+                if(!uri.equals(null)) {
+                    Glide.with(getContext()).load(uri.toString()).into(imgViewProfilePic);
+                }
+            }
+        });
+
+    }
+
+
     private void choosePicture() {
         Intent intent = new Intent();
         intent.setType("image/*");
@@ -201,7 +227,8 @@ public class UserProfileFragment extends Fragment {
         if(requestCode == 1 && data!= null && data.getData()!= null)
         {
             imageUri=data.getData();
-            imgViewProfilePic.setImageURI(imageUri);
+            Glide.with(this).load(imageUri.toString()).into(imgViewProfilePic);
+            FirebaseUtills.connedtedUser.setProflieImageURL(imageUri.toString());
             uploadProfilePic();
         }
 
