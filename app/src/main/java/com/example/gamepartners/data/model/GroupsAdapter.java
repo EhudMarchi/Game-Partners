@@ -50,7 +50,9 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
     public void onBindViewHolder(@NonNull GroupsAdapter.MyViewHolder holder, final int position) {
         final Group group = mGroups.get(position);
         holder.groupName.setText(group.getGroupName());
-        glide.load(group.getGroupImage()).into(holder.imgViewGroupImage);
+        if(group.getProflieImageURL()!=null) {
+            glide.load(group.getProflieImageURL()).into(holder.imgViewGroupImage);
+        }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

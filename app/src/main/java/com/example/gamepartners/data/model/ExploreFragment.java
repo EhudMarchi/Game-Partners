@@ -55,20 +55,24 @@ public class ExploreFragment extends Fragment {
 //        exploreAdapter = new ExploreAdapter(this.getContext(),postsArrayList);
 //        postsRecyclerView.setAdapter(exploreAdapter);
 //
-//        populateRecycleView();
+        //populateRecycleView();
 
     }
 
     private void populateRecycleView() {
-        Post post = new Post(new User("Ehud", "Marchi", "Ehud@gmail.com", "123456","https://www.joystickplus.co.il/images/itempics/5030944122532_28072019112124.jpg"), Calendar.getInstance().getTime(), "This is a post template",18,"Ashdod",new ArrayList<Comment>());
+        Post post = new Post(new User("Ehud", "Marchi", "Ehud@gmail.com", "123456","https://cdn1.iconfinder.com/data/icons/user-pictures/100/supportmale-256.png"), Calendar.getInstance().getTime(), "This is a post template",18,"Ashdod",new ArrayList<Comment>());
         postsArrayList.add(post);
-        post = new Post(new User("Yossi", "Cohen", "Yosi@gmail.com", "13513","https://www.joystickplus.co.il/images/itempics/5030944122532_28072019112124.jpg"),Calendar.getInstance().getTime(), "This is a post template 2", 7,"Tel Aviv",new ArrayList<Comment>());
+        post = new Post(new User("Yossi", "Cohen", "Yosi@gmail.com", "13513","https://cdn0.iconfinder.com/data/icons/user-pictures/100/matureman1-256.png"),Calendar.getInstance().getTime(), "This is a post template 2", 7,"Tel Aviv",new ArrayList<Comment>());
         postsArrayList.add(post);
-        post = new Post(new User("Avraham", "Levi", "AVVI@gmail.com", "143436","https://www.joystickplus.co.il/images/itempics/5030944122532_28072019112124.jpg"),Calendar.getInstance().getTime(), "This is a post template 3 ", 11,"Holon",new ArrayList<Comment>());
+        post = new Post(new User("Avraham", "Levi", "AVVI@gmail.com", "143436","https://cdn0.iconfinder.com/data/icons/user-pictures/100/maturewoman-3-256.png"),Calendar.getInstance().getTime(), "This is a post template 3 ", 11,"Holon",new ArrayList<Comment>());
         postsArrayList.add(post);
-        post = new Post(new User("Dana", "Meron", "danam@gmail.com", "00020225","https://www.joystickplus.co.il/images/itempics/5030944122532_28072019112124.jpg"),Calendar.getInstance().getTime(), "This is a post template 4 ", 22,"Jerusalem",new ArrayList<Comment>());
+        post = new Post(new User("Dana", "Meron", "danam@gmail.com", "00020225","https://cdn0.iconfinder.com/data/icons/user-pictures/100/supportfemale-2-256.png"),Calendar.getInstance().getTime(), "This is a post template 4 ", 22,"Jerusalem",new ArrayList<Comment>());
         postsArrayList.add(post);
-        postAdapter.notifyDataSetChanged();
+        post = new Post(new User("James", "Williams", "jwil@gmail.com", "00sdgds5","https://cdn1.iconfinder.com/data/icons/santa-emojis/60/004_-_santa_christmas_emoji_cool_sunglasses-256.png"),Calendar.getInstance().getTime(), "This is a post template 5 ", 22,"Sderot",new ArrayList<Comment>());
+        postsArrayList.add(post);
+        post = new Post(new User("Leo", "Messi", "leomessi@gmail.com", "barca454","https://cdn3.iconfinder.com/data/icons/soccer-uniform/128/barcelona.png"),Calendar.getInstance().getTime(), "This is a post template 6 ", 22,"Barcelona",new ArrayList<Comment>());
+        postsArrayList.add(post);
+        //postAdapter.notifyDataSetChanged();
     }
     private void fetchPosts() {
         FirebaseAuth mAuth =FirebaseAuth.getInstance();
@@ -125,8 +129,8 @@ public class ExploreFragment extends Fragment {
 
             }
         });
-        fetchPosts();
-        //populateRecycleView();
+        //fetchPosts();
+        populateRecycleView();
     }
 
     @Override

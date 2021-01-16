@@ -16,9 +16,13 @@ import java.util.ArrayList;
 public class Game {
     private String gameName;
     private int playersAmout;
-    private int gameImage = R.drawable.default_game;
     private ArrayList<ePlatform> platforms;
-    private Bitmap gamePicture = null;
+    private String gamePictureURL = "";
+
+    public Game() {
+
+    }
+
     public enum ePlatform {
         REALITY,
         PC,
@@ -26,11 +30,19 @@ public class Game {
         XBOX
     }
 
-    public Game(String gameName, int gameImage, ePlatform platform) {
+    public Game(String gameName, String gamePictureURL, ePlatform platform) {
         this.gameName = gameName;
-        this.gameImage = gameImage;
+        this.gamePictureURL = gamePictureURL;
         this.platforms = new ArrayList<ePlatform>();
         platforms.add(platform);
+    }
+
+    public String getGamePictureURL() {
+        return gamePictureURL;
+    }
+
+    public void setGamePictureURL(String gamePictureURL) {
+        this.gamePictureURL = gamePictureURL;
     }
 
     public String getGameName() {
@@ -49,13 +61,6 @@ public class Game {
         this.playersAmout = playersAmout;
     }
 
-    public int getGameImage() {
-        return gameImage;
-    }
-
-    public void setGameImage(int gameImage) {
-        this.gameImage = gameImage;
-    }
 
     public ArrayList<ePlatform> getPlatforms() {
         return platforms;

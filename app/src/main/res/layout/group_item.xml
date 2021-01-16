@@ -3,17 +3,21 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardCornerRadius="4dp">
+    app:cardCornerRadius="4dp"
+    android:background="?attr/selectableItemBackground">
     <RelativeLayout
         android:id="@+id/group_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="4dp">
-        <ImageView
-            android:id="@+id/group_image"
+        <de.hdodenhof.circleimageview.CircleImageView
             android:layout_width="42dp"
             android:layout_height="42dp"
-            android:padding="2dp" />
+            android:id="@+id/group_image"
+            android:layout_marginEnd="5dp"
+            android:src="@mipmap/ic_launcher_round"
+            android:layout_marginRight="5dp"
+            android:layout_centerVertical="true"/>
 
         <TextView
             android:id="@+id/groupName"

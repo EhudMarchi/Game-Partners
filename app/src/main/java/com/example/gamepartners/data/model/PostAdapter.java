@@ -46,52 +46,15 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull PostAdapter.MyViewHolder holder, int position) {
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        DatabaseReference myRef;
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        //myRef = database.getInstance().getReference().child("posts");
         final Post post = postArrayList.get(position);
         postId = post.getPostID();
-//        holder.username.setText(post.getPublisher().getFirstName()+" "+post.getPublisher().getLastName());
-//        holder.time.setText(post.getTimePosted().toString());
-//        holder.description.setText(post.getDescription());
-//        holder.likes.setText(post.getLikes());
-//        holder.comments.setText(post.getComments().size()+ " comments");
-        TextView usernameTextView = holder.username;
-        usernameTextView.setText(post.getPublisher().getFirstName() +" "+ post.getPublisher().getLastName());
-        TextView timeTextView = holder.time;
-        timeTextView.setText(post.getTimePosted().toString());
-        TextView descriptionTextView = holder.description;
-        descriptionTextView.setText(post.getDescription());
-        TextView likesTextView = holder.likes;
-        likesTextView.setText(String.valueOf(post.getLikes()));
-        TextView commentsTextView = holder.comments;
-        //commentsTextView.setText(post.getComments().size() + " comments");
-        TextView cityTextView = holder.city;
-        cityTextView.setText(String.valueOf(post.getCity()));
-        TextView locationTextView = holder.location;
-        locationTextView.setText(String.valueOf(post.getLocation()));
-
+        holder.username.setText(post.getPublisher().getFirstName() +" "+ post.getPublisher().getLastName());
+        holder.time.setText(post.getTimePosted().toString());
+        holder.description.setText(post.getDescription());
+        holder.likes.setText(String.valueOf(post.getLikes()));
+        holder.city.setText(String.valueOf(post.getCity()));
+        holder.location.setText(String.valueOf(post.getLocation()));
         glide.load(post.getPublisher().getProflieImageURL()).into(holder.imgViewProfilePic);
-//        if(post.getGame().getGameImage()==0) {
-//        holder.getImgViewPostPic.setVisibility(View.GONE);
-//        }
-//        else {
-//            holder.getImgViewPostPic.setVisibility(View.VISIBLE);
-            //glide.load(post.getGame().getGameImage()).into(holder.getImgViewPostPic);
-//        }
-
-//        myRef.child(postId).addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
     }
 
     @Override

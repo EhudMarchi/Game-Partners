@@ -1,9 +1,12 @@
 package com.example.gamepartners.data.model;
 
+import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -11,7 +14,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
+import java.net.URI;
 import java.util.ArrayList;
 
 public class FirebaseUtills {
@@ -20,6 +26,8 @@ public class FirebaseUtills {
     private static FirebaseUser mUser;
     private static DatabaseReference myRef;
     public static User connedtedUser;
+    public static FirebaseStorage mStorage;
+    public static StorageReference mStorageRef;
     public static FirebaseUtills GetInstance()
     {
         if(mSingleInstance == null)
@@ -28,6 +36,26 @@ public class FirebaseUtills {
         }
 
         return mSingleInstance;
+    }
+    public static void AddFriend(String uid)
+    {
+        final ArrayList<String>[] friends = new ArrayList[]{new ArrayList<User>()};
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("users").child(GetCurrentUser().getUid());
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                friends[0] = snapshot.getValue(User.class).getUserFriends();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        friends[0].add(uid);
+        myRef = database.getReference("users").child(GetCurrentUser().getUid()).child("userFriends");
+        myRef.setValue(friends[0]);
     }
     public static void ChangeProfileImageUrl(String url)
     {
@@ -41,7 +69,23 @@ public class FirebaseUtills {
 
         return mAuth;
     }
-
+    public static String GetGameImageURL(String gameName)
+    {
+        final String[] gameImageURL = {""};
+        mStorage = FirebaseStorage.getInstance();
+        mStorageRef = mStorage.getReference();
+        mStorageRef.child("games_images/" + gameName+".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Log.e("image", "url: " + uri.toString());
+                if(!uri.equals(null)) {
+                    gameImageURL[0] = uri.toString();
+                }
+            }
+        });
+        Log.e("image", "game: " + gameImageURL[0]);
+        return gameImageURL[0];
+    }
     public static FirebaseUser GetCurrentUser()
     {
         mUser = FirebaseAuth.getInstance().getCurrentUser();

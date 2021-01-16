@@ -7,10 +7,10 @@ import java.util.List;
 
 public class Group implements IJoinable{
     private String groupName;
-    private int groupImage = R.drawable.default_user;
     private String adminUID;
     private List<User> groupFriends;
     private Chat chat;
+    private String proflieImageURL;
 
     public Group() {
     }
@@ -41,12 +41,12 @@ public class Group implements IJoinable{
         this.groupName = groupName;
     }
 
-    public int getGroupImage() {
-        return groupImage;
+    public String getProflieImageURL() {
+        return proflieImageURL;
     }
 
-    public void setGroupImage(int groupImage) {
-        this.groupImage = groupImage;
+    public void setProflieImageURL(String proflieImageURL) {
+        this.proflieImageURL = proflieImageURL;
     }
 
     public List<User> getGroupFriends() {

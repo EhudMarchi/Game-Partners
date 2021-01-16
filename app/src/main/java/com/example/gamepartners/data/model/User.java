@@ -17,7 +17,7 @@ public class User {
     private String phone = "";
     private String facebookUsername = "";
     private ArrayList<Group> userGroups = new ArrayList<>();
-    private ArrayList<User> userFriends = new ArrayList<>();
+    private ArrayList<String> userFriends = new ArrayList<>();
     private ArrayList<Post> userPosts = new ArrayList<>();
     private String proflieImageURL;
 
@@ -105,6 +105,14 @@ public class User {
         this.favouriteGames = favouriteGames;
     }
 
+    public ArrayList<String> getUserFriends() {
+        return userFriends;
+    }
+
+    public void setUserFriends(ArrayList<String> userFriends) {
+        this.userFriends = userFriends;
+    }
+
     private List<Float> favouriteGamesRatings;
     private List<Game> favouriteGames;
 
@@ -120,7 +128,7 @@ public class User {
         this.firstName = fullName[0];
         this.lastName = fullName[1];
         this.email = email;
-        userPosts = new ArrayList<>();
+        this.userPosts = new ArrayList<>();
     }
 
     public String getProflieImageURL() {

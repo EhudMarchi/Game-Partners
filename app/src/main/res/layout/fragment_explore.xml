@@ -10,7 +10,7 @@
         android:id="@+id/search"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="@color/purple"
+        android:background="@color/darkPurple"
         android:scrollbarThumbHorizontal="@color/white"
         android:scrollbarThumbVertical="@color/white"
         android:theme="@style/AppSearchView"
@@ -19,6 +19,7 @@
         app:showAsAction="ifRoom|collapseActionView"/>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
+        android:layout_below="@id/search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 

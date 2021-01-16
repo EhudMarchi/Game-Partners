@@ -2,6 +2,7 @@ package com.example.gamepartners.data.model.Game;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.gamepartners.R;
 
 import java.util.ArrayList;
@@ -21,7 +23,9 @@ import java.util.List;
 public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder> implements Filterable {
     private ArrayList<Game> games;
     private ArrayList<Game> allGames;
+    Game selectedGame = new Game();
     Context context;
+    boolean selection = false;
     int selectedItemIndex=0;
 
     public class GameViewHolder extends RecyclerView.ViewHolder{
@@ -64,7 +68,7 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
     @Override
     public void onBindViewHolder(final GameViewHolder holder, final int position) {
         Game currentGame = games.get(position);
-        holder.gameImage.setImageResource(currentGame.getGameImage());
+        Glide.with(context).load(currentGame.getGamePictureURL()).into(holder.gameImage);
         holder.gameName.setText(currentGame.getGameName());
         if(currentGame.getPlatforms().contains(Game.ePlatform.REALITY))
         {
@@ -86,6 +90,9 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
             @Override
             public void onClick(View view) {
                 selectedItemIndex=position;
+                //holder.itemView.setBackgroundColor(R.color.glowCyan);
+                selectedGame = games.get(selectedItemIndex);
+                Log.e("game", "game: " + games.get(selectedItemIndex).getGameName());
                 //view.setBackgroundColor(R.color.glowCyan);
                 //notifyItemChanged(selectedItemIndex);
                 //notifyDataSetChanged();
@@ -95,7 +102,8 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
 
     public Game getSelectedGame()
     {
-        return games.get(selectedItemIndex);
+        Log.e("game", "game: " + games.get(selectedItemIndex).getGameName());
+        return selectedGame;
     }
 
     @Override

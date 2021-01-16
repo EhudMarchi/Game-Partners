@@ -22,11 +22,14 @@ import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import com.bumptech.glide.Glide;
 import com.example.gamepartners.R;
+import com.example.gamepartners.data.model.FirebaseUtills;
 import com.example.gamepartners.data.model.Game.Game;
 import com.example.gamepartners.data.model.Game.GameAdapter;
 import com.example.gamepartners.data.model.IJoinable;
@@ -54,11 +57,11 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
     private ArrayList<Game> games;
     private RecyclerView gamesRecyclerView;
     private GameAdapter recyclerViewAdapter;
+    Game selectedGame;
     private RecyclerView.LayoutManager recyclerViewLayoutManager;
+    ImageView selectedGameImage;
     SearchView searchView;
     Button chooseDate, chooseTime, chooseLocation;
-    private FirebaseStorage mStorage;
-    private StorageReference mStorageRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +70,7 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
         chooseDate = findViewById(R.id.chooseDate);
         chooseTime = findViewById(R.id.chooseTime);
         chooseLocation = findViewById(R.id.chooseLocation);
+        selectedGameImage = findViewById(R.id.game_pic);
         final Animation zoominAnimation = AnimationUtils.loadAnimation(getBaseContext(),R.anim.zoom_in);
         fillGames();
         setUpGamesRecyclerView();
@@ -104,6 +108,19 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
                 dialog.show();
             }
         });
+        gamesRecyclerView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectedGame = recyclerViewAdapter.getSelectedGame();
+                refreshSelectedGame();
+            }
+        });
+    }
+
+    private void refreshSelectedGame() {
+        if(selectedGame != null) {
+            Glide.with(this).load(selectedGame.getGamePictureURL()).into(selectedGameImage);
+        }
     }
 
     private void showLocationPicker() {
@@ -157,26 +174,26 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
 
     private void fillGames() {
         games = new ArrayList<>();
-        games.add(new Game("Basketball",R.drawable.default_game, Game.ePlatform.REALITY));
-        games.add(new Game("FIFA 21",R.drawable.default_game, Game.ePlatform.XBOX));
-        games.add(new Game("Chess",R.drawable.default_game, Game.ePlatform.REALITY));
-        games.add(new Game("GTA V Online",R.drawable.default_game, Game.ePlatform.PLAYSTATION));
-        games.add(new Game("Soccer",R.drawable.default_game, Game.ePlatform.REALITY));
-        games.add(new Game("Tennis",R.drawable.default_game, Game.ePlatform.REALITY));
-        games.add(new Game("Call of Duty:WARZONE",R.drawable.default_game, Game.ePlatform.PC));
-        games.add(new Game("Baseball",R.drawable.default_game, Game.ePlatform.REALITY));
-        games.add(new Game("League of Legends",R.drawable.default_game, Game.ePlatform.PC));
-        games.add(new Game("Table Tennis",R.drawable.default_game, Game.ePlatform.REALITY));
-        games.add(new Game("NBA 2K21",R.drawable.default_game, Game.ePlatform.PLAYSTATION));
-        games.add(new Game("Fortnite",R.drawable.default_game, Game.ePlatform.XBOX));
-        games.add(new Game("Apex Legends",R.drawable.default_game, Game.ePlatform.PC));
-        games.add(new Game("World of Warcraft",R.drawable.default_game, Game.ePlatform.PC));
-        games.add(new Game("Red Dead Online",R.drawable.default_game, Game.ePlatform.PC));
-        games.add(new Game("Beach Volleyball",R.drawable.default_game, Game.ePlatform.REALITY));
+        games.add(new Game("Basketball", "https://www.spalding.com/dw/image/v2/ABAH_PRD/on/demandware.static/-/Sites-masterCatalog_SPALDING/default/dwd21974bc/images/hi-res/74876E_FRONT.jpg?sw=555&sh=689&sm=cut&sfrm=jpg", Game.ePlatform.REALITY));
+        games.add(new Game("FIFA 21","FIFA21", Game.ePlatform.XBOX));
+        games.add(new Game("Chess","FIFA21", Game.ePlatform.REALITY));
+        games.add(new Game("GTA V Online","FIFA21", Game.ePlatform.PLAYSTATION));
+        games.add(new Game("Soccer","FIFA21", Game.ePlatform.REALITY));
+        games.add(new Game("Tennis","FIFA21", Game.ePlatform.REALITY));
+        games.add(new Game("Call of Duty:WARZONE","FIFA21", Game.ePlatform.PC));
+        games.add(new Game("Baseball","FIFA21", Game.ePlatform.REALITY));
+        games.add(new Game("League of Legends","FIFA21", Game.ePlatform.PC));
+        games.add(new Game("Table Tennis","FIFA21", Game.ePlatform.REALITY));
+        games.add(new Game("NBA 2K21","FIFA21", Game.ePlatform.PLAYSTATION));
+        games.add(new Game("Fortnite","FIFA21", Game.ePlatform.XBOX));
+        games.add(new Game("Apex Legends","FIFA21", Game.ePlatform.PC));
+        games.add(new Game("World of Warcraft","FIFA21", Game.ePlatform.PC));
+        games.add(new Game("Red Dead Online","FIFA21", Game.ePlatform.PC));
+        games.add(new Game("Beach Volleyball","FIFA21", Game.ePlatform.REALITY));
     }
 
     public void createPost(View view) {
-        Game i_Game = new Game("FIFA21",0, Game.ePlatform.PC);
+        Game i_Game = new Game("FIFA21",FirebaseUtills.GetGameImageURL("FIFA21"), Game.ePlatform.PC);
         FirebaseAuth mAuth =FirebaseAuth.getInstance();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("posts");
         User user = new User(mAuth.getCurrentUser().getDisplayName(),mAuth.getCurrentUser().getEmail());

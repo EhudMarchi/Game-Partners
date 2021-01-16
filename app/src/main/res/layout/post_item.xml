@@ -110,11 +110,12 @@
         </LinearLayout>
     </RelativeLayout>
     <TextView
-        android:id="@+id/description"
+        android:id="@+id/subject"
         android:layout_width="match_parent"
-        android:text="Game Description"
+        android:text="Post Subject"
         android:textColor="@color/glowCyan"
-        android:textSize="16sp"
+        android:textSize="18sp"
+        android:textStyle="bold"
         android:layout_marginTop="10dp"
         android:layout_marginRight="15dp"
         android:layout_marginLeft="15dp"
@@ -122,20 +123,55 @@
         android:layout_below="@id/relativeLayoutUser"
         android:fontFamily="sans-serif-medium"
         android:layout_height="wrap_content"/>
-
+    <RelativeLayout
+        android:id="@+id/imgView_postpicLayout"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:layout_below="@id/subject">
+        <TextView
+            android:id="@+id/distance"
+            android:layout_width="wrap_content"
+            android:text="1.5 km"
+            android:textColor="@color/darkPurple"
+            android:textSize="12sp"
+            android:layout_marginTop="2dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginBottom="5dp"
+            android:padding="10dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:gravity="right"
+            android:background="@drawable/input"
+            android:fontFamily="sans-serif-medium"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:id="@+id/description"
+            android:layout_width="match_parent"
+            android:text="Game Description"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:layout_marginTop="12dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginBottom="5dp"
+            android:fontFamily="sans-serif-medium"
+            android:layout_height="wrap_content"/>
     <ImageView
         android:id="@+id/imgView_postpic"
-        android:layout_width="match_parent"
-        android:layout_height="405dp"
-        android:layout_below="@id/description"
+        android:layout_width="200dp"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:layout_height="200dp"
         android:layout_marginTop="4dp"
         android:adjustViewBounds="true"
         android:background="@drawable/default_game"
         android:scaleType="fitCenter" />
+</RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/relativeLayoutPostInfo"
-        android:layout_below="@id/imgView_postpic"
+        android:layout_below="@id/imgView_postpicLayout"
         android:layout_width="match_parent"
         android:layout_marginTop="15dp"
         android:layout_marginRight="15dp"
@@ -177,7 +213,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_below="@id/imgViewLine"
-        android:layout_height="45dp">
+        android:layout_height="50dp">
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_weight="1"
@@ -197,7 +233,7 @@
                     android:text="Like"
                     android:textColor="@color/white"
                     android:layout_marginLeft="10dp"
-                    android:textSize="13sp"
+                    android:textSize="16sp"
                     android:fontFamily="sans-serif-medium"
                     android:layout_height="wrap_content"/>
             </LinearLayout>
@@ -221,7 +257,7 @@
                     android:text="Comment"
                     android:textColor="@color/white"
                     android:layout_marginLeft="10dp"
-                    android:textSize="13sp"
+                    android:textSize="16sp"
                     android:fontFamily="sans-serif-medium"
                     android:layout_height="wrap_content"/>
             </LinearLayout>
@@ -245,7 +281,7 @@
                     android:text="Join"
                     android:textColor="@color/white"
                     android:layout_marginLeft="10dp"
-                    android:textSize="13sp"
+                    android:textSize="16sp"
                     android:fontFamily="sans-serif-medium"
                     android:layout_height="wrap_content"/>
             </LinearLayout>

@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.gamepartners.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -21,13 +22,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     public static final int FRIEND_MESSAGE = 0;
     public static final int MY_MESSAGE = 1;
 
-    private Context mContext;
     private List<Message> mChat;
 
 
     FirebaseUser user;
 
-    public MessageAdapter( List<Message> mChat) {
+    public MessageAdapter(List<Message> mChat) {
         this.mChat = mChat;
     }
 
@@ -62,6 +62,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         if(!message.getSenderUID().equals(mAuth.getUid()))
         {
             holder.senderName.setText(message.getSenderDisplayName());
+            //Glide.with(context).load(currentUser.getProflieImageURL()).into(holder.userImage);
         }
     }
 
@@ -81,6 +82,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
             show_message = itemView.findViewById(R.id.show_message);
             senderName = itemView.findViewById(R.id.senderName);
+            profile_image = itemView.findViewById(R.id.chat_image_left);
             //profile_image = itemView.findViewById(R.id.chat_image_left);
             //txt_seen = itemView.findViewById(R.id.txt_seen);
 

@@ -10,18 +10,31 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="4dp">
-        <ImageView
-            android:id="@+id/friend_image"
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/friend_imageOut"
             android:layout_width="32dp"
             android:layout_height="32dp"
+            app:cardBackgroundColor="#00FFFFFF"
             android:layout_centerVertical="true"
-            android:padding="2dp"/>
+            app:cardCornerRadius="50dp">
+            <ImageView
+                android:id="@+id/friend_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="1dp"
+                android:layout_centerVertical="true"
+                android:background="@drawable/circle"
+                android:scaleType="centerCrop"
+                app:shapeAppearanceOverlay="@style/roundedImageViewRounded"
+                app:srcCompat="@drawable/default_user"/>
+        </androidx.cardview.widget.CardView>
         <RelativeLayout
             android:id="@+id/friendText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/friend_image"
+            android:layout_toRightOf="@+id/friend_imageOut"
             android:layout_marginLeft="5dp"
             android:layout_margin="4dp">
         <TextView

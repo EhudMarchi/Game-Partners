@@ -10,7 +10,7 @@
             android:id="@+id/search"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:background="@color/lightPurple"
+            android:background="@color/purple"
             android:scrollbarThumbHorizontal="@color/white"
             android:scrollbarThumbVertical="@color/white"
             android:theme="@style/AppSearchView"
@@ -28,7 +28,7 @@
     </androidx.recyclerview.widget.RecyclerView>
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent">
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab"
