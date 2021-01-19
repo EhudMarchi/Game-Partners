@@ -79,6 +79,7 @@
             android:background="@drawable/choose_button"
             android:foreground="?attr/selectableItemBackgroundBorderless"
             android:text="Post"
+            android:onClick="createPost"
             android:textAllCaps="false"
             android:translationZ="2dp"
             android:textColor="@color/white"

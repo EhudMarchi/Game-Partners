@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -15,7 +16,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.ContactsContract;
-import android.text.format.Time;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -29,6 +29,7 @@ import android.widget.TimePicker;
 
 import com.bumptech.glide.Glide;
 import com.example.gamepartners.R;
+import com.example.gamepartners.data.model.Comment;
 import com.example.gamepartners.data.model.FirebaseUtills;
 import com.example.gamepartners.data.model.Game.Game;
 import com.example.gamepartners.data.model.Game.GameAdapter;
@@ -37,6 +38,7 @@ import com.example.gamepartners.data.model.Post;
 import com.example.gamepartners.data.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.chip.Chip;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
@@ -48,8 +50,11 @@ import com.google.protobuf.StringValue;
 import com.shivtechs.maplocationpicker.LocationPickerActivity;
 import com.shivtechs.maplocationpicker.MapUtility;
 
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 
 public class CreatePostActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
@@ -57,11 +62,15 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
     private ArrayList<Game> games;
     private RecyclerView gamesRecyclerView;
     private GameAdapter recyclerViewAdapter;
-    Game selectedGame;
+    public Game selectedGame;
     private RecyclerView.LayoutManager recyclerViewLayoutManager;
-    ImageView selectedGameImage;
+    public ImageView selectedGameImage;
+    public TextView selectedGameName;
     SearchView searchView;
     Button chooseDate, chooseTime, chooseLocation;
+    public Chip reality, pc, playstation, xbox;
+    public boolean realityCheck = true, pcCheck = true, playstationCheck = true, xboxCheck = true;
+    private ProgressDialog uploadProgress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +80,14 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
         chooseTime = findViewById(R.id.chooseTime);
         chooseLocation = findViewById(R.id.chooseLocation);
         selectedGameImage = findViewById(R.id.game_pic);
+        selectedGameName = findViewById(R.id.selectedGameName);
+        reality = findViewById(R.id.reality);
+        pc = findViewById(R.id.pc);
+        playstation = findViewById(R.id.playstation);
+        xbox = findViewById(R.id.xbox);
+        uploadProgress= new ProgressDialog(this);
+        uploadProgress.setTitle("Uploading Post...");
+        setFilters();
         final Animation zoominAnimation = AnimationUtils.loadAnimation(getBaseContext(),R.anim.zoom_in);
         fillGames();
         setUpGamesRecyclerView();
@@ -102,10 +119,10 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
             @Override
             public void onClick(View view) {
                 fab.setClickable(false);
-
                 dialog.setContentView(R.layout.dialog_post);
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 dialog.show();
+                fab.setClickable(true);
             }
         });
         gamesRecyclerView.setOnClickListener(new View.OnClickListener() {
@@ -113,6 +130,65 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
             public void onClick(View v) {
                 selectedGame = recyclerViewAdapter.getSelectedGame();
                 refreshSelectedGame();
+            }
+        });
+    }
+
+    private void setFilters() {
+        reality.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                realityCheck = !realityCheck;
+                recyclerViewAdapter.getFilter("platform").filter("reality");
+                if(realityCheck == true) {
+                    reality.setAlpha(1f);
+                }
+                else
+                {
+                    reality.setAlpha(0.4f);
+                }
+            }
+        });
+        pc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pcCheck = !pcCheck;
+                recyclerViewAdapter.getFilter().filter("pc");
+                if(pcCheck == true) {
+                    pc.setAlpha(1f);
+                }
+                else
+                {
+                    pc.setAlpha(0.4f);
+                }
+            }
+        });
+        playstation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                playstationCheck = !playstationCheck;
+                recyclerViewAdapter.getFilter().filter("playstation");
+                if(playstationCheck == true) {
+                    playstation.setAlpha(1f);
+                }
+                else
+                {
+                    playstation.setAlpha(0.4f);
+                }
+            }
+        });
+        xbox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                xboxCheck = !xboxCheck;
+                recyclerViewAdapter.getFilter().filter("xbox");
+                if(xboxCheck == true) {
+                    xbox.setAlpha(1f);
+                }
+                else
+                {
+                    xbox.setAlpha(0.4f);
+                }
             }
         });
     }
@@ -125,7 +201,9 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
 
     private void showLocationPicker() {
         MapUtility.apiKey = getResources().getString(R.string.api_key);
-        Intent intent =new Intent(this, LocationPickerActivity.class);
+        //Intent intent =new Intent(this, LocationPickerActivity.class);
+        //startActivityForResult(intent, ADDRESS_PICKER_REQUEST);
+        Intent intent =new Intent(this, MapsActivity.class);
         startActivityForResult(intent, ADDRESS_PICKER_REQUEST);
     }
 
@@ -138,7 +216,7 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
             }
             @Override
             public boolean onQueryTextChange(String newText) {
-                recyclerViewAdapter.getFilter().filter(newText);
+                recyclerViewAdapter.getFilter("name").filter(newText);
                 return false;
             }
         });
@@ -175,8 +253,8 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
     private void fillGames() {
         games = new ArrayList<>();
         games.add(new Game("Basketball", "https://www.spalding.com/dw/image/v2/ABAH_PRD/on/demandware.static/-/Sites-masterCatalog_SPALDING/default/dwd21974bc/images/hi-res/74876E_FRONT.jpg?sw=555&sh=689&sm=cut&sfrm=jpg", Game.ePlatform.REALITY));
-        games.add(new Game("FIFA 21","FIFA21", Game.ePlatform.XBOX));
-        games.add(new Game("Chess","FIFA21", Game.ePlatform.REALITY));
+        games.add(new Game("FIFA 21","https://vgs.co.il/wp-content/uploads/2020/06/FIFA21pc2DPFTfront_ar_en_RGB.jpg", Game.ePlatform.XBOX));
+        games.add(new Game("Chess","https://media.wired.com/photos/5f592bfb643fbe1f6e6807ec/191:100/w_2400,h_1256,c_limit/business_chess_1200074974.jpg", Game.ePlatform.REALITY));
         games.add(new Game("GTA V Online","FIFA21", Game.ePlatform.PLAYSTATION));
         games.add(new Game("Soccer","FIFA21", Game.ePlatform.REALITY));
         games.add(new Game("Tennis","FIFA21", Game.ePlatform.REALITY));
@@ -192,21 +270,23 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
         games.add(new Game("Beach Volleyball","FIFA21", Game.ePlatform.REALITY));
     }
 
-    public void createPost(View view) {
-        Game i_Game = new Game("FIFA21",FirebaseUtills.GetGameImageURL("FIFA21"), Game.ePlatform.PC);
+    public void createPost(final View view) {
+        uploadProgress.show();
         FirebaseAuth mAuth =FirebaseAuth.getInstance();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("posts");
         User user = new User(mAuth.getCurrentUser().getDisplayName(),mAuth.getCurrentUser().getEmail());
-        Post post = new Post(user,i_Game.getGameName(),0);
+        Post post = new Post(user, new Date(), "subject", "description",0,"Ashdod", new ArrayList<Comment>() );
         //user.getUserPosts().add(post);
-        reference.child(mAuth.getCurrentUser().getUid()).setValue(post).addOnCompleteListener(new OnCompleteListener<Void>() {
+        reference.push().setValue(post).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if(task.isSuccessful())
                 {
+                    Snackbar.make(view, "Post Uploaded Successfully!", Snackbar.LENGTH_LONG).show();
                 }
             }
         });
+        uploadProgress.dismiss();
     }
 
     @Override

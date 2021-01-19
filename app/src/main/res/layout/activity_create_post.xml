@@ -10,34 +10,32 @@
     <RelativeLayout
         android:id="@+id/selected_relative_layout"
         android:layout_width="match_parent"
-        android:layout_height="222dp"
+        android:layout_height="wrap_content"
         android:background="@drawable/gradient"
-        android:paddingBottom="5dp">
+        android:paddingBottom="15dp">
 
         <RelativeLayout
             android:id="@+id/imgGame"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="15dp"
             android:background="@drawable/circle_border">
             <androidx.cardview.widget.CardView
                 android:id="@+id/myCardView"
-                android:layout_width="120dp"
-                android:layout_height="120dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:layout_margin="5dp"
                 android:layout_centerInParent="true"
                 app:cardBackgroundColor="#00FFFFFF"
                 app:cardCornerRadius="50dp">
             <ImageView
                 android:id="@+id/game_pic"
-                android:layout_width="120dp"
-                android:layout_height="120dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:adjustViewBounds="true"
                 android:background="@drawable/circle"
-                android:padding="3dp"
                 android:scaleType="centerCrop"
                 app:shapeAppearanceOverlay="@style/roundedImageViewRounded"
                 app:srcCompat="@drawable/default_game" />
@@ -58,43 +56,7 @@
             android:textSize="20sp"
             android:textStyle="bold" />
 
-        <com.google.android.material.chip.ChipGroup
-            android:layout_below="@id/chooseLocation"
-            android:id="@+id/platforms"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginLeft="20dp"
-            android:layout_centerInParent="true"
-            android:layout_marginRight="20dp"
-            android:layout_alignParentBottom="true">
-            <com.google.android.material.chip.Chip
-                android:id="@+id/reality"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Reality"
-                android:theme="@style/CustomChipStyle"/>
-            <com.google.android.material.chip.Chip
-                android:id="@+id/pc"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="PC"
-                android:theme="@style/CustomChipStyle" />
-            <com.google.android.material.chip.Chip
-                android:id="@+id/playstation"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="PlayStation"
-                android:theme="@style/CustomChipStyle" />
 
-            <com.google.android.material.chip.Chip
-                android:id="@+id/xbox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Xbox"
-                android:theme="@style/CustomChipStyle" />
-
-        </com.google.android.material.chip.ChipGroup>
 
         <Button
             android:id="@+id/chooseDate"
@@ -162,14 +124,67 @@
             <SearchView
                 android:id="@+id/search"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="45dp"
                 android:scrollbarThumbHorizontal="@color/white"
                 android:scrollbarThumbVertical="@color/white"
                 android:theme="@style/AppSearchView"
                 android:queryHint="Search"
                 app:actionViewClass="android.widget.SearchView"
                 app:showAsAction="ifRoom|collapseActionView"/>
+            <com.google.android.material.chip.ChipGroup
+                android:layout_below="@id/search"
+                android:id="@+id/platforms"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:paddingRight="5dp"
+                android:paddingLeft="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_centerInParent="true">
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/reality"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Reality"
+                    app:chipBackgroundColor="@color/gradEnd"
+                    android:textColor="@color/white"
+                    app:chipIcon="@drawable/reality"
+                    app:chipIconSize="15dp"
+                    android:theme="@style/CustomChipStyle"/>
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/pc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="PC"
+                    app:chipBackgroundColor="@color/gradEnd"
+                    android:textColor="@color/white"
+                    app:chipIcon="@drawable/pc"
+                    app:chipIconSize="15dp"
+                    android:theme="@style/CustomChipStyle" />
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/playstation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="PlayStation"
+                    app:chipBackgroundColor="@color/gradEnd"
+                    android:textColor="@color/white"
+                    app:chipIcon="@drawable/playstation"
+                    app:chipIconSize="15dp"
+                    android:theme="@style/CustomChipStyle" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/xbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Xbox"
+                    app:chipBackgroundColor="@color/gradEnd"
+                    android:textColor="@color/white"
+                    app:chipIcon="@drawable/xbox"
+                    app:chipIconSize="15dp"
+                    android:theme="@style/CustomChipStyle" />
+
+            </com.google.android.material.chip.ChipGroup>
         </RelativeLayout>
+
 
     </LinearLayout>
 
@@ -188,31 +203,19 @@
             android:layout_marginBottom="0dp"
             android:background="@null"/>
 
-    </RelativeLayout>
-    <Button
-        android:id="@+id/post"
-        android:layout_width="wrap_content"
-        android:layout_height="54dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginRight="20dp"
-        android:layout_alignParentBottom="true"
-        android:visibility="gone"
-        android:onClick="createPost"
-        android:text="Post"
-        android:textAllCaps="false" />
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fabContinue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_margin="@dimen/fab_margin"
-            app:backgroundTint="@color/glowCyan"
-            app:srcCompat="@drawable/ic_action_name" />
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fabContinue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_margin="@dimen/fab_margin"
+                app:backgroundTint="@color/glowCyan"
+                app:srcCompat="@drawable/ic_action_name" />
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    </RelativeLayout>
 </RelativeLayout>

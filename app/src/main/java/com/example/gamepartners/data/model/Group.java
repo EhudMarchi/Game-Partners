@@ -2,6 +2,7 @@ package com.example.gamepartners.data.model;
 
 import com.example.gamepartners.R;
 import com.example.gamepartners.data.model.Chat.Chat;
+import com.google.firebase.database.annotations.Nullable;
 
 import java.util.List;
 

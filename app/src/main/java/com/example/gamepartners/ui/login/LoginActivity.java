@@ -62,7 +62,7 @@ import java.util.ArrayList;
 
 public class LoginActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 100 ;
-    private static int SPLASH_SCREEN = 3500;
+    private static int SPLASH_SCREEN = 3250;
     private FirebaseAuth mAuth;
     GoogleSignInAccount googleAccount;
     EditText email;

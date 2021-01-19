@@ -124,7 +124,6 @@ public class GroupsFragment extends Fragment {
         hashMap.put("groupName",i_GroupName);
         hashMap.put("chat",i_GroupName+mAuth.getUid());
 
-
         reference.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -156,6 +155,7 @@ public class GroupsFragment extends Fragment {
                 for (DataSnapshot ds:snapshot.getChildren()) {
                     Group group =ds.getValue(Group.class);
                     assert group !=null;
+                    group.setGroupFriends(ds.child("groupFriends").getValue(ArrayList.class));
                     groupsArrayList.add(group);
                 }
                 groupsAdapter = new GroupsAdapter(getContext(),groupsArrayList);

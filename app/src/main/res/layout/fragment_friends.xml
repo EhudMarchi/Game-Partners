@@ -29,9 +29,26 @@
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="0dp"
             android:background="@color/darkPurple"/>
-
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="16dp">
+        <Button
+            android:id="@+id/invite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:padding="15dp"
+            android:background="@drawable/choose_button"
+            android:foreground="?attr/selectableItemBackground"
+            android:text="Invite Friends"
+            android:textAllCaps="false"
+            android:translationZ="2dp"
+            android:textColor="@color/white"
+            android:textSize="18dp" />
     </RelativeLayout>
-
+    </RelativeLayout>
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabSearch"
         android:layout_width="wrap_content"

@@ -17,6 +17,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.example.gamepartners.R;
 import com.example.gamepartners.ui.login.ChatActivity;
+import com.example.gamepartners.ui.login.CreatePostActivity;
 import com.example.gamepartners.ui.login.LoginActivity;
 import com.example.gamepartners.ui.login.MainActivity;
 import com.google.android.material.snackbar.Snackbar;
@@ -50,6 +51,9 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
     public void onBindViewHolder(@NonNull GroupsAdapter.MyViewHolder holder, final int position) {
         final Group group = mGroups.get(position);
         holder.groupName.setText(group.getGroupName());
+        if(group.getGroupFriends ()!= null) {
+            holder.participantsAmount.setText(group.getGroupFriends().size() + " Members");
+        }
         if(group.getProflieImageURL()!=null) {
             glide.load(group.getProflieImageURL()).into(holder.imgViewGroupImage);
         }
@@ -72,13 +76,14 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
     }
     public class MyViewHolder extends RecyclerView.ViewHolder
     {
-        TextView groupName;
+        TextView groupName , participantsAmount;
         ImageView imgViewGroupImage;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             imgViewGroupImage = (ImageView)itemView.findViewById(R.id.group_image);
             groupName = (TextView)itemView.findViewById(R.id.groupName);
+            participantsAmount  = (TextView)itemView.findViewById(R.id.participants);
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.example.gamepartners.data.model;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -46,6 +47,7 @@ public class FriendsFragment extends Fragment {
     private RecyclerView.LayoutManager recyclerViewLayoutManager;
     TextView selectedUserName;
     SearchView searchView;
+    Button invite;
 
     public FriendsFragment() {
         // Required empty public constructor
@@ -67,6 +69,7 @@ public class FriendsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         selectedUserName = getView().findViewById(R.id.selectedGameName);
+        invite = getView().findViewById(R.id.invite);
         fillFriends();
         setUpFriendsRecyclerView();
         setSearchFilter();
@@ -86,6 +89,17 @@ public class FriendsFragment extends Fragment {
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 dialog.show();
                 fab.setClickable(true);
+            }
+        });
+        invite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent shareIntent =   new Intent(android.content.Intent.ACTION_SEND);
+                shareIntent.setType("text/plain");
+                shareIntent.putExtra(Intent.EXTRA_SUBJECT,"Invite Friends");
+                String app_url = " https://play.google.com/store/apps/details?id=my.example.javatpoint";
+                shareIntent.putExtra(android.content.Intent.EXTRA_TEXT,app_url);
+                startActivity(Intent.createChooser(shareIntent, "Share Game Partners via"));
             }
         });
     }

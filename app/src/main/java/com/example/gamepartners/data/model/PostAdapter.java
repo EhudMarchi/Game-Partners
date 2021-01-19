@@ -50,11 +50,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         postId = post.getPostID();
         holder.username.setText(post.getPublisher().getFirstName() +" "+ post.getPublisher().getLastName());
         holder.time.setText(post.getTimePosted().toString());
+        holder.subject.setText(post.getSubject());
         holder.description.setText(post.getDescription());
         holder.likes.setText(String.valueOf(post.getLikes()));
         holder.city.setText(String.valueOf(post.getCity()));
         holder.location.setText(String.valueOf(post.getLocation()));
         glide.load(post.getPublisher().getProflieImageURL()).into(holder.imgViewProfilePic);
+        //glide.load(post.getGame().getGamePictureURL()).into(holder.ImgViewPostPic);
+
     }
 
     @Override
@@ -63,16 +66,17 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
     }
     public class MyViewHolder extends RecyclerView.ViewHolder
     {
-        TextView username, time, likes, comments, description, city, location;
-        ImageView imgViewProfilePic, getImgViewPostPic;
+        TextView username, time, likes, comments, subject, description, city, location;
+        ImageView imgViewProfilePic, ImgViewPostPic;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             imgViewProfilePic = (ImageView)itemView.findViewById(R.id.imgView_profilePic);
-            getImgViewPostPic = (ImageView)itemView.findViewById(R.id.imgView_postpic);
+            ImgViewPostPic = (ImageView)itemView.findViewById(R.id.imgView_postpic);
 
             username = (TextView)itemView.findViewById(R.id.username);
             time = (TextView)itemView.findViewById(R.id.time);
+            subject = (TextView)itemView.findViewById(R.id.subject);
             description = (TextView)itemView.findViewById(R.id.description);
             likes = (TextView)itemView.findViewById(R.id.likes);
             comments = (TextView)itemView.findViewById(R.id.comments);
