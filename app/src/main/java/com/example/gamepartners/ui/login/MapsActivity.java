@@ -1,5 +1,6 @@
 package com.example.gamepartners.ui.login;
 
+import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Build;
@@ -8,6 +9,7 @@ import android.os.Bundle;
 
 import com.example.gamepartners.R;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.Result;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -26,6 +28,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
@@ -40,7 +43,7 @@ import java.util.List;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
         LocationListener,GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener{
-
+    private static final int ADDRESS_PICKER_REQUEST = 50;
     private GoogleMap mMap;
     Location mLastLocation;
     Marker mCurrLocationMarker;
@@ -73,7 +76,30 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             buildGoogleApiClient();
             mMap.setMyLocationEnabled(true);
         }
+        mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+            @Override
+            public void onMapLongClick(LatLng latLng) {
+                mCurrLocationMarker.remove();
+                mLastLocation.setLatitude(latLng.latitude);
+                mLastLocation.setLongitude(latLng.longitude);
+                EditText locationSearch = (EditText) findViewById(R.id.searchLocation);
+                List<Address> addressList = null;
+                Geocoder geocoder = new Geocoder(getBaseContext());
+                    try {
+                        addressList = geocoder.getFromLocation(mLastLocation.getLatitude(),mLastLocation.getLongitude(),1);
 
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }Address address = addressList.get(0);
+                locationSearch.setText(address.getAddressLine(0));
+                MarkerOptions markerOptions = new MarkerOptions();
+                markerOptions.position(latLng);
+                markerOptions.title("Selected Location");
+                markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                mCurrLocationMarker = mMap.addMarker(markerOptions);
+                mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+            }
+        });
     }
     protected synchronized void buildGoogleApiClient() {
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -154,7 +180,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+
     public void close(View view) {
         this.finish();
     }
+
 }

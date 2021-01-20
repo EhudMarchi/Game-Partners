@@ -30,7 +30,8 @@
                 android:layout_margin="5dp"
                 android:layout_centerInParent="true"
                 app:cardBackgroundColor="#00FFFFFF"
-                app:cardCornerRadius="50dp">
+                app:cardCornerRadius="50dp"
+                >
 
                 <ImageView
                     android:id="@+id/profile_pic"
@@ -40,7 +41,8 @@
                     android:background="@drawable/circle"
                     android:scaleType="centerCrop"
                     app:shapeAppearanceOverlay="@style/roundedImageViewRounded"
-                    app:srcCompat="@drawable/default_user" />
+                    app:srcCompat="@drawable/default_user"
+                    android:foreground="?attr/selectableItemBackground"/>
             </androidx.cardview.widget.CardView>
 
         </RelativeLayout>
@@ -49,14 +51,15 @@
             android:id="@+id/username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/imgUser"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="15sp"
             android:layout_marginLeft="15dp"
+            android:layout_marginTop="15sp"
+            android:layout_toRightOf="@+id/imgUser"
             android:fontFamily="sans-serif-light"
             android:text="User Name"
             android:textColor="@color/white"
-            android:textSize="22sp" />
+            android:textSize="22sp"
+            android:textStyle="bold" />
         <TextView
             android:id="@+id/email"
             android:layout_width="wrap_content"
@@ -79,7 +82,7 @@
             android:layout_alignParentRight="true"
             android:layout_marginRight="15dp"
             android:layout_marginTop="15dp"
-            android:foreground="?attr/selectableItemBackgroundBorderless"
+            android:foreground="?attr/selectableItemBackground"
             android:adjustViewBounds="true"
             android:scaleType="fitCenter"
             app:srcCompat="@drawable/settings" />

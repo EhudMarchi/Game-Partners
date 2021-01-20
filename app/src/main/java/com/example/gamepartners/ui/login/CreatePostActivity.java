@@ -22,10 +22,12 @@ import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.gamepartners.R;
@@ -67,15 +69,18 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
     public ImageView selectedGameImage;
     public TextView selectedGameName;
     SearchView searchView;
+    public Post post;
     Button chooseDate, chooseTime, chooseLocation;
     public Chip reality, pc, playstation, xbox;
     public boolean realityCheck = true, pcCheck = true, playstationCheck = true, xboxCheck = true;
     private ProgressDialog uploadProgress;
-
+    String subject="", description="";
+    Dialog dialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_post);
+        post= new Post();
         chooseDate = findViewById(R.id.chooseDate);
         chooseTime = findViewById(R.id.chooseTime);
         chooseLocation = findViewById(R.id.chooseLocation);
@@ -114,7 +119,7 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
             }
         });
         final FloatingActionButton fab = findViewById(R.id.fabContinue);
-        final Dialog dialog = new Dialog(this);
+        dialog = new Dialog(this);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -253,9 +258,9 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
     private void fillGames() {
         games = new ArrayList<>();
         games.add(new Game("Basketball", "https://www.spalding.com/dw/image/v2/ABAH_PRD/on/demandware.static/-/Sites-masterCatalog_SPALDING/default/dwd21974bc/images/hi-res/74876E_FRONT.jpg?sw=555&sh=689&sm=cut&sfrm=jpg", Game.ePlatform.REALITY));
-        games.add(new Game("FIFA 21","https://vgs.co.il/wp-content/uploads/2020/06/FIFA21pc2DPFTfront_ar_en_RGB.jpg", Game.ePlatform.XBOX));
+        games.add(new Game("FIFA 21","https://firebasestorage.googleapis.com/v0/b/gamepartners-app.appspot.com/o/games_images%2FFIFA%2021.jpg?alt=media&token=9364af73-bead-4837-8322-0ca2f3d64701", Game.ePlatform.XBOX));
         games.add(new Game("Chess","https://media.wired.com/photos/5f592bfb643fbe1f6e6807ec/191:100/w_2400,h_1256,c_limit/business_chess_1200074974.jpg", Game.ePlatform.REALITY));
-        games.add(new Game("GTA V Online","FIFA21", Game.ePlatform.PLAYSTATION));
+        games.add(new Game("GTA V Online","FIF A21", Game.ePlatform.PLAYSTATION));
         games.add(new Game("Soccer","FIFA21", Game.ePlatform.REALITY));
         games.add(new Game("Tennis","FIFA21", Game.ePlatform.REALITY));
         games.add(new Game("Call of Duty:WARZONE","FIFA21", Game.ePlatform.PC));
@@ -271,22 +276,28 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
     }
 
     public void createPost(final View view) {
+        subject =((EditText)dialog.findViewById(R.id.subject)).getText().toString();
+        description =((EditText)dialog.findViewById(R.id.description)).getText().toString();
         uploadProgress.show();
         FirebaseAuth mAuth =FirebaseAuth.getInstance();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("posts");
         User user = new User(mAuth.getCurrentUser().getDisplayName(),mAuth.getCurrentUser().getEmail());
-        Post post = new Post(user, new Date(), "subject", "description",0,"Ashdod", new ArrayList<Comment>() );
-        //user.getUserPosts().add(post);
+        Post post = new Post(user,selectedGame, new Date(), subject, description,0,"Ashdod");
         reference.push().setValue(post).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if(task.isSuccessful())
                 {
-                    Snackbar.make(view, "Post Uploaded Successfully!", Snackbar.LENGTH_LONG).show();
+                    dialog.dismiss();
+                    Toast.makeText(CreatePostActivity.this, "Post Uploaded Successfully!",
+                            Toast.LENGTH_SHORT).show();
                 }
             }
         });
+//        reference = FirebaseDatabase.getInstance().getReference("users").child(mAuth.getUid()).child("userPosts");
+//        reference.push().setValue(post);
         uploadProgress.dismiss();
+
     }
 
     @Override

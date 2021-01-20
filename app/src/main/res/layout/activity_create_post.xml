@@ -30,15 +30,16 @@
                 android:layout_centerInParent="true"
                 app:cardBackgroundColor="#00FFFFFF"
                 app:cardCornerRadius="50dp">
-            <ImageView
-                android:id="@+id/game_pic"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:adjustViewBounds="true"
-                android:background="@drawable/circle"
-                android:scaleType="centerCrop"
-                app:shapeAppearanceOverlay="@style/roundedImageViewRounded"
-                app:srcCompat="@drawable/default_game" />
+
+                <ImageView
+                    android:id="@+id/game_pic"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:adjustViewBounds="true"
+                    android:background="@drawable/circle"
+                    android:scaleType="centerCrop"
+                    app:shapeAppearanceOverlay="@style/roundedImageViewRounded"
+                    app:srcCompat="@drawable/default_game" />
             </androidx.cardview.widget.CardView>
 
         </RelativeLayout>
@@ -49,7 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:layout_marginTop="20sp"
-            android:layout_toRightOf="@+id/imgGame"
+            android:layout_below="@id/imgGame"
             android:fontFamily="sans-serif-light"
             android:text="Game Name"
             android:textColor="@color/white"
@@ -63,10 +64,9 @@
             android:layout_width="wrap_content"
             android:layout_height="32dp"
             android:layout_alignParentRight="true"
-            android:layout_below="@+id/selectedGameName"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="15dp"
             android:layout_toRightOf="@+id/imgGame"
             android:text="Choose Date"
             android:textColor="@color/white"
@@ -80,7 +80,7 @@
             android:layout_below="@+id/chooseDate"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="8dp"
             android:layout_toRightOf="@+id/imgGame"
             android:text="Choose Time"
             android:textColor="@color/white"
@@ -95,7 +95,7 @@
             android:layout_alignParentRight="true"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="8dp"
             android:layout_toRightOf="@+id/imgGame"
             android:text="Choose Location"
             android:textColor="@color/white"

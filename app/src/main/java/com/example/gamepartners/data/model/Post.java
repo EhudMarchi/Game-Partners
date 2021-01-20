@@ -41,14 +41,16 @@ public  class Post implements IPostable, ILikeable {
         this.postID = postID;
     }
 
-    public Post(User publisher, Date timePosted, String subject, String description, int likes, String city, ArrayList<Comment> comments ) {
+    public Post(User publisher, Game game, Date timePosted, String subject, String description, int likes, String city) {
         this.timePosted = timePosted;
+        this.game = game;
         this.publisher = publisher;
         this.subject = subject;
         this.description = description;
         this.likes = likes;
         this.city = city;
         this.game =  new Game();
+        comments = new ArrayList<Comment>();
     }
 
     public String getCity() {

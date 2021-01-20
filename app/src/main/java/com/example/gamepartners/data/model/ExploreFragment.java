@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.SearchView;
 
 import com.example.gamepartners.R;
+import com.example.gamepartners.data.model.Game.Game;
 import com.example.gamepartners.ui.login.CreatePostActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -64,17 +65,17 @@ public class ExploreFragment extends Fragment {
     }
 
     private void populateRecycleView() {
-        Post post = new Post(new User("Ehud", "Marchi", "Ehud@gmail.com", "123456","https://cdn1.iconfinder.com/data/icons/user-pictures/100/supportmale-256.png"), Calendar.getInstance().getTime(),"Post 1 subject", "This is a post template",18,"Ashdod",new ArrayList<Comment>());
+        Post post = new Post(new User("Ehud", "Marchi", "Ehud@gmail.com", "123456","https://cdn1.iconfinder.com/data/icons/user-pictures/100/supportmale-256.png"), new Game(), Calendar.getInstance().getTime(),"Post 1 subject", "This is a post template",18,"Ashdod");
         postsArrayList.add(post);
-        post = new Post(new User("Yossi", "Cohen", "Yosi@gmail.com", "13513","https://cdn0.iconfinder.com/data/icons/user-pictures/100/matureman1-256.png"),Calendar.getInstance().getTime(),"Post 2 subject", "This is a post template 2", 7,"Tel Aviv",new ArrayList<Comment>());
+        post = new Post(new User("Yossi", "Cohen", "Yosi@gmail.com", "13513","https://cdn0.iconfinder.com/data/icons/user-pictures/100/matureman1-256.png"), new Game(),Calendar.getInstance().getTime(),"Post 2 subject", "This is a post template 2", 7,"Tel Aviv");
         postsArrayList.add(post);
-        post = new Post(new User("Avraham", "Levi", "AVVI@gmail.com", "143436","https://cdn0.iconfinder.com/data/icons/user-pictures/100/maturewoman-3-256.png"),Calendar.getInstance().getTime(),"Post 3 subject", "This is a post template 3 ", 11,"Holon",new ArrayList<Comment>());
+        post = new Post(new User("Avraham", "Levi", "AVVI@gmail.com", "143436","https://cdn0.iconfinder.com/data/icons/user-pictures/100/maturewoman-3-256.png"), new Game(),Calendar.getInstance().getTime(),"Post 3 subject", "This is a post template 3 ", 11,"Holon");
         postsArrayList.add(post);
-        post = new Post(new User("Dana", "Meron", "danam@gmail.com", "00020225","https://cdn0.iconfinder.com/data/icons/user-pictures/100/supportfemale-2-256.png"),Calendar.getInstance().getTime(),"Post 4 subject", "This is a post template 4 ", 22,"Jerusalem",new ArrayList<Comment>());
+        post = new Post(new User("Dana", "Meron", "danam@gmail.com", "00020225","https://cdn0.iconfinder.com/data/icons/user-pictures/100/supportfemale-2-256.png"), new Game(),Calendar.getInstance().getTime(),"Post 4 subject", "This is a post template 4 ", 22,"Jerusalem");
         postsArrayList.add(post);
-        post = new Post(new User("James", "Williams", "jwil@gmail.com", "00sdgds5","https://cdn1.iconfinder.com/data/icons/santa-emojis/60/004_-_santa_christmas_emoji_cool_sunglasses-256.png"),Calendar.getInstance().getTime(),"Post 5 subject", "This is a post template 5 ", 22,"Sderot",new ArrayList<Comment>());
+        post = new Post(new User("James", "Williams", "jwil@gmail.com", "00sdgds5","https://cdn1.iconfinder.com/data/icons/santa-emojis/60/004_-_santa_christmas_emoji_cool_sunglasses-256.png"), new Game(),Calendar.getInstance().getTime(),"Post 5 subject", "This is a post template 5 ", 22,"Sderot");
         postsArrayList.add(post);
-        post = new Post(new User("Leo", "Messi", "leomessi@gmail.com", "barca454","https://cdn3.iconfinder.com/data/icons/soccer-uniform/128/barcelona.png"),Calendar.getInstance().getTime(),"Post 6 subject", "This is a post template 6 ", 22,"Barcelona",new ArrayList<Comment>());
+        post = new Post(new User("Leo", "Messi", "leomessi@gmail.com", "barca454","https://cdn3.iconfinder.com/data/icons/soccer-uniform/128/barcelona.png"), new Game(),Calendar.getInstance().getTime(),"Post 6 subject", "This is a post template 6 ", 22,"Barcelona");
         postsArrayList.add(post);
         //postAdapter.notifyDataSetChanged();
     }

@@ -29,6 +29,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.gamepartners.R;
+import com.example.gamepartners.data.model.Game.Game;
 import com.example.gamepartners.ui.login.CreatePostActivity;
 import com.example.gamepartners.ui.login.LoginActivity;
 import com.example.gamepartners.ui.login.MainActivity;
@@ -105,11 +106,11 @@ public class UserProfileFragment extends Fragment {
 
     private void populateRecycleView() {
         User user = new User("Loyal", "Pirate", "loyalpiratemusic@gmail.com", "123456",FirebaseUtills.connedtedUser.getProflieImageURL());
-        Post post = new Post(user, Calendar.getInstance().getTime(),"Post 1 subject", "This is a post template",18,"Ashdod",new ArrayList<Comment>());
+        Post post = new Post(user, new Game(), Calendar.getInstance().getTime(),"Post 1 subject", "This is a post template",18,"Ashdod");
         postsArrayList.add(post);
-        post = new Post(user,Calendar.getInstance().getTime(),"Post 2 subject", "This is a post template 2", 7,"Tel Aviv",new ArrayList<Comment>());
+        post = new Post(user, new Game(),Calendar.getInstance().getTime(),"Post 2 subject", "This is a post template 2", 7,"Tel Aviv");
         postsArrayList.add(post);
-        post = new Post(user,Calendar.getInstance().getTime(),"Post 3 subject", "This is a post template 3 ", 11,"Holon",new ArrayList<Comment>());
+        post = new Post(user, new Game(),Calendar.getInstance().getTime(),"Post 3 subject", "This is a post template 3 ", 11,"Holon");
         postsArrayList.add(post);
 
         postAdapter.notifyDataSetChanged();

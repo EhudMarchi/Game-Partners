@@ -5,7 +5,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardCornerRadius="4dp"
     android:paddingTop="5dp"
-    android:background="@color/darkPurple">
+    android:background="@color/darkPurple"
+    android:foreground="?attr/selectableItemBackground">
 <RelativeLayout
     android:id="@+id/game_item"
     android:layout_width="match_parent"
