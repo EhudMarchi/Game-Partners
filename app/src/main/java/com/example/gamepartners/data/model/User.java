@@ -123,12 +123,12 @@ public class User {
         this.password = password;
         this.proflieImageURL = proflieImageURL;
     }
-    public User(String name, String email) {
-        String [] fullName =name.split(" ");
-        this.firstName = fullName[0];
-        this.lastName = fullName[1];
+    public User(String firstName, String lastName, String email, String proflieImageURL) {
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.email = email;
-        this.userPosts = new ArrayList<>();
+        this.proflieImageURL = proflieImageURL;
+        //this.userPosts = new ArrayList<>();
     }
 
     public String getProflieImageURL() {

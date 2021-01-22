@@ -18,6 +18,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.gamepartners.R;
+import com.example.gamepartners.ui.login.ChatActivity;
+import com.example.gamepartners.ui.login.CreatePostActivity;
 
 import java.util.ArrayList;
 import java.util.List;

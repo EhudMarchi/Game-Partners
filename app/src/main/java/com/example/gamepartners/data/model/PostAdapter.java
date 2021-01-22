@@ -2,6 +2,7 @@ package com.example.gamepartners.data.model;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.text.format.Time;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,14 +13,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.example.gamepartners.R;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> {
     Context context;
@@ -49,14 +48,17 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         final Post post = postArrayList.get(position);
         postId = post.getPostID();
         holder.username.setText(post.getPublisher().getFirstName() +" "+ post.getPublisher().getLastName());
-        holder.time.setText(post.getTimePosted().toString());
+        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+        String dateString = format.format(post.getTimePosted());
+        holder.time.setText(dateString);
+        holder.gameName.setText(post.getGame().getGameName());
         holder.subject.setText(post.getSubject());
         holder.description.setText(post.getDescription());
         holder.likes.setText(String.valueOf(post.getLikes()));
-        holder.city.setText(String.valueOf(post.getCity()));
-        holder.location.setText(String.valueOf(post.getLocation()));
+        holder.city.setText(post.getCity());
+        //holder.address.setText(post.getLocation().getAddressLine(0));
         glide.load(post.getPublisher().getProflieImageURL()).into(holder.imgViewProfilePic);
-        //glide.load(post.getGame().getGamePictureURL()).into(holder.ImgViewPostPic);
+        glide.load(post.getGame().getGamePictureURL()).into(holder.ImgViewPostPic);
 
     }
 
@@ -66,7 +68,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
     }
     public class MyViewHolder extends RecyclerView.ViewHolder
     {
-        TextView username, time, likes, comments, subject, description, city, location;
+        TextView username, time, likes, comments, gameName, subject, description, city, address;
         ImageView imgViewProfilePic, ImgViewPostPic;
 
         public MyViewHolder(@NonNull View itemView) {
@@ -76,12 +78,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
 
             username = (TextView)itemView.findViewById(R.id.username);
             time = (TextView)itemView.findViewById(R.id.time);
+            gameName =(TextView)itemView.findViewById(R.id.postGame);
             subject = (TextView)itemView.findViewById(R.id.subject);
             description = (TextView)itemView.findViewById(R.id.description);
             likes = (TextView)itemView.findViewById(R.id.likes);
             comments = (TextView)itemView.findViewById(R.id.comments);
             city = (TextView)itemView.findViewById(R.id.city);
-            location = (TextView)itemView.findViewById(R.id.location);
+            address = (TextView)itemView.findViewById(R.id.location);
         }
     }
 }

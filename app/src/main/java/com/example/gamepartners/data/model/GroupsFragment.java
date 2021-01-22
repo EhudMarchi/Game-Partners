@@ -135,7 +135,11 @@ public class GroupsFragment extends Fragment {
         });
         reference = FirebaseDatabase.getInstance().getReference("groups").child(i_GroupName).child("groupFriends");
         HashMap<String, String> groupFriendsMap = new HashMap<>();
-        groupFriendsMap.put("uid",mAuth.getCurrentUser().getEmail());
+        groupFriendsMap.put("uid",FirebaseUtills.connedtedUser.getUid());
+        groupFriendsMap.put("firstName",FirebaseUtills.connedtedUser.getFirstName());
+        groupFriendsMap.put("lastName",FirebaseUtills.connedtedUser.getLastName());
+        groupFriendsMap.put("proflieImageURL",FirebaseUtills.connedtedUser.getProflieImageURL());
+        groupFriendsMap.put("uid",mAuth.getCurrentUser().getUid());
         reference.child(mAuth.getUid()).setValue(groupFriendsMap);
         reference = FirebaseDatabase.getInstance().getReference("users").child(mAuth.getUid()).child("userGroups").child(i_GroupName);
         userGroups = new HashMap<>();

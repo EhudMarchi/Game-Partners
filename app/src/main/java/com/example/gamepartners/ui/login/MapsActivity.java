@@ -1,5 +1,6 @@
 package com.example.gamepartners.ui.login;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
@@ -38,18 +39,19 @@ import com.google.android.gms.location.LocationRequest;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
         LocationListener,GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener{
-    private static final int ADDRESS_PICKER_REQUEST = 50;
+
     private GoogleMap mMap;
     Location mLastLocation;
     Marker mCurrLocationMarker;
     GoogleApiClient mGoogleApiClient;
     LocationRequest mLocationRequest;
-
+    Address address;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,14 +86,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 mLastLocation.setLongitude(latLng.longitude);
                 EditText locationSearch = (EditText) findViewById(R.id.searchLocation);
                 List<Address> addressList = null;
-                Geocoder geocoder = new Geocoder(getBaseContext());
+                if (latLng != null) {
+                    Geocoder geocoder = new Geocoder(getBaseContext());
                     try {
-                        addressList = geocoder.getFromLocation(mLastLocation.getLatitude(),mLastLocation.getLongitude(),1);
-
+                        addressList = geocoder.getFromLocation(mLastLocation.getLatitude(), mLastLocation.getLongitude(), 1);
                     } catch (IOException e) {
                         e.printStackTrace();
-                    }Address address = addressList.get(0);
-                locationSearch.setText(address.getAddressLine(0));
+                    }
+                    address = addressList.get(0);
+                    locationSearch.setText(address.getAddressLine(0));
+                }
                 MarkerOptions markerOptions = new MarkerOptions();
                 markerOptions.position(latLng);
                 markerOptions.title("Selected Location");
@@ -111,7 +115,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onConnected(Bundle bundle) {
-
         mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(1000);
         mLocationRequest.setFastestInterval(1000);
@@ -121,7 +124,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 == PackageManager.PERMISSION_GRANTED) {
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
         }
-
     }
 
     @Override
@@ -172,7 +174,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            Address address = addressList.get(0);
+            address = addressList.get(0);
             LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
             mMap.addMarker(new MarkerOptions().position(latLng).title(location));
             mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
@@ -185,4 +187,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         this.finish();
     }
 
+    public void selectLocation(View view) {
+        if (address != null) {
+            Intent returnIntent = new Intent();
+            returnIntent.putExtra("picked_location", address);
+            setResult(Activity.RESULT_OK, returnIntent);
+            finish();
+        }
+    }
 }

@@ -1,5 +1,6 @@
 package com.example.gamepartners.data.model;
 
+import android.location.Address;
 import android.location.Location;
 
 import com.example.gamepartners.data.model.Game.Game;
@@ -18,7 +19,7 @@ public  class Post implements IPostable, ILikeable {
     private Game game;
     private String gameName;
     private DateTime timeOccurring;
-    private Location location;
+    private Address address;
     private String city;
     private List<User> participants;
     private int likes;
@@ -47,18 +48,14 @@ public  class Post implements IPostable, ILikeable {
         this.publisher = publisher;
         this.subject = subject;
         this.description = description;
-        this.likes = likes;
         this.city = city;
-        this.game =  new Game();
+        this.likes = likes;
+        this.game =  game;
         comments = new ArrayList<Comment>();
     }
 
     public String getCity() {
         return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
     }
 
     public Date getTimePosted() {
@@ -109,12 +106,12 @@ public  class Post implements IPostable, ILikeable {
         this.timeOccurring = timeOccurring;
     }
 
-    public Location getLocation() {
-        return location;
+    public Address getLocation() {
+        return address;
     }
 
-    public void setLocation(Location location) {
-        this.location = location;
+    public void setLocation(Address address) {
+        this.address = address;
     }
 
     public List<User> getParticipants() {

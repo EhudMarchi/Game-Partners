@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/gradient"
-        android:paddingBottom="15dp">
+        android:paddingBottom="10dp">
 
         <RelativeLayout
             android:id="@+id/imgGame"
@@ -20,16 +20,16 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="15dp"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="25dp"
             android:background="@drawable/circle_border">
             <androidx.cardview.widget.CardView
                 android:id="@+id/myCardView"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_margin="5dp"
-                android:layout_centerInParent="true"
                 app:cardBackgroundColor="#00FFFFFF"
-                app:cardCornerRadius="50dp">
+                app:cardCornerRadius="50dp"
+                >
 
                 <ImageView
                     android:id="@+id/game_pic"
@@ -49,8 +49,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            android:layout_marginTop="20sp"
-            android:layout_below="@id/imgGame"
+            android:layout_marginTop="10sp"
+            android:layout_below="@id/chooseLocation"
             android:fontFamily="sans-serif-light"
             android:text="Game Name"
             android:textColor="@color/white"
@@ -62,12 +62,13 @@
         <Button
             android:id="@+id/chooseDate"
             android:layout_width="wrap_content"
-            android:layout_height="32dp"
+            android:layout_height="38dp"
             android:layout_alignParentRight="true"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_marginTop="15dp"
             android:layout_toRightOf="@+id/imgGame"
+            android:foreground="?attr/selectableItemBackground"
             android:text="Choose Date"
             android:textColor="@color/white"
             android:background="@drawable/choose_button"
@@ -75,13 +76,14 @@
         <Button
             android:id="@+id/chooseTime"
             android:layout_width="wrap_content"
-            android:layout_height="32dp"
+            android:layout_height="38dp"
             android:layout_alignParentRight="true"
             android:layout_below="@+id/chooseDate"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_marginTop="8dp"
             android:layout_toRightOf="@+id/imgGame"
+            android:foreground="?attr/selectableItemBackground"
             android:text="Choose Time"
             android:textColor="@color/white"
             android:background="@drawable/choose_button"
@@ -90,7 +92,7 @@
         <Button
             android:id="@+id/chooseLocation"
             android:layout_width="wrap_content"
-            android:layout_height="32dp"
+            android:layout_height="38dp"
             android:layout_below="@+id/chooseTime"
             android:layout_alignParentRight="true"
             android:layout_marginLeft="20dp"
@@ -99,6 +101,7 @@
             android:layout_toRightOf="@+id/imgGame"
             android:text="Choose Location"
             android:textColor="@color/white"
+            android:foreground="?attr/selectableItemBackground"
             android:background="@drawable/choose_button"
             android:textAllCaps="false" />
 

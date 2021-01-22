@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.Address;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -55,6 +56,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Locale;
 import java.util.UUID;
 
 /**
@@ -105,12 +107,13 @@ public class UserProfileFragment extends Fragment {
     }
 
     private void populateRecycleView() {
+        Address address = new Address(Locale.getDefault());
         User user = new User("Loyal", "Pirate", "loyalpiratemusic@gmail.com", "123456",FirebaseUtills.connedtedUser.getProflieImageURL());
-        Post post = new Post(user, new Game(), Calendar.getInstance().getTime(),"Post 1 subject", "This is a post template",18,"Ashdod");
+        Post post = new Post(user, new Game(), Calendar.getInstance().getTime(),"Post 1 subject", "This is a post template",18,address.getLocality());
         postsArrayList.add(post);
-        post = new Post(user, new Game(),Calendar.getInstance().getTime(),"Post 2 subject", "This is a post template 2", 7,"Tel Aviv");
+        post = new Post(user, new Game(),Calendar.getInstance().getTime(),"Post 2 subject", "This is a post template 2", 7,address.getLocality());
         postsArrayList.add(post);
-        post = new Post(user, new Game(),Calendar.getInstance().getTime(),"Post 3 subject", "This is a post template 3 ", 11,"Holon");
+        post = new Post(user, new Game(),Calendar.getInstance().getTime(),"Post 3 subject", "This is a post template 3 ", 11,address.getLocality());
         postsArrayList.add(post);
 
         postAdapter.notifyDataSetChanged();

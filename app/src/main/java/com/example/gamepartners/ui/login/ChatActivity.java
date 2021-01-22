@@ -74,14 +74,15 @@ public class ChatActivity extends AppCompatActivity {
     TextView groupNameView;
     EditText inputMessage;
     Group group;
+    private ArrayList<User> groupFriends = new ArrayList<>();
     private ArrayList<User> users;
     ArrayList<User> selectedUsers;
     ImageButton send, backButton, addParticipants, viewParticipants;
     ArrayList<Message> m_ChatMessages;
     ArrayList<User> selectedFriends = new ArrayList();
     ArrayList<User> userFriends = new ArrayList();
-    RecyclerView usersRecyclerView;
-    LinearLayoutManager recyclerViewLayoutManager;
+    RecyclerView usersRecyclerView ,groupFriendsRecyclerView;
+    LinearLayoutManager recyclerViewLayoutManager,groupFriendsRecyclerViewLayoutManager;
     UserAdapter recyclerViewAdapter;
     CircleImageView groupImage;
     public Uri imageUri;
@@ -139,7 +140,7 @@ public class ChatActivity extends AppCompatActivity {
         viewParticipants.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //viewParticipants();
+                viewParticipants();
             }
         });
         fetchMessages();
@@ -247,32 +248,27 @@ public class ChatActivity extends AppCompatActivity {
 //    }
     private void viewParticipants() {
         Dialog dialog = new Dialog(this);
-        dialog.setContentView(R.layout.dialog_choose_friends);
+        dialog.setContentView(R.layout.group_friends);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         users = new ArrayList<>();
-        final FirebaseAuth mAuth =FirebaseAuth.getInstance();
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("groups").child(groupName);
-//        reference.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                users.clear();
-//                for (DataSnapshot ds:snapshot.getChildren()) {
-//                    User user = ds.getValue(User.class);
-//                    assert user !=null;
-//                    if(!user.getUid().equals(mAuth.getCurrentUser().getUid())) {
-//                        //**HERE CHECK IF FRIENDS***
-//                        users.add(user);
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
-        SearchView searchView = (SearchView)dialog.findViewById(R.id.search);
-        setUpFriendsRecyclerView(dialog, searchView);
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("groups").child(groupName).child("groupFriends");
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                groupFriends.clear();
+                for (DataSnapshot ds:snapshot.getChildren()) {
+                    User user = ds.getValue(User.class);
+                    assert user !=null;
+                    groupFriends.add(user);
+                    }
+                }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        setUpGroupFriendsRecyclerView(dialog);
         dialog.show();
     }
 
@@ -297,7 +293,10 @@ public class ChatActivity extends AppCompatActivity {
                     reference.setValue(userGroups);
                     reference = FirebaseDatabase.getInstance().getReference("groups").child(groupName).child("groupFriends");
                     HashMap<String, String> groupFriendsMap = new HashMap<>();
-                    groupFriendsMap.put("uid",selectedUser.getEmail());
+                    groupFriendsMap.put("uid",selectedUser.getUid());
+                    groupFriendsMap.put("firstName",selectedUser.getFirstName());
+                    groupFriendsMap.put("lastName",selectedUser.getLastName());
+                    groupFriendsMap.put("proflieImageURL",selectedUser.getProflieImageURL());
                     reference.child(selectedUser.getUid()).setValue(groupFriendsMap);
                 }
             }
@@ -320,6 +319,14 @@ public class ChatActivity extends AppCompatActivity {
                 return false;
             }
         });
+    }
+    private void setUpGroupFriendsRecyclerView(Dialog dialog) {
+        groupFriendsRecyclerView = dialog.findViewById(R.id.groupFriendsRecyclerView);
+        groupFriendsRecyclerView.setHasFixedSize(true);
+        groupFriendsRecyclerViewLayoutManager = new LinearLayoutManager(this);
+        recyclerViewAdapter = new UserAdapter(this, groupFriends, false);
+        groupFriendsRecyclerView.setLayoutManager(groupFriendsRecyclerViewLayoutManager);
+        groupFriendsRecyclerView.setAdapter(recyclerViewAdapter);
     }
     private void setUpFriendsRecyclerView(Dialog dialog,SearchView searchView) {
         usersRecyclerView = dialog.findViewById(R.id.friendsSelectionRecyclerView);

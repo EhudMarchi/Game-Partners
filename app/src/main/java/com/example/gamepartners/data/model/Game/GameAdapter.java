@@ -99,7 +99,7 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
                 selectedItemIndex = position;
                 selectedGame = games.get(selectedItemIndex);
                 activity.selectedGame = selectedGame;
-                if (selectedGame != null) {
+                if (activity.selectedGame != null) {
                     activity.selectedGameName.setText(selectedGame.getGameName());
                     Glide.with(activity).load(selectedGame.getGamePictureURL()).into(activity.selectedGameImage);
                 }

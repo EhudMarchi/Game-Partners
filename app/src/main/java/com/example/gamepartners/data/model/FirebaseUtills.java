@@ -37,6 +37,11 @@ public class FirebaseUtills {
     public static User connedtedUser;
     public static FirebaseStorage mStorage;
     public static StorageReference mStorageRef;
+
+    private FirebaseUtills() {
+        connedtedUser = GetUser(AuthInitialization().getCurrentUser().getUid());
+    }
+
     public static FirebaseUtills GetInstance()
     {
         if(mSingleInstance == null)

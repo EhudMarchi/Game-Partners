@@ -13,6 +13,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.location.Address;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.ContactsContract;
@@ -48,19 +50,22 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.StringValue;
 import com.shivtechs.maplocationpicker.LocationPickerActivity;
 import com.shivtechs.maplocationpicker.MapUtility;
 
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 
 public class CreatePostActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
-    private static final int ADDRESS_PICKER_REQUEST = 50;
+    static final int PICK_MAP_POINT_REQUEST = 999;
     private ArrayList<Game> games;
     private RecyclerView gamesRecyclerView;
     private GameAdapter recyclerViewAdapter;
@@ -70,6 +75,7 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
     public TextView selectedGameName;
     SearchView searchView;
     public Post post;
+    Address selectedAddress;
     Button chooseDate, chooseTime, chooseLocation;
     public Chip reality, pc, playstation, xbox;
     public boolean realityCheck = true, pcCheck = true, playstationCheck = true, xboxCheck = true;
@@ -93,28 +99,24 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
         uploadProgress= new ProgressDialog(this);
         uploadProgress.setTitle("Uploading Post...");
         setFilters();
-        final Animation zoominAnimation = AnimationUtils.loadAnimation(getBaseContext(),R.anim.zoom_in);
         fillGames();
         setUpGamesRecyclerView();
         setSearchFilter();
         chooseDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                chooseDate.startAnimation(zoominAnimation);
                 showDatePickerDialog();
             }
         });
         chooseTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                chooseTime.startAnimation(zoominAnimation);
                 showTimePickerDialog();
             }
         });
         chooseLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                chooseLocation.startAnimation(zoominAnimation);
                 showLocationPicker();
             }
         });
@@ -208,8 +210,8 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
         MapUtility.apiKey = getResources().getString(R.string.api_key);
         //Intent intent =new Intent(this, LocationPickerActivity.class);
         //startActivityForResult(intent, ADDRESS_PICKER_REQUEST);
-        Intent intent =new Intent(this, MapsActivity.class);
-        startActivityForResult(intent, ADDRESS_PICKER_REQUEST);
+        Intent intent = new Intent(this, MapsActivity.class);
+        startActivityForResult(intent, PICK_MAP_POINT_REQUEST);
     }
 
     private void setSearchFilter() {
@@ -275,14 +277,14 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
         games.add(new Game("Beach Volleyball","FIFA21", Game.ePlatform.REALITY));
     }
 
-    public void createPost(final View view) {
+    public void createPost(final View view) throws ParseException {
         subject =((EditText)dialog.findViewById(R.id.subject)).getText().toString();
         description =((EditText)dialog.findViewById(R.id.description)).getText().toString();
         uploadProgress.show();
         FirebaseAuth mAuth =FirebaseAuth.getInstance();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("posts");
-        User user = new User(mAuth.getCurrentUser().getDisplayName(),mAuth.getCurrentUser().getEmail());
-        Post post = new Post(user,selectedGame, new Date(), subject, description,0,"Ashdod");
+        User user = new User(FirebaseUtills.connedtedUser.getFirstName(),FirebaseUtills.connedtedUser.getLastName(),mAuth.getCurrentUser().getEmail(),FirebaseUtills.connedtedUser.getProflieImageURL());
+        Post post = new Post(user, selectedGame, new Date(), subject, description,0, selectedAddress.getLocality());
         reference.push().setValue(post).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -310,5 +312,16 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
         String time = hourOfDay+":"+ minute;
         chooseTime.setText(time);
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_MAP_POINT_REQUEST) {
+            // Make sure the request was successful
+            if (resultCode == RESULT_OK) {
+                selectedAddress = (Address) data.getParcelableExtra("picked_location");
+                chooseLocation.setText(selectedAddress.getAddressLine(0));
+            }
+        }
     }
 }
