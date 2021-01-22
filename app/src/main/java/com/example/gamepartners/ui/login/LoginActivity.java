@@ -279,8 +279,8 @@ public class LoginActivity extends AppCompatActivity {
     private void enterAccountPassword(Context context, final GoogleSignInAccount account) {
         final EditText taskEditText = new EditText(context);
         AlertDialog dialog = new AlertDialog.Builder(context)
-                .setTitle("Create Game Partners Account Password")
-                .setMessage("Password:")
+                .setTitle("Create Game Partners Account!")
+                .setMessage("Enter Password:")
                 .setView(taskEditText)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
@@ -321,8 +321,6 @@ public class LoginActivity extends AppCompatActivity {
         User newUser = new User(firstName, lastName, email, password , proflieImageURL);
         newUser.setUid(userId);
         myRef.setValue(newUser);
-        myRef.child("followers").setValue(new ArrayList<User>());
-        myRef.child("following").setValue(new ArrayList<User>());
     }
     private  void sendUserToMainActivity()
     {

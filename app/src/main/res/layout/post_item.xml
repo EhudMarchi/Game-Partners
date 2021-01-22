@@ -162,15 +162,14 @@
     <RelativeLayout
         android:id="@+id/imgView_postpicLayout"
         android:layout_width="match_parent"
-        android:layout_height="350dp"
+        android:layout_height="320dp"
         android:layout_below="@id/descriptionLayout">
         <ImageView
             android:id="@+id/postBack"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:background="@drawable/gamepartners_background"
             android:translationZ="-2dp"
-            android:scaleType="centerCrop"
 />
         <TextView
             android:id="@+id/distance"
@@ -284,7 +283,8 @@
             <LinearLayout
                 android:layout_centerInParent="true"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:foreground="?attr/selectableItemBackground">
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
@@ -308,7 +308,8 @@
             <LinearLayout
                 android:layout_centerInParent="true"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:foreground="?attr/selectableItemBackground">
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
@@ -332,7 +333,8 @@
             <LinearLayout
                 android:layout_centerInParent="true"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:foreground="?attr/selectableItemBackground">
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"

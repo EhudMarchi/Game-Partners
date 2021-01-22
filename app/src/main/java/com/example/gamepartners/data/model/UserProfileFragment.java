@@ -102,7 +102,12 @@ public class UserProfileFragment extends Fragment {
         postsRecyclerView.setLayoutManager(layoutManager);
         postAdapter = new PostAdapter(this.getContext(),postsArrayList);
         postsRecyclerView.setAdapter(postAdapter);
-        populateRecycleView();
+        Thread postsFetchThread = new Thread(new Runnable() {
+            public void run() {
+                fetchLoggedInUserPosts();
+            }
+        });
+        postsFetchThread.start();
         settingsAnimation = AnimationUtils.loadAnimation(getContext(),R.anim.settings_in);
     }
 
@@ -117,6 +122,35 @@ public class UserProfileFragment extends Fragment {
         postsArrayList.add(post);
 
         postAdapter.notifyDataSetChanged();
+        if(postAdapter.getItemCount()>0) {
+            getView().findViewById(R.id.loading_panel).setVisibility(View.GONE);
+        }
+    }
+    private void fetchLoggedInUserPosts() {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("posts");
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                postsArrayList.clear();
+                for (DataSnapshot ds:snapshot.getChildren()) {
+                    Post post =ds.getValue(Post.class);
+                    assert post !=null;
+                    if(post.getPublisher().getEmail().equals(FirebaseUtills.connedtedUser.getEmail())) {
+                        postsArrayList.add(post);
+                    }
+                }
+                postAdapter = new PostAdapter(getContext(),postsArrayList);
+                postsRecyclerView.setAdapter(postAdapter);
+                if(postAdapter.getItemCount()>0) {
+                    getView().findViewById(R.id.loading_panel).setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     @Override
@@ -206,7 +240,7 @@ public class UserProfileFragment extends Fragment {
 
     private void getProfileImage(){
         mStorageRef = mStorage.getReference();
-        mStorageRef.child("images/" + FirebaseUtills.GetCurrentUser().getEmail()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+        mStorageRef.child("images/" + FirebaseUtills.connedtedUser.getEmail()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
                 Log.e("Url", "url: " + uri.toString());
@@ -243,7 +277,6 @@ public class UserProfileFragment extends Fragment {
         final ProgressDialog uploadProgress= new ProgressDialog(getContext());
         uploadProgress.setTitle("Uploading Image...");
         uploadProgress.show();
-
         //final String randomKey = UUID.randomUUID().toString();
         StorageReference profilePicRef = mStorageRef.child("images/" + mAuth.getCurrentUser().getEmail());
 
@@ -279,13 +312,9 @@ public class UserProfileFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                  //This method is called once with the initial value and again
                 // whenever data at this location is updated.
-
                 User user = dataSnapshot.child(mAuth.getCurrentUser().getUid()).getValue(User.class);
                 email.setText(user.getEmail());
                 username.setText(user.getFirstName()+" "+user.getLastName());
-                //followers.setText(user.getFollowers().size());
-                //following.setText(user.getFollowing().size());
-                //}
 
             }
 

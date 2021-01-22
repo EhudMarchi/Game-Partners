@@ -18,6 +18,7 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.SearchView;
 
 import com.example.gamepartners.R;
@@ -93,6 +94,9 @@ public class ExploreFragment extends Fragment {
                 }
                 postAdapter = new PostAdapter(getContext(),postsArrayList);
                 postsRecyclerView.setAdapter(postAdapter);
+                if(postAdapter.getItemCount()>0) {
+                    getView().findViewById(R.id.loading_panel).setVisibility(View.GONE);
+                }
             }
 
             @Override
@@ -133,11 +137,14 @@ public class ExploreFragment extends Fragment {
                         fab.setClickable(true);
                     }
                 }, WAIT);
-
             }
         });
-        fetchPosts();
-        //populateRecycleView();
+        Thread postsFetchThread = new Thread(new Runnable() {
+            public void run() {
+                fetchPosts();
+                }
+        });
+        postsFetchThread.start();
     }
     @Override
     public void onDestroyView() {
