@@ -39,6 +39,8 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
+
 import static com.shivtechs.maplocationpicker.MapUtility.LATITUDE;
 import static com.shivtechs.maplocationpicker.MapUtility.LONGITUDE;
 import static com.shivtechs.maplocationpicker.MapUtility.currentLocation;
@@ -65,22 +67,6 @@ public class ExploreFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
-    private void populateRecycleView() {
-        Address address = new Address(Locale.getDefault());
-        Post post = new Post(new User("Ehud", "Marchi", "Ehud@gmail.com", "123456","https://cdn1.iconfinder.com/data/icons/user-pictures/100/supportmale-256.png"), new Game(), Calendar.getInstance().getTime(),"Post 1 subject", "This is a post template",18,address.getLocality());
-        postsArrayList.add(post);
-        post = new Post(new User("Yossi", "Cohen", "Yosi@gmail.com", "13513","https://cdn0.iconfinder.com/data/icons/user-pictures/100/matureman1-256.png"), new Game(),Calendar.getInstance().getTime(),"Post 2 subject", "This is a post template 2", 7,address.getLocality());
-        postsArrayList.add(post);
-        post = new Post(new User("Avraham", "Levi", "AVVI@gmail.com", "143436","https://cdn0.iconfinder.com/data/icons/user-pictures/100/maturewoman-3-256.png"), new Game(),Calendar.getInstance().getTime(),"Post 3 subject", "This is a post template 3 ", 11,address.getLocality());
-        postsArrayList.add(post);
-        post = new Post(new User("Dana", "Meron", "danam@gmail.com", "00020225","https://cdn0.iconfinder.com/data/icons/user-pictures/100/supportfemale-2-256.png"), new Game(),Calendar.getInstance().getTime(),"Post 4 subject", "This is a post template 4 ", 22,address.getLocality());
-        postsArrayList.add(post);
-        post = new Post(new User("James", "Williams", "jwil@gmail.com", "00sdgds5","https://cdn1.iconfinder.com/data/icons/santa-emojis/60/004_-_santa_christmas_emoji_cool_sunglasses-256.png"), new Game(),Calendar.getInstance().getTime(),"Post 5 subject", "This is a post template 5 ", 22,address.getLocality());
-        postsArrayList.add(post);
-        post = new Post(new User("Leo", "Messi", "leomessi@gmail.com", "barca454","https://cdn3.iconfinder.com/data/icons/soccer-uniform/128/barcelona.png"), new Game(),Calendar.getInstance().getTime(),"Post 6 subject", "This is a post template 6 ", 22,address.getLocality());
-        postsArrayList.add(post);
-        //postAdapter.notifyDataSetChanged();
-    }
     private void fetchPosts() {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("posts");
         reference.addValueEventListener(new ValueEventListener() {
@@ -94,9 +80,8 @@ public class ExploreFragment extends Fragment {
                 }
                 postAdapter = new PostAdapter(getContext(),postsArrayList);
                 postsRecyclerView.setAdapter(postAdapter);
-                if(postAdapter.getItemCount()>0) {
-                    getView().findViewById(R.id.loading_panel).setVisibility(View.GONE);
-                }
+                getView().findViewById(R.id.loading_panel).setVisibility(View.GONE);
+
             }
 
             @Override

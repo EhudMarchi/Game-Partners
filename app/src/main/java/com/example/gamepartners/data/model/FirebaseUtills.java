@@ -11,6 +11,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import com.bumptech.glide.Glide;
+import com.example.gamepartners.data.model.Game.Game;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.Snackbar;
@@ -37,6 +38,7 @@ public class FirebaseUtills {
     public static User connedtedUser;
     public static FirebaseStorage mStorage;
     public static StorageReference mStorageRef;
+    public static String currentGameImage;
 
     private FirebaseUtills() {
         connedtedUser = GetUser(AuthInitialization().getCurrentUser().getUid());
@@ -85,7 +87,7 @@ public class FirebaseUtills {
     }
     public static String GetGameImageURL(String gameName)
     {
-        final String[] gameImageURL = {""};
+        String hi = "";
         mStorage = FirebaseStorage.getInstance();
         mStorageRef = mStorage.getReference();
         mStorageRef.child("games_images/" + gameName+".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
@@ -93,12 +95,13 @@ public class FirebaseUtills {
             public void onSuccess(Uri uri) {
                 Log.e("image", "url: " + uri.toString());
                 if(!uri.equals(null)) {
-                    gameImageURL[0] = uri.toString();
+                    currentGameImage = uri.toString();
                 }
             }
         });
-        Log.e("image", "game: " + gameImageURL[0]);
-        return gameImageURL[0];
+        Log.e("image", "game: " + currentGameImage);
+        hi = currentGameImage;
+        return hi;
     }
     public static FirebaseUser GetCurrentUser()
     {

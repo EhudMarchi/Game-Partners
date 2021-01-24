@@ -15,7 +15,6 @@ import java.util.ArrayList;
 
 public class Game {
     private String gameName;
-    private int playersAmout;
     private ArrayList<ePlatform> platforms;
     private String gamePictureURL = "";
 
@@ -51,14 +50,6 @@ public class Game {
 
     public void setGameName(String gameName) {
         this.gameName = gameName;
-    }
-
-    public int getPlayersAmout() {
-        return playersAmout;
-    }
-
-    public void setPlayersAmout(int playersAmout) {
-        this.playersAmout = playersAmout;
     }
 
 

@@ -196,6 +196,7 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
     }
+
     private void choosePicture() {
         Intent intent = new Intent();
         intent.setType("image/*");

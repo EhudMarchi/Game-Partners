@@ -31,6 +31,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.gamepartners.R;
 import com.example.gamepartners.data.model.Game.Game;
+import com.example.gamepartners.ui.login.AdminActivity;
 import com.example.gamepartners.ui.login.CreatePostActivity;
 import com.example.gamepartners.ui.login.LoginActivity;
 import com.example.gamepartners.ui.login.MainActivity;
@@ -109,6 +110,18 @@ public class UserProfileFragment extends Fragment {
         });
         postsFetchThread.start();
         settingsAnimation = AnimationUtils.loadAnimation(getContext(),R.anim.settings_in);
+        FloatingActionButton adminFab = getView().findViewById(R.id.fabAdmin);
+        if(mAuth.getCurrentUser().getUid().equals("XqydtRZ3MwSuLXaARTTCuRVGX662"))
+        {
+            adminFab.setVisibility(View.VISIBLE);
+            adminFab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent =new Intent(getContext(), AdminActivity.class);
+                    startActivity(intent);
+                }
+            });
+        }
     }
 
     private void populateRecycleView() {
@@ -141,9 +154,7 @@ public class UserProfileFragment extends Fragment {
                 }
                 postAdapter = new PostAdapter(getContext(),postsArrayList);
                 postsRecyclerView.setAdapter(postAdapter);
-                if(postAdapter.getItemCount()>0) {
-                    getView().findViewById(R.id.loading_panel).setVisibility(View.GONE);
-                }
+                getView().findViewById(R.id.loading_panel).setVisibility(View.GONE);
             }
 
             @Override

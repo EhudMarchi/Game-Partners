@@ -81,30 +81,41 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
-                mCurrLocationMarker.remove();
-                mLastLocation.setLatitude(latLng.latitude);
-                mLastLocation.setLongitude(latLng.longitude);
-                EditText locationSearch = (EditText) findViewById(R.id.searchLocation);
-                List<Address> addressList = null;
-                if (latLng != null) {
-                    Geocoder geocoder = new Geocoder(getBaseContext());
-                    try {
-                        addressList = geocoder.getFromLocation(mLastLocation.getLatitude(), mLastLocation.getLongitude(), 1);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    address = addressList.get(0);
-                    locationSearch.setText(address.getAddressLine(0));
+                try {
+                    setLocationToClicked(latLng);
                 }
-                MarkerOptions markerOptions = new MarkerOptions();
-                markerOptions.position(latLng);
-                markerOptions.title("Selected Location");
-                markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-                mCurrLocationMarker = mMap.addMarker(markerOptions);
-                mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+                catch (Exception e) {
+                    Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_LONG).show();
+
+                }
             }
         });
     }
+
+    private void setLocationToClicked(LatLng latLng) {
+        mCurrLocationMarker.remove();
+        mLastLocation.setLatitude(latLng.latitude);
+        mLastLocation.setLongitude(latLng.longitude);
+        EditText locationSearch = (EditText) findViewById(R.id.searchLocation);
+        List<Address> addressList = null;
+        if (latLng != null) {
+            Geocoder geocoder = new Geocoder(getBaseContext());
+            try {
+                addressList = geocoder.getFromLocation(mLastLocation.getLatitude(), mLastLocation.getLongitude(), 1);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            address = addressList.get(0);
+            locationSearch.setText(address.getAddressLine(0));
+        }
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(latLng);
+        markerOptions.title("Selected Location");
+        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+        mCurrLocationMarker = mMap.addMarker(markerOptions);
+        mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+    }
+
     protected synchronized void buildGoogleApiClient() {
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)

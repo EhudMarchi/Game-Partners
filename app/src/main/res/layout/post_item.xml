@@ -78,7 +78,7 @@
                     android:id="@+id/locationIcon"
                     android:layout_width="15dp"
                     android:layout_height="15dp"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="4dp"
                     android:layout_marginRight="3dp"
                     app:srcCompat="@drawable/location"
                     android:layout_toLeftOf="@id/city"/>
@@ -116,7 +116,6 @@
         android:textColor="@color/white"
         android:textSize="18sp"
         android:textStyle="bold"
-        android:layout_marginTop="2dp"
         android:layout_marginRight="15dp"
         android:layout_marginLeft="15dp"
         android:layout_marginBottom="5dp"
@@ -229,13 +228,50 @@
         </androidx.cardview.widget.CardView>
 </RelativeLayout>
     </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/platformsLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:padding="7dp"
+            android:layout_margin="8dp"
+            android:background="@drawable/dialog">
+            <ImageView
+                android:id="@+id/realityIcon"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:visibility="gone"
+                android:background="@drawable/reality" />
+            <ImageView
+                android:id="@+id/pcIcon"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:visibility="gone"
+                android:layout_toRightOf="@id/realityIcon"
+                android:background="@drawable/pc" />
+            <ImageView
+                android:id="@+id/playstationIcon"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:visibility="gone"
+                android:layout_toRightOf="@+id/pcIcon"
+                android:background="@drawable/playstation" />
+            <ImageView
+                android:id="@+id/xboxIcon"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:visibility="gone"
+                android:layout_toRightOf="@+id/playstationIcon"
+                android:background="@drawable/xbox" />
+        </RelativeLayout>
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/relativeLayoutPostInfo"
         android:layout_below="@id/imgView_postpicLayout"
         android:layout_width="match_parent"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="10dp"
         android:layout_marginRight="15dp"
         android:layout_marginLeft="15dp"
         android:layout_height="wrap_content">
@@ -270,7 +306,7 @@
         android:layout_height="1dp"
         android:layout_below="@id/relativeLayoutPostInfo"
         android:alpha="0.3"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
         android:background="@drawable/seperator"/>
     <LinearLayout
         android:layout_width="match_parent"
@@ -284,6 +320,8 @@
                 android:layout_centerInParent="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:clickable="true"
                 android:foreground="?attr/selectableItemBackground">
                 <ImageView
                     android:layout_width="20dp"
@@ -309,6 +347,8 @@
                 android:layout_centerInParent="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:clickable="true"
                 android:foreground="?attr/selectableItemBackground">
                 <ImageView
                     android:layout_width="20dp"
@@ -334,6 +374,8 @@
                 android:layout_centerInParent="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:clickable="true"
                 android:foreground="?attr/selectableItemBackground">
                 <ImageView
                     android:layout_width="20dp"

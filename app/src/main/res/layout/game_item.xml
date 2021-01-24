@@ -25,7 +25,6 @@
             android:layout_centerVertical="true"
             android:background="@drawable/circle"
             android:scaleType="centerCrop"
-            android:padding="1dp"
             app:shapeAppearanceOverlay="@style/roundedImageViewRounded"
             app:srcCompat="@drawable/default_game"/>
     </androidx.cardview.widget.CardView>

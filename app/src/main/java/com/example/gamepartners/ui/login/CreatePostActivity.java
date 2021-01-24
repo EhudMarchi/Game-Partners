@@ -34,6 +34,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.gamepartners.R;
 import com.example.gamepartners.data.model.Comment;
+import com.example.gamepartners.data.model.ExploreFragment;
 import com.example.gamepartners.data.model.FirebaseUtills;
 import com.example.gamepartners.data.model.Game.Game;
 import com.example.gamepartners.data.model.Game.GameAdapter;
@@ -63,6 +64,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+
+import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 
 public class CreatePostActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
     static final int PICK_MAP_POINT_REQUEST = 999;
@@ -262,13 +265,13 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
         games.add(new Game("Basketball", "https://www.spalding.com/dw/image/v2/ABAH_PRD/on/demandware.static/-/Sites-masterCatalog_SPALDING/default/dwd21974bc/images/hi-res/74876E_FRONT.jpg?sw=555&sh=689&sm=cut&sfrm=jpg", Game.ePlatform.REALITY));
         games.add(new Game("FIFA 21","https://firebasestorage.googleapis.com/v0/b/gamepartners-app.appspot.com/o/games_images%2FFIFA%2021.jpg?alt=media&token=9364af73-bead-4837-8322-0ca2f3d64701", Game.ePlatform.XBOX));
         games.add(new Game("Chess","https://media.wired.com/photos/5f592bfb643fbe1f6e6807ec/191:100/w_2400,h_1256,c_limit/business_chess_1200074974.jpg", Game.ePlatform.REALITY));
-        games.add(new Game("GTA V Online","FIF A21", Game.ePlatform.PLAYSTATION));
-        games.add(new Game("Soccer","FIFA21", Game.ePlatform.REALITY));
-        games.add(new Game("Tennis","FIFA21", Game.ePlatform.REALITY));
-        games.add(new Game("Call of Duty:WARZONE","FIFA21", Game.ePlatform.PC));
-        games.add(new Game("Baseball","FIFA21", Game.ePlatform.REALITY));
+        games.add(new Game("GTA V Online","https://media.rockstargames.com/rockstargames-newsite/uploads/3318f4e14af22baef853213b01a8390ca6921c2b.jpg", Game.ePlatform.PLAYSTATION));
+        games.add(new Game("Soccer",FirebaseUtills.GetGameImageURL("Soccer"), Game.ePlatform.REALITY));
+        games.add(new Game("Tennis","https://images.unsplash.com/photo-1599586120162-c282f39edd1e?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80", Game.ePlatform.REALITY));
+        games.add(new Game("Call of Duty:WARZONE","https://image.api.playstation.com/vulcan/img/rnd/202010/2321/QXm5Ob9MLo2YPVF1Xg4oBaCr.jpg?w=440", Game.ePlatform.PC));
+        games.add(new Game("Baseball","https://images.unsplash.com/photo-1475440197469-e367ec8eeb19?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1050&q=80", Game.ePlatform.REALITY));
         games.add(new Game("League of Legends","FIFA21", Game.ePlatform.PC));
-        games.add(new Game("Table Tennis","FIFA21", Game.ePlatform.REALITY));
+        games.add(new Game("Table Tennis","https://nwscdn.com/media/wysiwyg/3kf/Bat-and-ball-included-in-the-set.jpg", Game.ePlatform.REALITY));
         games.add(new Game("NBA 2K21","FIFA21", Game.ePlatform.PLAYSTATION));
         games.add(new Game("Fortnite","FIFA21", Game.ePlatform.XBOX));
         games.add(new Game("Apex Legends","FIFA21", Game.ePlatform.PC));
@@ -291,8 +294,9 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
                 if(task.isSuccessful())
                 {
                     dialog.dismiss();
-                    Toast.makeText(CreatePostActivity.this, "Post Uploaded Successfully!",
-                            Toast.LENGTH_SHORT).show();
+                    finish();
+                    Toast.makeText(getBaseContext(), "Post Uploaded Successfully!",
+                            Toast.LENGTH_LONG).show();
                 }
             }
         });

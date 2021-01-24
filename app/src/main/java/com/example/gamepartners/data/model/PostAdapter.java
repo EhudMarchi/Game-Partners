@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.example.gamepartners.R;
+import com.example.gamepartners.data.model.Game.Game;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -59,6 +60,21 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         //holder.address.setText(post.getLocation().getAddressLine(0));
         glide.load(post.getPublisher().getProflieImageURL()).into(holder.imgViewProfilePic);
         glide.load(post.getGame().getGamePictureURL()).into(holder.ImgViewPostPic);
+        if(post.getGame().getPlatforms().contains(Game.ePlatform.REALITY))
+        {
+            holder.realityIcon.setVisibility(View.VISIBLE);
+        }
+        else {
+            if (post.getGame().getPlatforms().contains(Game.ePlatform.PC)) {
+                holder.pcIcon.setVisibility(View.VISIBLE);
+            }
+            if (post.getGame().getPlatforms().contains(Game.ePlatform.PLAYSTATION)) {
+                holder.playstaionIcon.setVisibility(View.VISIBLE);
+            }
+            if (post.getGame().getPlatforms().contains(Game.ePlatform.XBOX)) {
+                holder.xboxIcon.setVisibility(View.VISIBLE);
+            }
+        }
 
     }
 
@@ -69,13 +85,16 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
     public class MyViewHolder extends RecyclerView.ViewHolder
     {
         TextView username, time, likes, comments, gameName, subject, description, city, address;
-        ImageView imgViewProfilePic, ImgViewPostPic;
+        ImageView imgViewProfilePic, ImgViewPostPic, realityIcon, pcIcon, playstaionIcon, xboxIcon;;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             imgViewProfilePic = (ImageView)itemView.findViewById(R.id.imgView_profilePic);
             ImgViewPostPic = (ImageView)itemView.findViewById(R.id.imgView_postpic);
-
+            realityIcon = (ImageView)itemView.findViewById(R.id.realityIcon);
+            pcIcon = (ImageView)itemView.findViewById(R.id.pcIcon);
+            playstaionIcon = (ImageView)itemView.findViewById(R.id.playstationIcon);
+            xboxIcon = (ImageView)itemView.findViewById(R.id.xboxIcon);
             username = (TextView)itemView.findViewById(R.id.username);
             time = (TextView)itemView.findViewById(R.id.time);
             gameName =(TextView)itemView.findViewById(R.id.postGame);
