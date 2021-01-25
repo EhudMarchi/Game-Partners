@@ -35,7 +35,7 @@
         android:gravity="center"
         android:paddingBottom="5dp"
         android:paddingTop="5dp"
-        android:padding="15dp"
+        android:padding="8dp"
         android:background="@drawable/post_card">
         <EditText
             android:id="@+id/newGameName"

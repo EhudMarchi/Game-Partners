@@ -4,22 +4,27 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.gamepartners.R;
 import com.example.gamepartners.data.model.Game.Game;
+import com.example.gamepartners.data.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.chip.Chip;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class AdminActivity extends AppCompatActivity {
     private DatabaseReference myRef;
     public Chip reality, pc, playstation, xbox;
-    public boolean realityCheck = false, pcCheck = false, playstationCheck = false, xboxCheck = false;
+    public boolean realityCheck = false, pcCheck = false, playstationCheck = false, xboxCheck = false, isExist = false;
     EditText addGameName, gameImageURL, deleteGameName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,5 +126,40 @@ public class AdminActivity extends AppCompatActivity {
     }
 
     public void deleteGame(View view) {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        myRef = database.getReference("games");
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                int i =0;
+                for (DataSnapshot game :dataSnapshot.getChildren()) {
+                    if(game.getValue(Game.class).getGameName().equals(deleteGameName.getText().toString()))
+                    {
+                        isExist = true;
+                        break;
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+            }
+        });
+        if(isExist) {
+            myRef = database.getReference("games").child(deleteGameName.getText().toString());
+            myRef.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    Toast.makeText(getBaseContext(), deleteGameName.getText().toString() + " Removed Successfully!",
+                            Toast.LENGTH_LONG).show();
+                    deleteGameName.setText("");
+                }
+            });
+        }
+        else
+        {
+            Toast.makeText(getBaseContext(), deleteGameName.getText().toString() + " Do Not Exist!",
+                    Toast.LENGTH_LONG).show();
+        }
     }
 }
