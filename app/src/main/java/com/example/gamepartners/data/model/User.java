@@ -137,6 +137,6 @@ public class User {
 
     public void setProflieImageURL(String proflieImageURL) {
         this.proflieImageURL = proflieImageURL;
-        FirebaseUtills.ChangeProfileImageUrl(proflieImageURL);
+        //FirebaseUtills.ChangeProfileImageUrl(proflieImageURL);
     }
 }

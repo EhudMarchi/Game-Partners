@@ -1,8 +1,6 @@
 package com.example.gamepartners.data.model;
 
-import com.example.gamepartners.R;
 import com.example.gamepartners.data.model.Chat.Chat;
-import com.google.firebase.database.annotations.Nullable;
 
 import java.util.List;
 
@@ -11,7 +9,7 @@ public class Group implements IJoinable{
     private String adminUID;
     private List<User> groupFriends;
     private Chat chat;
-    private String proflieImageURL;
+    private String groupImageURL;
 
     public Group() {
     }
@@ -42,12 +40,12 @@ public class Group implements IJoinable{
         this.groupName = groupName;
     }
 
-    public String getProflieImageURL() {
-        return proflieImageURL;
+    public String getGroupImageURL() {
+        return groupImageURL;
     }
 
-    public void setProflieImageURL(String proflieImageURL) {
-        this.proflieImageURL = proflieImageURL;
+    public void setGroupImageURL(String groupImageURL) {
+        this.groupImageURL = groupImageURL;
     }
 
     public List<User> getGroupFriends() {

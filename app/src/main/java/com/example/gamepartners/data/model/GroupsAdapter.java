@@ -3,26 +3,18 @@ package com.example.gamepartners.data.model;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.example.gamepartners.R;
 import com.example.gamepartners.ui.login.ChatActivity;
-import com.example.gamepartners.ui.login.CreatePostActivity;
-import com.example.gamepartners.ui.login.LoginActivity;
-import com.example.gamepartners.ui.login.MainActivity;
-import com.google.android.material.snackbar.Snackbar;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHolder> {
@@ -54,8 +46,8 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
         if(group.getGroupFriends ()!= null) {
             holder.participantsAmount.setText(group.getGroupFriends().size() + " Members");
         }
-        if(group.getProflieImageURL()!=null) {
-            glide.load(group.getProflieImageURL()).into(holder.imgViewGroupImage);
+        if(group.getGroupImageURL()!=null) {
+            glide.load(group.getGroupImageURL()).into(holder.imgViewGroupImage);
         }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

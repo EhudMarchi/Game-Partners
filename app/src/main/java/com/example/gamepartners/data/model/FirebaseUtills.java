@@ -12,8 +12,10 @@ import androidx.annotation.NonNull;
 
 import com.bumptech.glide.Glide;
 import com.example.gamepartners.data.model.Game.Game;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -29,19 +31,44 @@ import com.google.firebase.storage.UploadTask;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class FirebaseUtills {
     private  static FirebaseUtills mSingleInstance = null;
     private static FirebaseAuth mAuth;
     private static FirebaseUser mUser;
-    private static DatabaseReference myRef;
+    public static DatabaseReference myRef;
     public static User connedtedUser;
     public static FirebaseStorage mStorage;
     public static StorageReference mStorageRef;
     public static String currentGameImage;
+    public static ArrayList<Game> games;
 
     private FirebaseUtills() {
         connedtedUser = GetUser(AuthInitialization().getCurrentUser().getUid());
+        myRef = FirebaseDatabase.getInstance().getReference();
+        games = new ArrayList<>();
+        fetchGames();
+    }
+
+    private void fetchGames() {
+        myRef = FirebaseDatabase.getInstance().getReference().child("games");
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot game :dataSnapshot.getChildren()) {
+                    Game libraryGame = game.getValue(Game.class);
+                    assert libraryGame !=null;
+                    Log.d("result", libraryGame.getGameName());
+                    games.add(libraryGame);
+                }
+                Log.d("result", String.valueOf(games.size()));
+            }
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+            }
+        });
     }
 
     public static FirebaseUtills GetInstance()
@@ -76,7 +103,7 @@ public class FirebaseUtills {
     public static void ChangeProfileImageUrl(String url)
     {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("users").child(GetCurrentUser().getUid()).child("proflieImageURL");
+        DatabaseReference myRef = database.getReference("users").child(connedtedUser.getUid()).child("proflieImageURL");
         myRef.setValue(url);
     }
     public static FirebaseAuth AuthInitialization()
@@ -85,24 +112,7 @@ public class FirebaseUtills {
 
         return mAuth;
     }
-    public static String GetGameImageURL(String gameName)
-    {
-        String hi = "";
-        mStorage = FirebaseStorage.getInstance();
-        mStorageRef = mStorage.getReference();
-        mStorageRef.child("games_images/" + gameName+".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-                Log.e("image", "url: " + uri.toString());
-                if(!uri.equals(null)) {
-                    currentGameImage = uri.toString();
-                }
-            }
-        });
-        Log.e("image", "game: " + currentGameImage);
-        hi = currentGameImage;
-        return hi;
-    }
+
     public static FirebaseUser GetCurrentUser()
     {
         mUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -133,5 +143,9 @@ public class FirebaseUtills {
         });
 
         return appUser[0];
+    }
+    public void UpdatePostLikes(Post i_Post)
+    {
+
     }
 }

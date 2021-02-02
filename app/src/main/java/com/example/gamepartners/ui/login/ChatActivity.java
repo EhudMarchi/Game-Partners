@@ -148,7 +148,7 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //add message
-                final Message message = new Message(user.getUid(), user.getDisplayName(), inputMessage.getText().toString());
+                final Message message = new Message(user.getUid(), user.getDisplayName(), inputMessage.getText().toString(), Message.eMessageType.USER_MESSAGE);
                 if (!message.getText().equals("")) {
                     m_ChatMessages.add(message);
 
@@ -157,6 +157,7 @@ public class ChatActivity extends AppCompatActivity {
                     hashMap.put("senderUID", FirebaseUtills.connedtedUser.getUid());
                     hashMap.put("senderDisplayName", FirebaseUtills.connedtedUser.getFirstName()+" "+FirebaseUtills.connedtedUser.getLastName());
                     hashMap.put("text", message.getText());
+                    hashMap.put("type", message.getType().toString());
                     reference.push().setValue(hashMap);
                     reference.addValueEventListener(new ValueEventListener() {
                         @Override
@@ -203,7 +204,31 @@ public class ChatActivity extends AppCompatActivity {
         intent.setAction(intent.ACTION_GET_CONTENT);
         startActivityForResult(intent,1);
     }
+private void addGroupMessage(String i_Message)
+{
+    final Message message = new Message(user.getUid(), user.getDisplayName(), i_Message, Message.eMessageType.GROUP_MESSAGE);
+    if (!message.getText().equals("")) {
+        m_ChatMessages.add(message);
+        reference = FirebaseDatabase.getInstance().getReference("groups").child(groupNameView.getText().toString()).child("chat");
+        HashMap<String, String> hashMap = new HashMap<>();
+        hashMap.put("text", message.getText());
+        hashMap.put("type", message.getType().toString());
+        reference.push().setValue(hashMap);
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
 
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        inputMessage.setText("");
+    }
+}
 //    @Override
 //    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
 //        super.onActivityResult(requestCode, resultCode, data);
@@ -299,6 +324,7 @@ public class ChatActivity extends AppCompatActivity {
                     groupFriendsMap.put("lastName",selectedUser.getLastName());
                     groupFriendsMap.put("proflieImageURL",selectedUser.getProflieImageURL());
                     reference.child(selectedUser.getUid()).setValue(groupFriendsMap);
+                    addGroupMessage(selectedUser.getFirstName()+" "+selectedUser.getLastName()+" joined");
                 }
             }
         });
@@ -373,7 +399,7 @@ public class ChatActivity extends AppCompatActivity {
                     //Message message = new Message(user.getUid(),user.getDisplayName(),"hello");
                     m_ChatMessages.add(message);
                 }
-                messagesAdapter = new MessageAdapter(m_ChatMessages);
+                messagesAdapter = new MessageAdapter(getBaseContext(), m_ChatMessages);
                 messagesRecyclerView.setAdapter(messagesAdapter);
             }
 

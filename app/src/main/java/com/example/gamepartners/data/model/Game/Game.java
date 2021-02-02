@@ -29,11 +29,10 @@ public class Game {
         XBOX
     }
 
-    public Game(String gameName, String gamePictureURL, ePlatform platform) {
+    public Game(String gameName, String gamePictureURL, ArrayList<ePlatform> platforms) {
         this.gameName = gameName;
         this.gamePictureURL = gamePictureURL;
-        this.platforms = new ArrayList<ePlatform>();
-        platforms.add(platform);
+        this.platforms = platforms;
     }
 
     public String getGamePictureURL() {

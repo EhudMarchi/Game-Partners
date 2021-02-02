@@ -21,6 +21,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+
 public class AdminActivity extends AppCompatActivity {
     private DatabaseReference myRef;
     public Chip reality, pc, playstation, xbox;
@@ -98,7 +100,27 @@ public class AdminActivity extends AppCompatActivity {
         if(validateGame()) {
             FirebaseDatabase database = FirebaseDatabase.getInstance();
             myRef = database.getReference("games").child(addGameName.getText().toString());
-            Game newGame = new Game(addGameName.getText().toString(), gameImageURL.getText().toString(), Game.ePlatform.PC);
+            ArrayList<Game.ePlatform> platforms = new ArrayList<>();
+            if(realityCheck)
+            {
+                platforms.add(Game.ePlatform.REALITY);
+            }
+            else
+            {
+                if(pcCheck)
+                {
+                    platforms.add(Game.ePlatform.PC);
+                }
+                if(playstationCheck)
+                {
+                    platforms.add(Game.ePlatform.PLAYSTATION);
+                }
+                if(xboxCheck)
+                {
+                    platforms.add(Game.ePlatform.XBOX);
+                }
+            }
+            Game newGame = new Game(addGameName.getText().toString(), gameImageURL.getText().toString(), platforms);
             myRef.setValue(newGame).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {

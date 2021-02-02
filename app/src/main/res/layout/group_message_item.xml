@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+
+    >
+    <ImageView
+        android:id="@+id/imgViewLine"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="5dp"
+        android:alpha="0.3"
+        android:background="@drawable/seperator"/>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:background="@color/darkPurple">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_centerHorizontal="true"
+        android:text="Group Message"
+        android:padding="10dp"
+        android:textSize="13sp"
+        android:textColor="@color/white"
+        android:id="@+id/group_message"
+        android:alpha="0.85"
+        android:layout_marginLeft="5dp" />
+    </RelativeLayout>
+
+
+</RelativeLayout>

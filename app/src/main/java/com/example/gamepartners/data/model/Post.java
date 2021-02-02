@@ -155,11 +155,11 @@ public  class Post implements IPostable, ILikeable {
 
     @Override
     public void Like() {
-
+        this.likes++;
     }
 
     @Override
     public void Dislike() {
-
+        this.likes--;
     }
 }

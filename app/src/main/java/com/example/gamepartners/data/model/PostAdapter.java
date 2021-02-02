@@ -1,12 +1,17 @@
 package com.example.gamepartners.data.model;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.text.format.Time;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -45,7 +50,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void onBindViewHolder(@NonNull PostAdapter.MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final PostAdapter.MyViewHolder holder, int position) {
         final Post post = postArrayList.get(position);
         postId = post.getPostID();
         holder.username.setText(post.getPublisher().getFirstName() +" "+ post.getPublisher().getLastName());
@@ -75,7 +80,37 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
                 holder.xboxIcon.setVisibility(View.VISIBLE);
             }
         }
+        holder.like.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("ResourceAsColor")
+            @Override
+            public void onClick(View v) {
+                if(!holder.isLiked) {
+                    post.Like();
+                    holder.likeText.setText("Liked");
+                    holder.isLiked = true;
+                }
+                else
+                {
+                    post.Dislike();
+                    holder.likeText.setText("Like");
+                    holder.isLiked = false;
+                }
+                    holder.likes.setText(String.valueOf(post.getLikes()));
 
+            }
+        });
+        holder.comment.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("ResourceType")
+            @Override
+            public void onClick(View v) {
+                holder.comment.setClickable(false);
+                Dialog dialog = new Dialog(context);
+                dialog.setContentView(R.layout.comment_item);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.show();
+                holder.comment.setClickable(true);
+            }
+        });
     }
 
     @Override
@@ -84,11 +119,15 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
     }
     public class MyViewHolder extends RecyclerView.ViewHolder
     {
-        TextView username, time, likes, comments, gameName, subject, description, city, address;
-        ImageView imgViewProfilePic, ImgViewPostPic, realityIcon, pcIcon, playstaionIcon, xboxIcon;;
-
+        private boolean isLiked=false;
+        TextView username, time, likes, comments, gameName, subject, description, city, address , likeText;
+        ImageView imgViewProfilePic, ImgViewPostPic, realityIcon, pcIcon, playstaionIcon, xboxIcon;
+        LinearLayout like , comment;
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
+            like = (LinearLayout)itemView.findViewById(R.id.like);
+            likeText = (TextView)itemView.findViewById(R.id.likeText);
+            comment = (LinearLayout)itemView.findViewById(R.id.comment);
             imgViewProfilePic = (ImageView)itemView.findViewById(R.id.imgView_profilePic);
             ImgViewPostPic = (ImageView)itemView.findViewById(R.id.imgView_postpic);
             realityIcon = (ImageView)itemView.findViewById(R.id.realityIcon);
