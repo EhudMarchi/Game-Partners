@@ -1,13 +1,17 @@
 package com.example.gamepartners.data.model.Chat;
 
+import com.example.gamepartners.data.model.FirebaseUtills;
 import com.example.gamepartners.data.model.Game.Game;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 public class Message {
     private String senderUID;
     private String senderDisplayName;
     private String text;
+    private Date timeSent;
     private Message.eMessageType type;
     public enum eMessageType {
         USER_MESSAGE,
@@ -16,9 +20,24 @@ public class Message {
 
     public Message(String senderUID, String senderDisplayName, String text, Message.eMessageType type) {
         this.senderUID = senderUID;
-        this.senderDisplayName = senderDisplayName;
+        if(senderDisplayName != null) {
+            this.senderDisplayName = senderDisplayName;
+        }
+        else
+        {
+            this.senderDisplayName = FirebaseUtills.connedtedUser.getFirstName()+" "+FirebaseUtills.connedtedUser.getLastName();
+        }
         this.text = text;
         this.type = type;
+        this.timeSent = Calendar.getInstance().getTime();
+    }
+
+    public Date getTimeSent() {
+        return timeSent;
+    }
+
+    public void setTimeSent(Date timeSent) {
+        this.timeSent = timeSent;
     }
 
     public eMessageType getType() {

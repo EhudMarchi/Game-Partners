@@ -23,6 +23,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
@@ -81,6 +82,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         final Message message = mChat.get(position);
         if(message.getType() == Message.eMessageType.USER_MESSAGE) {
             holder.show_message.setText(message.getText());
+            SimpleDateFormat format = new SimpleDateFormat("HH:mm");
+            String dateString = format.format(message.getTimeSent());
+            holder.time_sent.setText(dateString);
             final FirebaseAuth mAuth = FirebaseAuth.getInstance();
             if (!message.getSenderUID().equals(mAuth.getUid())) {
                 holder.senderName.setText(message.getSenderDisplayName());
@@ -118,7 +122,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView show_message, senderName ,group_message;
+        TextView show_message, senderName ,group_message, time_sent;
         ImageView profile_image;
         //public TextView txt_seen;
 
@@ -129,6 +133,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             senderName = itemView.findViewById(R.id.senderName);
             profile_image = itemView.findViewById(R.id.chat_image_left);
             group_message = itemView.findViewById(R.id.group_message);
+            time_sent = itemView.findViewById(R.id.message_time);
             //profile_image = itemView.findViewById(R.id.chat_image_left);
             //txt_seen = itemView.findViewById(R.id.txt_seen);
 

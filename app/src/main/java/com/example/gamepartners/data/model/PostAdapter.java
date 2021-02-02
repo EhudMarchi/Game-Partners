@@ -19,6 +19,11 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.example.gamepartners.R;
 import com.example.gamepartners.data.model.Game.Game;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -63,7 +68,24 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         holder.likes.setText(String.valueOf(post.getLikes()));
         holder.city.setText(post.getCity());
         //holder.address.setText(post.getLocation().getAddressLine(0));
-        glide.load(post.getPublisher().getProflieImageURL()).into(holder.imgViewProfilePic);
+        DatabaseReference mRef = FirebaseDatabase.getInstance().getReference().child("users");
+        mRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot user : snapshot.getChildren()) {
+                    if (user.getValue(User.class).getEmail().equals(post.getPublisher().getEmail())) {
+                        User publisher = user.getValue(User.class);
+                        assert publisher != null;
+                        glide.load(publisher.getProflieImageURL()).into(holder.imgViewProfilePic);
+                        break;
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+        //glide.load(post.getPublisher().getUid()).into(holder.imgViewProfilePic);
         glide.load(post.getGame().getGamePictureURL()).into(holder.ImgViewPostPic);
         if(post.getGame().getPlatforms().contains(Game.ePlatform.REALITY))
         {

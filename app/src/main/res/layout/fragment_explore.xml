@@ -17,6 +17,16 @@
         android:queryHint="Search"
         app:actionViewClass="android.widget.SearchView"
         app:showAsAction="ifRoom|collapseActionView"/>
+    <TextView
+        android:id="@+id/no_posts"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:text="No Posts"
+        android:textColor="@color/white"
+        android:textSize="20dp"
+        android:visibility="gone"/>
     <ProgressBar
         android:id="@+id/loading_panel"
         android:layout_width="150dp"

@@ -81,6 +81,10 @@ public class ExploreFragment extends Fragment {
                 postAdapter = new PostAdapter(getContext(),postsArrayList);
                 postsRecyclerView.setAdapter(postAdapter);
                 getView().findViewById(R.id.loading_panel).setVisibility(View.GONE);
+                if(postsArrayList.size()<1)
+                {
+                getView().findViewById(R.id.no_posts).setVisibility(View.VISIBLE);
+                }
 
             }
 

@@ -43,6 +43,7 @@ public class FirebaseUtills {
     public static StorageReference mStorageRef;
     public static String currentGameImage;
     public static ArrayList<Game> games;
+    public static HashMap<String, String> userGroups;
 
     private FirebaseUtills() {
         connedtedUser = GetUser(AuthInitialization().getCurrentUser().getUid());
@@ -70,7 +71,39 @@ public class FirebaseUtills {
             }
         });
     }
+    public static void createGroup(final String i_GroupName)
+    {
+        FirebaseAuth mAuth =FirebaseAuth.getInstance();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("groups").child(i_GroupName);
+        HashMap<String, String> hashMap = new HashMap<>();
+        hashMap.put("adminUID",mAuth.getUid());
+        hashMap.put("groupName",i_GroupName);
+        hashMap.put("chat",i_GroupName+mAuth.getUid());
 
+        reference.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful())
+                {
+
+                }
+            }
+        });
+        reference = FirebaseDatabase.getInstance().getReference("groups").child(i_GroupName).child("groupFriends");
+        HashMap<String, String> groupFriendsMap = new HashMap<>();
+        groupFriendsMap.put("uid",FirebaseUtills.connedtedUser.getUid());
+        groupFriendsMap.put("firstName",FirebaseUtills.connedtedUser.getFirstName());
+        groupFriendsMap.put("lastName",FirebaseUtills.connedtedUser.getLastName());
+        groupFriendsMap.put("proflieImageURL",FirebaseUtills.connedtedUser.getProflieImageURL());
+        groupFriendsMap.put("uid",mAuth.getCurrentUser().getUid());
+        reference.child(mAuth.getUid()).setValue(groupFriendsMap);
+        reference = FirebaseDatabase.getInstance().getReference("users").child(mAuth.getUid()).child("userGroups").child(i_GroupName);
+        userGroups = new HashMap<>();
+        userGroups.put("adminUID",mAuth.getUid());
+        userGroups.put("groupName",i_GroupName);
+        userGroups.put("chat",i_GroupName+mAuth.getUid());
+        reference.setValue(userGroups);
+    }
     public static FirebaseUtills GetInstance()
     {
         if(mSingleInstance == null)

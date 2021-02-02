@@ -14,6 +14,7 @@
         android:layout_marginRight="5dp"
         android:src="@mipmap/ic_launcher"/>
         <RelativeLayout
+            android:padding="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/chat_image_left"
@@ -25,9 +26,8 @@
             android:layout_marginStart="5dp"
             android:text="Name"
             android:textColor="@color/white"
-            android:paddingTop="8dp"
+
             android:paddingRight="10dp"
-            android:paddingLeft="8dp"
             android:translationZ="2dp"
             android:textSize="15sp"
             android:textStyle="bold"
@@ -41,11 +41,22 @@
         android:text="@string/hello"
         android:textColor="@color/white"
         android:paddingRight="10dp"
-        android:paddingBottom="8dp"
-        android:paddingLeft="8dp"
         android:textSize="18sp"
         android:id="@+id/show_message"
         android:layout_marginLeft="5dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:text="00:00"
+                android:padding="2dp"
+                android:textSize="11sp"
+                android:alpha="0.9"
+                android:layout_below="@id/show_message"
+                android:textColor="@color/white"
+                android:id="@+id/message_time"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="5dp" />
 </RelativeLayout>
     </RelativeLayout>
 </RelativeLayout>

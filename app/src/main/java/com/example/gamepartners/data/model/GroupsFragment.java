@@ -103,7 +103,7 @@ public class GroupsFragment extends Fragment {
                                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        createNewGroup(taskEditText.getText().toString());
+                                        FirebaseUtills.createGroup(taskEditText.getText().toString());
                                     }
                                 })
                                 .create();
@@ -114,39 +114,6 @@ public class GroupsFragment extends Fragment {
 
             }
         });
-    }
-
-    private void createNewGroup(final String i_GroupName) {
-        FirebaseAuth mAuth =FirebaseAuth.getInstance();
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("groups").child(i_GroupName);
-        HashMap<String, String> hashMap = new HashMap<>();
-        hashMap.put("adminUID",mAuth.getUid());
-        hashMap.put("groupName",i_GroupName);
-        hashMap.put("chat",i_GroupName+mAuth.getUid());
-
-        reference.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if(task.isSuccessful())
-                {
-
-                }
-            }
-        });
-        reference = FirebaseDatabase.getInstance().getReference("groups").child(i_GroupName).child("groupFriends");
-        HashMap<String, String> groupFriendsMap = new HashMap<>();
-        groupFriendsMap.put("uid",FirebaseUtills.connedtedUser.getUid());
-        groupFriendsMap.put("firstName",FirebaseUtills.connedtedUser.getFirstName());
-        groupFriendsMap.put("lastName",FirebaseUtills.connedtedUser.getLastName());
-        groupFriendsMap.put("proflieImageURL",FirebaseUtills.connedtedUser.getProflieImageURL());
-        groupFriendsMap.put("uid",mAuth.getCurrentUser().getUid());
-        reference.child(mAuth.getUid()).setValue(groupFriendsMap);
-        reference = FirebaseDatabase.getInstance().getReference("users").child(mAuth.getUid()).child("userGroups").child(i_GroupName);
-        userGroups = new HashMap<>();
-        userGroups.put("adminUID",mAuth.getUid());
-        userGroups.put("groupName",i_GroupName);
-        userGroups.put("chat",i_GroupName+mAuth.getUid());
-        reference.setValue(userGroups);
     }
 
     private void fetchGroups() {

@@ -35,10 +35,13 @@ import com.example.gamepartners.data.model.Chat.MessageAdapter;
 import com.example.gamepartners.data.model.FirebaseUtills;
 import com.example.gamepartners.data.model.Group;
 import com.example.gamepartners.data.model.GroupsAdapter;
+import com.example.gamepartners.data.model.Post;
 import com.example.gamepartners.data.model.User;
 import com.example.gamepartners.data.model.UserAdapter;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.common.net.InternetDomainName;
 import com.google.firebase.auth.FirebaseAuth;
@@ -92,7 +95,6 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         user = FirebaseAuth.getInstance().getCurrentUser();
-        User sender = new User();
         groupNameView = findViewById(R.id.chat_groupname);
         inputMessage = findViewById(R.id.chat_text_input);
         groupImage = findViewById(R.id.group_img);
@@ -148,27 +150,16 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //add message
+                reference = FirebaseDatabase.getInstance().getReference("groups").child(groupName).child("chat");
                 final Message message = new Message(user.getUid(), user.getDisplayName(), inputMessage.getText().toString(), Message.eMessageType.USER_MESSAGE);
                 if (!message.getText().equals("")) {
                     m_ChatMessages.add(message);
-
-                    reference = FirebaseDatabase.getInstance().getReference("groups").child(groupNameView.getText().toString()).child("chat");
-                    HashMap<String, String> hashMap = new HashMap<>();
-                    hashMap.put("senderUID", FirebaseUtills.connedtedUser.getUid());
-                    hashMap.put("senderDisplayName", FirebaseUtills.connedtedUser.getFirstName()+" "+FirebaseUtills.connedtedUser.getLastName());
-                    hashMap.put("text", message.getText());
-                    hashMap.put("type", message.getType().toString());
-                    reference.push().setValue(hashMap);
-                    reference.addValueEventListener(new ValueEventListener() {
+                    reference.push().setValue(message).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if(task.isSuccessful())
+                            {
+                            }
                         }
                     });
                     inputMessage.setText("");

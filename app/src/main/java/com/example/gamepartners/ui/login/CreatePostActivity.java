@@ -23,6 +23,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -38,6 +39,7 @@ import com.example.gamepartners.data.model.ExploreFragment;
 import com.example.gamepartners.data.model.FirebaseUtills;
 import com.example.gamepartners.data.model.Game.Game;
 import com.example.gamepartners.data.model.Game.GameAdapter;
+import com.example.gamepartners.data.model.GroupsFragment;
 import com.example.gamepartners.data.model.IJoinable;
 import com.example.gamepartners.data.model.Post;
 import com.example.gamepartners.data.model.User;
@@ -83,6 +85,7 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
     public Chip reality, pc, playstation, xbox;
     public boolean realityCheck = true, pcCheck = true, playstationCheck = true, xboxCheck = true;
     private ProgressDialog uploadProgress;
+    CheckBox createGroupChat;
     String subject="", description="";
     Dialog dialog;
     @Override
@@ -267,10 +270,11 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
     public void createPost(final View view) throws ParseException {
         subject =((EditText)dialog.findViewById(R.id.subject)).getText().toString();
         description =((EditText)dialog.findViewById(R.id.description)).getText().toString();
+        createGroupChat =(CheckBox)dialog.findViewById(R.id.createGroupCheckBox);
         uploadProgress.show();
         FirebaseAuth mAuth =FirebaseAuth.getInstance();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("posts");
-        User user = new User(FirebaseUtills.connedtedUser.getFirstName(),FirebaseUtills.connedtedUser.getLastName(),mAuth.getCurrentUser().getEmail(),FirebaseUtills.connedtedUser.getProflieImageURL());
+        User user = new User(FirebaseUtills.connedtedUser.getFirstName(),FirebaseUtills.connedtedUser.getLastName(),mAuth.getCurrentUser().getEmail());
         Post post = new Post(user, selectedGame, new Date(), subject, description,0, selectedAddress.getLocality());
         reference.push().setValue(post).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -284,6 +288,10 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
                 }
             }
         });
+        if(createGroupChat.isChecked())
+        {
+            FirebaseUtills.createGroup(subject);
+        }
 //        reference = FirebaseDatabase.getInstance().getReference("users").child(mAuth.getUid()).child("userPosts");
 //        reference.push().setValue(post);
         uploadProgress.dismiss();
