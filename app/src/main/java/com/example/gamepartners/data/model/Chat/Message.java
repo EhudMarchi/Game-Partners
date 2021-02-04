@@ -1,9 +1,7 @@
 package com.example.gamepartners.data.model.Chat;
 
-import com.example.gamepartners.data.model.FirebaseUtills;
-import com.example.gamepartners.data.model.Game.Game;
+import com.example.gamepartners.data.model.GamePartnerUtills;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -25,7 +23,7 @@ public class Message {
         }
         else
         {
-            this.senderDisplayName = FirebaseUtills.connedtedUser.getFirstName()+" "+FirebaseUtills.connedtedUser.getLastName();
+            this.senderDisplayName = GamePartnerUtills.connedtedUser.getFirstName()+" "+ GamePartnerUtills.connedtedUser.getLastName();
         }
         this.text = text;
         this.type = type;

@@ -1,22 +1,12 @@
 package com.example.gamepartners.data.model;
 
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.util.Log;
-import android.view.View;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import com.bumptech.glide.Glide;
 import com.example.gamepartners.data.model.Game.Game;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -25,16 +15,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class FirebaseUtills {
-    private  static FirebaseUtills mSingleInstance = null;
+public class GamePartnerUtills {
+    private  static GamePartnerUtills mSingleInstance = null;
     private static FirebaseAuth mAuth;
     private static FirebaseUser mUser;
     public static DatabaseReference myRef;
@@ -45,7 +32,7 @@ public class FirebaseUtills {
     public static ArrayList<Game> games;
     public static HashMap<String, String> userGroups;
 
-    private FirebaseUtills() {
+    private GamePartnerUtills() {
         connedtedUser = GetUser(AuthInitialization().getCurrentUser().getUid());
         myRef = FirebaseDatabase.getInstance().getReference();
         games = new ArrayList<>();
@@ -91,10 +78,10 @@ public class FirebaseUtills {
         });
         reference = FirebaseDatabase.getInstance().getReference("groups").child(i_GroupName).child("groupFriends");
         HashMap<String, String> groupFriendsMap = new HashMap<>();
-        groupFriendsMap.put("uid",FirebaseUtills.connedtedUser.getUid());
-        groupFriendsMap.put("firstName",FirebaseUtills.connedtedUser.getFirstName());
-        groupFriendsMap.put("lastName",FirebaseUtills.connedtedUser.getLastName());
-        groupFriendsMap.put("proflieImageURL",FirebaseUtills.connedtedUser.getProflieImageURL());
+        groupFriendsMap.put("uid", GamePartnerUtills.connedtedUser.getUid());
+        groupFriendsMap.put("firstName", GamePartnerUtills.connedtedUser.getFirstName());
+        groupFriendsMap.put("lastName", GamePartnerUtills.connedtedUser.getLastName());
+        groupFriendsMap.put("proflieImageURL", GamePartnerUtills.connedtedUser.getProflieImageURL());
         groupFriendsMap.put("uid",mAuth.getCurrentUser().getUid());
         reference.child(mAuth.getUid()).setValue(groupFriendsMap);
         reference = FirebaseDatabase.getInstance().getReference("users").child(mAuth.getUid()).child("userGroups").child(i_GroupName);
@@ -104,11 +91,11 @@ public class FirebaseUtills {
         userGroups.put("chat",i_GroupName+mAuth.getUid());
         reference.setValue(userGroups);
     }
-    public static FirebaseUtills GetInstance()
+    public static GamePartnerUtills GetInstance()
     {
         if(mSingleInstance == null)
         {
-            mSingleInstance = new FirebaseUtills();
+            mSingleInstance = new GamePartnerUtills();
         }
 
         return mSingleInstance;

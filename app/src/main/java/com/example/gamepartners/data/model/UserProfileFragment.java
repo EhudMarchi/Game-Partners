@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.location.Address;
 import android.net.Uri;
 import android.os.Bundle;
@@ -32,9 +31,8 @@ import com.bumptech.glide.Glide;
 import com.example.gamepartners.R;
 import com.example.gamepartners.data.model.Game.Game;
 import com.example.gamepartners.ui.login.AdminActivity;
-import com.example.gamepartners.ui.login.CreatePostActivity;
 import com.example.gamepartners.ui.login.LoginActivity;
-import com.example.gamepartners.ui.login.MainActivity;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -46,19 +44,14 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
-import java.util.UUID;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -111,7 +104,7 @@ public class UserProfileFragment extends Fragment {
         postsFetchThread.start();
         settingsAnimation = AnimationUtils.loadAnimation(getContext(),R.anim.settings_in);
         FloatingActionButton adminFab = getView().findViewById(R.id.fabAdmin);
-        if(mAuth.getCurrentUser().getUid().equals("XqydtRZ3MwSuLXaARTTCuRVGX662"))
+        if(mAuth.getCurrentUser().getEmail().equals("loyalpiratemusic@gmail.com"))
         {
             adminFab.setVisibility(View.VISIBLE);
             adminFab.setOnClickListener(new View.OnClickListener() {
@@ -124,21 +117,6 @@ public class UserProfileFragment extends Fragment {
         }
     }
 
-    private void populateRecycleView() {
-        Address address = new Address(Locale.getDefault());
-        User user = new User("Loyal", "Pirate", "loyalpiratemusic@gmail.com", "123456",FirebaseUtills.connedtedUser.getProflieImageURL());
-        Post post = new Post(user, new Game(), Calendar.getInstance().getTime(),"Post 1 subject", "This is a post template",18,address.getLocality());
-        postsArrayList.add(post);
-        post = new Post(user, new Game(),Calendar.getInstance().getTime(),"Post 2 subject", "This is a post template 2", 7,address.getLocality());
-        postsArrayList.add(post);
-        post = new Post(user, new Game(),Calendar.getInstance().getTime(),"Post 3 subject", "This is a post template 3 ", 11,address.getLocality());
-        postsArrayList.add(post);
-
-        postAdapter.notifyDataSetChanged();
-        if(postAdapter.getItemCount()>0) {
-            getView().findViewById(R.id.loading_panel).setVisibility(View.GONE);
-        }
-    }
     private void fetchLoggedInUserPosts() {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("posts");
         reference.addValueEventListener(new ValueEventListener() {
@@ -148,7 +126,7 @@ public class UserProfileFragment extends Fragment {
                 for (DataSnapshot ds:snapshot.getChildren()) {
                     Post post =ds.getValue(Post.class);
                     assert post !=null;
-                    if(post.getPublisher().getEmail().equals(FirebaseUtills.connedtedUser.getEmail())) {
+                    if(post.getPublisher().getEmail().equals(GamePartnerUtills.connedtedUser.getEmail())) {
                         postsArrayList.add(post);
                     }
                 }
@@ -217,12 +195,12 @@ public class UserProfileFragment extends Fragment {
                 startActivity(intent);
             }
         });
-        if(FirebaseUtills.connedtedUser.getProflieImageURL().equals("")) {
+        if(GamePartnerUtills.connedtedUser.getProflieImageURL().equals("")) {
             getProfileImage();
         }
         else
         {
-            Glide.with(getContext()).load(FirebaseUtills.connedtedUser.getProflieImageURL()).into(imgViewProfilePic);
+            Glide.with(getContext()).load(GamePartnerUtills.connedtedUser.getProflieImageURL()).into(imgViewProfilePic);
         }
         imgViewProfilePic.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -251,7 +229,7 @@ public class UserProfileFragment extends Fragment {
 
     private void getProfileImage(){
         mStorageRef = mStorage.getReference();
-        mStorageRef.child("images/" + FirebaseUtills.connedtedUser.getEmail()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+        mStorageRef.child("images/" + GamePartnerUtills.connedtedUser.getEmail()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
                 Log.e("Url", "url: " + uri.toString());
@@ -262,7 +240,6 @@ public class UserProfileFragment extends Fragment {
         });
 
     }
-
 
     private void choosePicture() {
         Intent intent = new Intent();
@@ -278,7 +255,7 @@ public class UserProfileFragment extends Fragment {
         {
             imageUri=data.getData();
             Glide.with(this).load(imageUri.toString()).into(imgViewProfilePic);
-            FirebaseUtills.connedtedUser.setProflieImageURL(imageUri.toString());
+            GamePartnerUtills.connedtedUser.setProflieImageURL(imageUri.toString());
             uploadProfilePic();
         }
 
@@ -312,6 +289,14 @@ public class UserProfileFragment extends Fragment {
                 uploadProgress.setMessage(progressPercent + "%");
             }
         });
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("users").child(GamePartnerUtills.connedtedUser.getUid()).child("proflieImageURL");
+        myRef.setValue(imageUri.toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+            }
+        });
+
     }
 
     private void fillUserData() {

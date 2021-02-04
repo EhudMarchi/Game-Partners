@@ -6,11 +6,15 @@ import android.location.Location;
 import com.example.gamepartners.data.model.Game.Game;
 import com.google.type.DateTime;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-public  class Post implements IPostable, ILikeable {
+public  class Post implements IPostable, ILikeable{
     private String postID;
     private Date timePosted;
     private User publisher;
@@ -162,4 +166,5 @@ public  class Post implements IPostable, ILikeable {
     public void Dislike() {
         this.likes--;
     }
+
 }

@@ -134,7 +134,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
             }
         });
     }
-
+    public void updateData(ArrayList<Post> posts) {
+        postArrayList.clear();
+        postArrayList.addAll(posts);
+        notifyDataSetChanged();
+    }
     @Override
     public int getItemCount() {
         return postArrayList.size();

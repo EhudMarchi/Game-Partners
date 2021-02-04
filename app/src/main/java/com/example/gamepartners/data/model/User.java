@@ -14,7 +14,6 @@ public class User {
     private String email;
     private String password;
     String status;
-    private String phone = "";
     private String facebookUsername = "";
     private ArrayList<Group> userGroups = new ArrayList<>();
     private ArrayList<String> userFriends = new ArrayList<>();
@@ -85,14 +84,6 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
     }
 
     public List<Float> getFavouriteGamesRatings() {

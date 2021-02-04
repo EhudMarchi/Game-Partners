@@ -96,7 +96,8 @@ public class SignUpActivity extends AppCompatActivity {
                                 Toast.makeText(SignUpActivity.this, "Account Created", Toast.LENGTH_LONG).show();
                                 loadingBar.dismiss();
                                 sendUserToLoginActivity();
-                            } else {
+                            }
+                            else {
                                 // If sign in fails, display a message to the user.
                                 String message = task.getException().toString();
                                 Toast.makeText(SignUpActivity.this, "Authentication failed - " + message,

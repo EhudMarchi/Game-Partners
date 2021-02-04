@@ -9,18 +9,12 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
-import android.location.Location;
 import android.os.Bundle;
-import android.os.Handler;
-import android.provider.ContactsContract;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -34,40 +28,24 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.gamepartners.R;
-import com.example.gamepartners.data.model.Comment;
-import com.example.gamepartners.data.model.ExploreFragment;
-import com.example.gamepartners.data.model.FirebaseUtills;
+import com.example.gamepartners.data.model.GamePartnerUtills;
 import com.example.gamepartners.data.model.Game.Game;
 import com.example.gamepartners.data.model.Game.GameAdapter;
-import com.example.gamepartners.data.model.GroupsFragment;
-import com.example.gamepartners.data.model.IJoinable;
 import com.example.gamepartners.data.model.Post;
 import com.example.gamepartners.data.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.protobuf.DescriptorProtos;
-import com.google.protobuf.StringValue;
-import com.shivtechs.maplocationpicker.LocationPickerActivity;
 import com.shivtechs.maplocationpicker.MapUtility;
 
-import java.sql.Time;
-import java.sql.Timestamp;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-
-import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 
 public class CreatePostActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
     static final int PICK_MAP_POINT_REQUEST = 999;
@@ -143,6 +121,21 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
             public void onClick(View v) {
                 selectedGame = recyclerViewAdapter.getSelectedGame();
                 refreshSelectedGame();
+            }
+        });
+        final Dialog imageView = new Dialog(this);
+        imageView.setContentView(R.layout.game_image_view);
+        imageView.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        selectedGameImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(selectedGame!=null)
+                {
+                    selectedGameImage.setClickable(false);
+                    Glide.with(imageView.getContext()).load(selectedGame.getGamePictureURL()).into((ImageView) imageView.findViewById(R.id.game_pic));
+                    imageView.show();
+                    selectedGameImage.setClickable(true);
+                }
             }
         });
     }
@@ -264,7 +257,7 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
     }
 
     private void fillGames() {
-        games = FirebaseUtills.games;
+        games = GamePartnerUtills.games;
     }
 
     public void createPost(final View view) throws ParseException {
@@ -274,23 +267,28 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
         uploadProgress.show();
         FirebaseAuth mAuth =FirebaseAuth.getInstance();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("posts");
-        User user = new User(FirebaseUtills.connedtedUser.getFirstName(),FirebaseUtills.connedtedUser.getLastName(),mAuth.getCurrentUser().getEmail());
-        Post post = new Post(user, selectedGame, new Date(), subject, description,0, selectedAddress.getLocality());
-        reference.push().setValue(post).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if(task.isSuccessful())
-                {
-                    dialog.dismiss();
-                    finish();
-                    Toast.makeText(getBaseContext(), "Post Uploaded Successfully!",
-                            Toast.LENGTH_LONG).show();
+        if(chooseLocation.getText() != "Choose Location") {
+            User user = new User(GamePartnerUtills.connedtedUser.getFirstName(), GamePartnerUtills.connedtedUser.getLastName(), mAuth.getCurrentUser().getEmail());
+            Post post = new Post(user, selectedGame, new Date(), subject, description, 0, selectedAddress.getLocality());
+            reference.push().setValue(post).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (task.isSuccessful()) {
+                        dialog.dismiss();
+                        finish();
+                        Toast.makeText(getBaseContext(), "Post Uploaded Successfully!",
+                                Toast.LENGTH_LONG).show();
+                    }
                 }
+            });
+            if (createGroupChat.isChecked()) {
+                GamePartnerUtills.createGroup(subject);
             }
-        });
-        if(createGroupChat.isChecked())
+        }
+        else
         {
-            FirebaseUtills.createGroup(subject);
+            Toast.makeText(getBaseContext(), "Please select location!",
+                    Toast.LENGTH_LONG).show();
         }
 //        reference = FirebaseDatabase.getInstance().getReference("users").child(mAuth.getUid()).child("userPosts");
 //        reference.push().setValue(post);

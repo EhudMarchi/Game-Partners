@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,14 +37,20 @@ import com.google.firebase.database.ValueEventListener;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.Predicate;
 
+import io.grpc.internal.Stream;
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 
 import static com.shivtechs.maplocationpicker.MapUtility.LATITUDE;
 import static com.shivtechs.maplocationpicker.MapUtility.LONGITUDE;
 import static com.shivtechs.maplocationpicker.MapUtility.currentLocation;
+import static java.util.Arrays.stream;
 
 public class ExploreFragment extends Fragment {
     private static final int WAIT = 1100;
@@ -78,6 +85,11 @@ public class ExploreFragment extends Fragment {
                     assert post !=null;
                     postsArrayList.add(post);
                 }
+                Collections.sort(postsArrayList, new Comparator<Post>() {
+                    public int compare(Post first, Post second) {
+                        return Long.valueOf(second.getTimePosted().getTime()).compareTo(first.getTimePosted().getTime());//sort Post from new to old
+                    }
+                });
                 postAdapter = new PostAdapter(getContext(),postsArrayList);
                 postsRecyclerView.setAdapter(postAdapter);
                 getView().findViewById(R.id.loading_panel).setVisibility(View.GONE);
@@ -85,7 +97,6 @@ public class ExploreFragment extends Fragment {
                 {
                 getView().findViewById(R.id.no_posts).setVisibility(View.VISIBLE);
                 }
-
             }
 
             @Override
@@ -101,7 +112,6 @@ public class ExploreFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_explore, container, false);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);

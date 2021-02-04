@@ -1,17 +1,12 @@
 package com.example.gamepartners.ui.login;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.ProgressDialog;
-import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -24,26 +19,18 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.example.gamepartners.R;
 import com.example.gamepartners.data.model.Chat.MessageAdapter;
-import com.example.gamepartners.data.model.FirebaseUtills;
+import com.example.gamepartners.data.model.GamePartnerUtills;
 import com.example.gamepartners.data.model.Group;
-import com.example.gamepartners.data.model.GroupsAdapter;
-import com.example.gamepartners.data.model.Post;
 import com.example.gamepartners.data.model.User;
 import com.example.gamepartners.data.model.UserAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.common.net.InternetDomainName;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -52,17 +39,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.example.gamepartners.data.model.Chat.Message;
-import com.google.firebase.storage.OnProgressListener;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
-import com.shivtechs.maplocationpicker.LocationPickerActivity;
-import com.shivtechs.maplocationpicker.MapUtility;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -128,7 +106,7 @@ public class ChatActivity extends AppCompatActivity {
         addParticipants = findViewById(R.id.add);
         addParticipants.setAlpha(0.5f);
         addParticipants.setEnabled(false);
-        if(FirebaseUtills.connedtedUser.getUid().equals(adminUID)) {
+        if(GamePartnerUtills.connedtedUser.getUid().equals(adminUID)) {
             addParticipants.setEnabled(true);
             addParticipants.setAlpha(1f);
             addParticipants.setOnClickListener(new View.OnClickListener() {
