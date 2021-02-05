@@ -13,6 +13,8 @@ import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -44,8 +46,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
     String postId;
     private ArrayList<Post> postArrayList;
     RequestManager glide;
-    LocationManager mLocationManager;
-    Location mCurrentLocation;
+    Animation fadeInAnimation;
+    Animation fadeOutAnimation;
     public MainActivity activity;
 
     public PostAdapter(Context context, ArrayList<Post> postArrayList) {
@@ -66,11 +68,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         return viewHolder;
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint({"SetTextI18n", "ResourceAsColor"})
     @Override
     public void onBindViewHolder(@NonNull final PostAdapter.MyViewHolder holder, int position) {
         final Post post = postArrayList.get(position);
         postId = post.getPostID();
+        fadeInAnimation = AnimationUtils.loadAnimation(context, R.anim.fragment_fade_enter);
+        fadeOutAnimation = AnimationUtils.loadAnimation(context, R.anim.fragment_fade_exit);
         holder.username.setText(post.getPublisher().getFirstName() + " " + post.getPublisher().getLastName());
         final SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         String postedDateString = format.format(post.getTimePosted());
@@ -78,10 +82,15 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         holder.gameName.setText(post.getGame().getGameName());
         holder.subject.setText(post.getSubject());
         holder.description.setText(post.getDescription());
-        holder.likes.setText(String.valueOf(post.getLikes()));
+        holder.likes.setText(String.valueOf(post.getLikesCount()));
         holder.city.setText(post.getCity());
         holder.address.setText(post.getLocation());
-        holder.distance.setText(new DecimalFormat("#.##").format(GamePartnerUtills.getKmFromLatLong(Float.parseFloat(activity.latitude), Float.parseFloat(activity.longitude), (float) post.getLatitude(), (float) post.getLongitude()) )+ " km");
+        try {
+            holder.distance.setText(new DecimalFormat("#.##").format(GamePartnerUtills.getKmFromLatLong(Float.parseFloat(activity.latitude), Float.parseFloat(activity.longitude), (float) post.getLatitude(), (float) post.getLongitude()) )+ " km");
+        }
+        catch (Exception e) {
+            holder.distance.setVisibility(View.GONE);
+        }
         DatabaseReference mRef = FirebaseDatabase.getInstance().getReference().child("users");
         mRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -114,6 +123,15 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
                 holder.xboxIcon.setVisibility(View.VISIBLE);
             }
         }
+        holder.isLiked = checkIfLiked(post);
+        if(holder.isLiked)
+        {
+            holder.likeText.setText("Liked");
+        }
+        if(post.getPublisher().getEmail().equals(GamePartnerUtills.connedtedUser.getEmail()))
+        {
+            holder.like.setEnabled(false);
+        }
         holder.like.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("ResourceAsColor")
             @Override
@@ -127,7 +145,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
                     holder.likeText.setText("Like");
                     holder.isLiked = false;
                 }
-                holder.likes.setText(String.valueOf(post.getLikes()));
+                holder.likes.setText(String.valueOf(post.getLikesCount()));
 
             }
         });
@@ -148,11 +166,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
             @Override
             public void onClick(View v) {
                 if (!holder.isTimeClicked) {
+                    holder.timeOccurring.startAnimation(fadeInAnimation);
                     holder.timeOccurring.setForeground(null);
                     String occurringDateString = format.format(post.getTimeOccurring());
                     holder.timeOccurring.setText(occurringDateString);
                     holder.isTimeClicked = !holder.isTimeClicked;
                 } else {
+                    holder.timeOccurring.startAnimation(fadeOutAnimation);
                     holder.timeOccurring.setForeground(ContextCompat.getDrawable(context, R.drawable.time));
                     holder.timeOccurring.setText("");
                     holder.isTimeClicked = !holder.isTimeClicked;
@@ -171,7 +191,19 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
     public int getItemCount() {
         return postArrayList.size();
     }
-
+    private boolean checkIfLiked(Post post)
+    {
+    boolean isLiked = false;
+        for (String uid:post.getLikes())
+        {
+            if(uid.equals(GamePartnerUtills.connedtedUser.getUid()))
+            {
+                isLiked = true;
+                break;
+            }
+        }
+    return isLiked;
+    }
     public class MyViewHolder extends RecyclerView.ViewHolder
     {
         private boolean isLiked=false, isTimeClicked=false;

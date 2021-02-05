@@ -203,13 +203,6 @@ public class UserProfileFragment extends Fragment {
                 startActivity(intent);
             }
         });
-        if(GamePartnerUtills.connedtedUser.getProflieImageURL().equals("")) {
-            getProfileImage();
-        }
-        else
-        {
-            Glide.with(getContext()).load(GamePartnerUtills.connedtedUser.getProflieImageURL()).into(imgViewProfilePic);
-        }
         imgViewProfilePic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -314,12 +307,16 @@ public class UserProfileFragment extends Fragment {
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                 //This method is called once with the initial value and again
-                // whenever data at this location is updated.
                 User user = dataSnapshot.child(mAuth.getCurrentUser().getUid()).getValue(User.class);
                 email.setText(user.getEmail());
                 username.setText(user.getFirstName()+" "+user.getLastName());
-
+                if(GamePartnerUtills.connedtedUser.getProflieImageURL().equals("")) {
+                    getProfileImage();
+                }
+                else
+                {
+                    Glide.with(getContext()).load(GamePartnerUtills.connedtedUser.getProflieImageURL()).into(imgViewProfilePic);
+                }
             }
 
             @Override

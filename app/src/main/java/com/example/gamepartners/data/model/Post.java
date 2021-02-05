@@ -4,6 +4,8 @@ import android.location.Address;
 import android.location.Location;
 
 import com.example.gamepartners.data.model.Game.Game;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.type.DateTime;
 
 import java.text.DateFormat;
@@ -27,7 +29,8 @@ public  class Post implements IPostable, ILikeable{
     private double latitude, longitude;
     private String city;
     private List<User> participants;
-    private int likes;
+    //private int likes;
+    private ArrayList<String> likes;
     private ArrayList<Comment> comments;
 
     public Post() {
@@ -36,7 +39,7 @@ public  class Post implements IPostable, ILikeable{
     public Post(User publisher, String gameName, int likes) {
         this.publisher = publisher;
         this.gameName = gameName;
-        this.likes = likes;
+        this.likes = new ArrayList<>();
     }
 
     public String getPostID() {
@@ -47,7 +50,8 @@ public  class Post implements IPostable, ILikeable{
         this.postID = postID;
     }
 
-    public Post(User publisher, Game game, Date timePosted, String subject, String description, int likes, Address address, Date timeOccurring) {
+    public Post(String postID, User publisher, Game game, Date timePosted, String subject, String description, Address address, Date timeOccurring) {
+        this.postID = postID;
         this.timePosted = timePosted;
         this.game = game;
         this.publisher = publisher;
@@ -55,7 +59,8 @@ public  class Post implements IPostable, ILikeable{
         this.description = description;
         this.city = address.getLocality()+","+address.getCountryName();
         this.address = address.getAddressLine(0).split(",")[0];
-        this.likes = likes;
+        this.likes = new ArrayList<>();
+        likes.add(GamePartnerUtills.connedtedUser.getUid());
         this.game =  game;
         this.latitude = address.getLatitude();
         this.longitude = address.getLongitude();
@@ -147,11 +152,14 @@ public  class Post implements IPostable, ILikeable{
         this.participants = participants;
     }
 
-    public int getLikes() {
+    public ArrayList<String> getLikes() {
         return likes;
     }
+    public int getLikesCount() {
+        return likes.size();
+    }
 
-    public void setLikes(int likes) {
+    public void setLikes(ArrayList<String> likes) {
         this.likes = likes;
     }
 
@@ -180,12 +188,16 @@ public  class Post implements IPostable, ILikeable{
 
     @Override
     public void Like() {
-        this.likes++;
+        this.likes.add(GamePartnerUtills.connedtedUser.getUid());
+        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference().child("posts").child(this.postID).child("likes");
+        myRef.setValue(this.likes);
     }
 
     @Override
     public void Dislike() {
-        this.likes--;
+        this.likes.remove(GamePartnerUtills.connedtedUser.getUid());
+        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference().child("posts").child(this.postID).child("likes");
+        myRef.setValue(this.likes);
     }
 
 }

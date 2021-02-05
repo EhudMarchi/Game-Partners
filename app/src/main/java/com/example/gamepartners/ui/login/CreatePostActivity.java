@@ -294,10 +294,11 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
         uploadProgress.show();
         FirebaseAuth mAuth =FirebaseAuth.getInstance();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("posts");
+        String postID = reference.push().getKey();
         if(chooseLocation.getText() != "Choose Location") {
             User user = new User(GamePartnerUtills.connedtedUser.getFirstName(), GamePartnerUtills.connedtedUser.getLastName(), mAuth.getCurrentUser().getEmail());
-            Post post = new Post(user, selectedGame, new Date(), subject, description, 0, selectedAddress, new Date(year, months, day, hour, minute));
-            reference.push().setValue(post).addOnCompleteListener(new OnCompleteListener<Void>() {
+            Post post = new Post(postID, user, selectedGame, new Date(), subject, description, selectedAddress, new Date(year, months, day, hour, minute));
+            reference.child(postID).setValue(post).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     if (task.isSuccessful()) {
@@ -328,7 +329,7 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
         String date =  dayOfMonth+ "/" + (int)(month+1) + "/" + year;
         chooseDate.setText(date);
         this.year = year;
-        this.months = (int)(month+1);
+        this.months = month;
         this.day = dayOfMonth;
     }
 
