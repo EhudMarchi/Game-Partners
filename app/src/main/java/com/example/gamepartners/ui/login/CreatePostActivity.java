@@ -9,6 +9,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -61,6 +62,7 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
     Address selectedAddress;
     Button chooseDate, chooseTime, chooseLocation;
     public Chip reality, pc, playstation, xbox;
+    int year, months,day,hour,minute;
     public boolean realityCheck = true, pcCheck = true, playstationCheck = true, xboxCheck = true;
     private ProgressDialog uploadProgress;
     CheckBox createGroupChat;
@@ -132,10 +134,35 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
                 if(selectedGame!=null)
                 {
                     selectedGameImage.setClickable(false);
+                    if(selectedGame.getPlatforms().contains(Game.ePlatform.REALITY))
+                    {
+                        imageView.findViewById(R.id.realityIcon).setVisibility(View.VISIBLE);
+                    }
+                    else {
+                        if (selectedGame.getPlatforms().contains(Game.ePlatform.PC)) {
+                            imageView.findViewById(R.id.pcIcon).setVisibility(View.VISIBLE);
+                        }
+                        if (selectedGame.getPlatforms().contains(Game.ePlatform.PLAYSTATION)) {
+                            imageView.findViewById(R.id.playstationIcon).setVisibility(View.VISIBLE);
+                        }
+                        if (selectedGame.getPlatforms().contains(Game.ePlatform.XBOX)) {
+                            imageView.findViewById(R.id.xboxIcon).setVisibility(View.VISIBLE);
+                        }
+                    }
                     Glide.with(imageView.getContext()).load(selectedGame.getGamePictureURL()).into((ImageView) imageView.findViewById(R.id.game_pic));
                     imageView.show();
+                    imageView.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                        @Override
+                        public void onCancel(DialogInterface dialog) {
+                            imageView.findViewById(R.id.realityIcon).setVisibility(View.GONE);
+                            imageView.findViewById(R.id.pcIcon).setVisibility(View.GONE);
+                            imageView.findViewById(R.id.playstationIcon).setVisibility(View.GONE);
+                            imageView.findViewById(R.id.xboxIcon).setVisibility(View.GONE);
+                        }
+                    });
                     selectedGameImage.setClickable(true);
                 }
+
             }
         });
     }
@@ -269,7 +296,7 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("posts");
         if(chooseLocation.getText() != "Choose Location") {
             User user = new User(GamePartnerUtills.connedtedUser.getFirstName(), GamePartnerUtills.connedtedUser.getLastName(), mAuth.getCurrentUser().getEmail());
-            Post post = new Post(user, selectedGame, new Date(), subject, description, 0, selectedAddress.getLocality());
+            Post post = new Post(user, selectedGame, new Date(), subject, description, 0, selectedAddress, new Date(year, months, day, hour, minute));
             reference.push().setValue(post).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
@@ -298,14 +325,31 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-        String date =  dayOfMonth+ "/" + month+1 + "/" + year;
+        String date =  dayOfMonth+ "/" + (int)(month+1) + "/" + year;
         chooseDate.setText(date);
+        this.year = year;
+        this.months = (int)(month+1);
+        this.day = dayOfMonth;
     }
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        String time = hourOfDay+":"+ minute;
+        String hours="";
+        String minutes="";
+        if(hourOfDay<10)
+        {
+            hours="0";
+        }
+        hours+=hourOfDay;
+        if(minute<10)
+        {
+            minutes="0";
+        }
+        minutes+=minute;
+        String time = hours+":"+minutes;
         chooseTime.setText(time);
+        this.hour = hourOfDay;
+        this.minute = minute;
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

@@ -74,12 +74,25 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
                 if (currentGame.getPlatforms().contains(Game.ePlatform.PC)) {
                     holder.pcIcon.setVisibility(View.VISIBLE);
                 }
+                else
+                {
+                    holder.pcIcon.setVisibility(View.GONE);
+                }
                 if (currentGame.getPlatforms().contains(Game.ePlatform.PLAYSTATION)) {
                     holder.playstationIcon.setVisibility(View.VISIBLE);
+                }
+                else
+                {
+                    holder.playstationIcon.setVisibility(View.GONE);
                 }
                 if (currentGame.getPlatforms().contains(Game.ePlatform.XBOX)) {
                     holder.xboxIcon.setVisibility(View.VISIBLE);
                 }
+                else
+                {
+                    holder.xboxIcon.setVisibility(View.GONE);
+                }
+                holder.realityIcon.setVisibility(View.GONE);
             }
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -100,7 +113,15 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
         Log.e("game", "game: " + games.get(selectedItemIndex).getGameName());
         return selectedGame;
     }
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
 
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
     @Override
     public int getItemCount() {
         return games.size();

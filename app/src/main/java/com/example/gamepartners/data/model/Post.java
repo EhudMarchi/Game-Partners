@@ -22,8 +22,9 @@ public  class Post implements IPostable, ILikeable{
     private String description;
     private Game game;
     private String gameName;
-    private DateTime timeOccurring;
-    private Address address;
+    private Date timeOccurring;
+    private String address;
+    private double latitude, longitude;
     private String city;
     private List<User> participants;
     private int likes;
@@ -46,16 +47,36 @@ public  class Post implements IPostable, ILikeable{
         this.postID = postID;
     }
 
-    public Post(User publisher, Game game, Date timePosted, String subject, String description, int likes, String city) {
+    public Post(User publisher, Game game, Date timePosted, String subject, String description, int likes, Address address, Date timeOccurring) {
         this.timePosted = timePosted;
         this.game = game;
         this.publisher = publisher;
         this.subject = subject;
         this.description = description;
-        this.city = city;
+        this.city = address.getLocality()+","+address.getCountryName();
+        this.address = address.getAddressLine(0).split(",")[0];
         this.likes = likes;
         this.game =  game;
+        this.latitude = address.getLatitude();
+        this.longitude = address.getLongitude();
+        this.timeOccurring = timeOccurring;
         comments = new ArrayList<Comment>();
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 
     public String getCity() {
@@ -102,19 +123,19 @@ public  class Post implements IPostable, ILikeable{
         this.game = game;
     }
 
-    public DateTime getTimeOccurring() {
+    public Date getTimeOccurring() {
         return timeOccurring;
     }
 
-    public void setTimeOccurring(DateTime timeOccurring) {
+    public void setTimeOccurring(Date timeOccurring) {
         this.timeOccurring = timeOccurring;
     }
 
-    public Address getLocation() {
+    public String getLocation() {
         return address;
     }
 
-    public void setLocation(Address address) {
+    public void setLocation(String address) {
         this.address = address;
     }
 

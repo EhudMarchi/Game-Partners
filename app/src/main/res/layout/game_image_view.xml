@@ -8,8 +8,8 @@
     android:layout_gravity="center">
     <RelativeLayout
         android:id="@+id/imgGame"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
         android:layout_centerHorizontal="true"
         android:background="@drawable/circle_border">
         <androidx.cardview.widget.CardView
@@ -29,8 +29,49 @@
                 android:scaleType="centerCrop"
                 app:shapeAppearanceOverlay="@style/roundedImageViewRounded"
                 app:srcCompat="@drawable/default_game" />
-        </androidx.cardview.widget.CardView>
 
+        </androidx.cardview.widget.CardView>
+        <RelativeLayout
+            android:id="@+id/platformsLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:translationZ="5dp"
+            android:background="@drawable/dialog"
+            android:padding="7dp">
+
+            <ImageView
+                android:id="@+id/realityIcon"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:background="@drawable/reality"
+                android:visibility="gone"/>
+
+            <ImageView
+                android:id="@+id/pcIcon"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_toRightOf="@id/realityIcon"
+                android:background="@drawable/pc"
+                android:visibility="gone"/>
+
+            <ImageView
+                android:id="@+id/playstationIcon"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_toRightOf="@+id/pcIcon"
+                android:background="@drawable/playstation"
+                android:visibility="gone"/>
+
+            <ImageView
+                android:id="@+id/xboxIcon"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_toRightOf="@+id/playstationIcon"
+                android:background="@drawable/xbox"
+                android:visibility="gone"/>
+        </RelativeLayout>
     </RelativeLayout>
 
 </RelativeLayout>

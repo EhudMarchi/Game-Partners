@@ -32,6 +32,7 @@ import com.example.gamepartners.R;
 import com.example.gamepartners.data.model.Game.Game;
 import com.example.gamepartners.ui.login.AdminActivity;
 import com.example.gamepartners.ui.login.LoginActivity;
+import com.example.gamepartners.ui.login.MainActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -51,6 +52,8 @@ import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Locale;
 
 /**
@@ -130,6 +133,11 @@ public class UserProfileFragment extends Fragment {
                         postsArrayList.add(post);
                     }
                 }
+                Collections.sort(postsArrayList, new Comparator<Post>() {
+                    public int compare(Post first, Post second) {
+                        return Long.valueOf(second.getTimePosted().getTime()).compareTo(first.getTimePosted().getTime());//sort Post from new to old
+                    }
+                });
                 postAdapter = new PostAdapter(getContext(),postsArrayList);
                 postsRecyclerView.setAdapter(postAdapter);
                 getView().findViewById(R.id.loading_panel).setVisibility(View.GONE);

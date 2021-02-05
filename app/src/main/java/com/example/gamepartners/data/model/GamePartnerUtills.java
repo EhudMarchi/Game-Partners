@@ -1,5 +1,7 @@
 package com.example.gamepartners.data.model;
 
+import android.location.Location;
+import android.location.LocationManager;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -57,6 +59,16 @@ public class GamePartnerUtills {
                 // Failed to read value
             }
         });
+    }
+    public static float getKmFromLatLong(float lat1, float lng1, float lat2, float lng2){
+        Location loc1 = new Location("");
+        loc1.setLatitude(lat1);
+        loc1.setLongitude(lng1);
+        Location loc2 = new Location("");
+        loc2.setLatitude(lat2);
+        loc2.setLongitude(lng2);
+        float distanceInMeters = loc1.distanceTo(loc2);
+        return distanceInMeters/1000;
     }
     public static void createGroup(final String i_GroupName)
     {
