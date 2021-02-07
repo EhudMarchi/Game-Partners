@@ -29,7 +29,6 @@ public  class Post implements IPostable, ILikeable{
     private double latitude, longitude;
     private String city;
     private List<User> participants;
-    //private int likes;
     private ArrayList<String> likes;
     private ArrayList<Comment> comments;
 

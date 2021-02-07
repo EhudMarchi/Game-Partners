@@ -12,7 +12,7 @@
         android:layout_height="40dp"
         android:id="@+id/chat_image_left"
         android:layout_marginRight="5dp"
-        android:src="@mipmap/ic_launcher"/>
+        android:background="@drawable/default_user"/>
         <RelativeLayout
             android:padding="8dp"
             android:layout_width="wrap_content"

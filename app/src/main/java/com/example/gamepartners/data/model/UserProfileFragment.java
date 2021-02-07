@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.location.Address;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -29,10 +28,8 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.gamepartners.R;
-import com.example.gamepartners.data.model.Game.Game;
 import com.example.gamepartners.ui.login.AdminActivity;
 import com.example.gamepartners.ui.login.LoginActivity;
-import com.example.gamepartners.ui.login.MainActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -51,10 +48,8 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -97,7 +92,7 @@ public class UserProfileFragment extends Fragment {
         postsRecyclerView = (RecyclerView) getView().findViewById(R.id.recyclerView);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getContext());
         postsRecyclerView.setLayoutManager(layoutManager);
-        postAdapter = new PostAdapter(this.getContext(),postsArrayList);
+        postAdapter = new PostAdapter(this.getContext(), postsArrayList);
         postsRecyclerView.setAdapter(postAdapter);
         Thread postsFetchThread = new Thread(new Runnable() {
             public void run() {
@@ -138,7 +133,7 @@ public class UserProfileFragment extends Fragment {
                         return Long.valueOf(second.getTimePosted().getTime()).compareTo(first.getTimePosted().getTime());//sort Post from new to old
                     }
                 });
-                postAdapter = new PostAdapter(getContext(),postsArrayList);
+                postAdapter = new PostAdapter(getContext(), postsArrayList);
                 postsRecyclerView.setAdapter(postAdapter);
                 getView().findViewById(R.id.loading_panel).setVisibility(View.GONE);
             }

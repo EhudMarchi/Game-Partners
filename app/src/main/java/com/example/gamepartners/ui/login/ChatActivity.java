@@ -83,6 +83,8 @@ public class ChatActivity extends AppCompatActivity {
         m_ChatMessages= new ArrayList<>();
         selectedUsers = new ArrayList<>();
         context = this;
+        messagesAdapter = new MessageAdapter(getBaseContext(), m_ChatMessages);
+        messagesRecyclerView.setAdapter(messagesAdapter);
         Intent intent= getIntent();
         Bundle b = intent.getExtras();
 
@@ -365,11 +367,10 @@ private void addGroupMessage(String i_Message)
                 m_ChatMessages.clear();
                 for (DataSnapshot ds:snapshot.getChildren()) {
                     Message message = ds.getValue(Message.class);
-                    //Message message = new Message(user.getUid(),user.getDisplayName(),"hello");
                     m_ChatMessages.add(message);
                 }
-                messagesAdapter = new MessageAdapter(getBaseContext(), m_ChatMessages);
-                messagesRecyclerView.setAdapter(messagesAdapter);
+                messagesAdapter.notifyDataSetChanged();
+                messagesRecyclerView.smoothScrollToPosition(messagesRecyclerView.getBottom());
             }
 
             @Override

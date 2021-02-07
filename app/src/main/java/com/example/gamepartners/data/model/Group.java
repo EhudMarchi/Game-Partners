@@ -17,7 +17,6 @@ public class Group implements IJoinable{
     public Group(String groupName) {
         this.groupName = groupName;
     }
-
     @Override
     public void Join() {
 

@@ -1,15 +1,12 @@
 package com.example.gamepartners.data.model;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.location.Location;
-import android.location.LocationManager;
 import android.os.Build;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,15 +18,14 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.example.gamepartners.R;
 import com.example.gamepartners.data.model.Game.Game;
-import com.example.gamepartners.ui.login.CreatePostActivity;
 import com.example.gamepartners.ui.login.MainActivity;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -48,6 +44,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
     RequestManager glide;
     Animation fadeInAnimation;
     Animation fadeOutAnimation;
+    int selectedPostIndex;
     public MainActivity activity;
 
     public PostAdapter(Context context, ArrayList<Post> postArrayList) {
@@ -70,8 +67,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
 
     @SuppressLint({"SetTextI18n", "ResourceAsColor"})
     @Override
-    public void onBindViewHolder(@NonNull final PostAdapter.MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final PostAdapter.MyViewHolder holder, final int position) {
         final Post post = postArrayList.get(position);
+        selectedPostIndex = position;
         postId = post.getPostID();
         fadeInAnimation = AnimationUtils.loadAnimation(context, R.anim.fragment_fade_enter);
         fadeOutAnimation = AnimationUtils.loadAnimation(context, R.anim.fragment_fade_exit);
@@ -146,7 +144,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
                     holder.isLiked = false;
                 }
                 holder.likes.setText(String.valueOf(post.getLikesCount()));
-
+                notifyDataSetChanged();
             }
         });
         holder.comment.setOnClickListener(new View.OnClickListener() {
@@ -180,13 +178,15 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
             }
         });
     }
-
     public void updateData(ArrayList<Post> posts) {
         postArrayList.clear();
         postArrayList.addAll(posts);
         notifyDataSetChanged();
     }
 
+    public int getSelectedPostIndex() {
+        return selectedPostIndex;
+    }
     @Override
     public int getItemCount() {
         return postArrayList.size();

@@ -1,60 +1,41 @@
 package com.example.gamepartners.data.model;
 
-import android.content.Context;
 import android.content.Intent;
-import android.location.Address;
-import android.location.Geocoder;
-import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 import android.widget.SearchView;
 
 import com.example.gamepartners.R;
-import com.example.gamepartners.data.model.Game.Game;
+import com.example.gamepartners.data.model.Game.GameAdapter;
 import com.example.gamepartners.ui.login.CreatePostActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
-import java.util.Locale;
-import java.util.function.Predicate;
 
-import io.grpc.internal.Stream;
-import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
-
-import static com.shivtechs.maplocationpicker.MapUtility.LATITUDE;
-import static com.shivtechs.maplocationpicker.MapUtility.LONGITUDE;
-import static com.shivtechs.maplocationpicker.MapUtility.currentLocation;
 import static java.util.Arrays.stream;
 
 public class ExploreFragment extends Fragment {
     private static final int WAIT = 1100;
-    RecyclerView postsRecyclerView;
+    public RecyclerView postsRecyclerView;
     ArrayList<Post> postsArrayList = new ArrayList<>();
     PostAdapter postAdapter;
     SearchView searchView;
@@ -90,13 +71,13 @@ public class ExploreFragment extends Fragment {
                         return Long.valueOf(second.getTimePosted().getTime()).compareTo(first.getTimePosted().getTime());//sort Post from new to old
                     }
                 });
-                postAdapter = new PostAdapter(getContext(),postsArrayList);
-                postsRecyclerView.setAdapter(postAdapter);
                 getView().findViewById(R.id.loading_panel).setVisibility(View.GONE);
                 if(postsArrayList.size()<1)
                 {
                 getView().findViewById(R.id.no_posts).setVisibility(View.VISIBLE);
                 }
+                //postsRecyclerView.smoothScrollToPosition(postsArrayList.size());
+                postAdapter.notifyDataSetChanged();
             }
 
             @Override
