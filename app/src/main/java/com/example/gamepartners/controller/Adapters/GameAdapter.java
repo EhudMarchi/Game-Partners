@@ -1,4 +1,4 @@
-package com.example.gamepartners.data.model.Game;
+package com.example.gamepartners.controller.Adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -15,19 +15,19 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.gamepartners.R;
-import com.example.gamepartners.ui.login.CreatePostActivity;
+import com.example.gamepartners.data.model.Game;
+import com.example.gamepartners.ui.Activities_Fragments.CreatePostActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder> implements Filterable {
-    private ArrayList<Game> games;
-    private ArrayList<Game> allGames;
-    Game selectedGame = new Game();
-    Context context;
-    boolean selection = false;
-    int selectedItemIndex = 0;
-    public CreatePostActivity activity;
+    private ArrayList<Game> m_Games;
+    private ArrayList<Game> m_AllGames;
+    Game m_SelectedGame = new Game();
+    Context m_Context;
+    int m_SelectedItemIndex = 0;
+    public CreatePostActivity m_Activity;
 
     public class GameViewHolder extends RecyclerView.ViewHolder {
         public ImageView gameImage, realityIcon, pcIcon, playstationIcon, xboxIcon;
@@ -46,10 +46,10 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
     }
 
     public GameAdapter(Context context, ArrayList<Game> gamesList) {
-        games = gamesList;
-        allGames = new ArrayList<>(gamesList);
-        this.context = context;
-        activity = (CreatePostActivity) context;
+        m_Games = gamesList;
+        m_AllGames = new ArrayList<>(gamesList);
+        this.m_Context = context;
+        m_Activity = (CreatePostActivity) context;
     }
 
     @Override
@@ -65,8 +65,8 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
     @SuppressLint("ResourceAsColor")
     @Override
     public void onBindViewHolder(final GameViewHolder holder, final int position) {
-            Game currentGame = games.get(position);
-            Glide.with(context).load(currentGame.getGamePictureURL()).into(holder.gameImage);
+            Game currentGame = m_Games.get(position);
+            Glide.with(m_Context).load(currentGame.getGamePictureURL()).into(holder.gameImage);
             holder.gameName.setText(currentGame.getGameName());
             if (currentGame.getPlatforms().contains(Game.ePlatform.REALITY)) {
                 holder.realityIcon.setVisibility(View.VISIBLE);
@@ -97,21 +97,21 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    selectedItemIndex = position;
-                    selectedGame = games.get(selectedItemIndex);
-                    activity.selectedGame = selectedGame;
-                    if (activity.selectedGame != null) {
-                        activity.selectedGameName.setText(selectedGame.getGameName());
-                        Glide.with(activity).load(selectedGame.getGamePictureURL()).into(activity.selectedGameImage);
+                    m_SelectedItemIndex = position;
+                    m_SelectedGame = m_Games.get(m_SelectedItemIndex);
+                    m_Activity.selectedGame = m_SelectedGame;
+                    if (m_Activity.selectedGame != null) {
+                        m_Activity.selectedGameName.setText(m_SelectedGame.getGameName());
+                        Glide.with(m_Activity).load(m_SelectedGame.getGamePictureURL()).into(m_Activity.selectedGameImage);
                     }
-                    Log.e("game", "game: " + games.get(selectedItemIndex).getGameName());
+                    Log.e("game", "game: " + m_Games.get(m_SelectedItemIndex).getGameName());
                 }
             });
     }
 
     public Game getSelectedGame() {
-        Log.e("game", "game: " + games.get(selectedItemIndex).getGameName());
-        return selectedGame;
+        Log.e("game", "game: " + m_Games.get(m_SelectedItemIndex).getGameName());
+        return m_SelectedGame;
     }
     @Override
     public long getItemId(int position) {
@@ -124,7 +124,7 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
     }
     @Override
     public int getItemCount() {
-        return games.size();
+        return m_Games.size();
     }
 
     @Override
@@ -149,13 +149,13 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
         protected FilterResults performFiltering(CharSequence constraint) {
             ArrayList<Game> filteredList = new ArrayList<>();
             if (constraint == null || constraint.length() == 0) {
-                filteredList.addAll(allGames);
+                filteredList.addAll(m_AllGames);
             } else {
-                for (Game game : allGames) {
-                    if ((game.getPlatforms().contains(Game.ePlatform.REALITY) && activity.realityCheck) ||
-                            (game.getPlatforms().contains(Game.ePlatform.PC) && activity.pcCheck) ||
-                            (game.getPlatforms().contains(Game.ePlatform.PLAYSTATION) && activity.playstationCheck) ||
-                            (game.getPlatforms().contains(Game.ePlatform.XBOX) && activity.xboxCheck)) {
+                for (Game game : m_AllGames) {
+                    if ((game.getPlatforms().contains(Game.ePlatform.REALITY) && m_Activity.realityCheck) ||
+                            (game.getPlatforms().contains(Game.ePlatform.PC) && m_Activity.pcCheck) ||
+                            (game.getPlatforms().contains(Game.ePlatform.PLAYSTATION) && m_Activity.playstationCheck) ||
+                            (game.getPlatforms().contains(Game.ePlatform.XBOX) && m_Activity.xboxCheck)) {
                         filteredList.add(game);
                     }
                 }
@@ -168,8 +168,8 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
 
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
-            games.clear();
-            games.addAll((List) results.values);
+            m_Games.clear();
+            m_Games.addAll((List) results.values);
             notifyDataSetChanged();
         }
     };
@@ -179,12 +179,12 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
             ArrayList<Game> filteredList = new ArrayList<>();
             if(constraint == null || constraint.length() == 0)
             {
-                filteredList.addAll(allGames);
+                filteredList.addAll(m_AllGames);
             }
             else
             {
                 String filterPattern = constraint.toString().toLowerCase().trim();
-                for (Game game: allGames) {
+                for (Game game: m_AllGames) {
                             if (game.getGameName().toLowerCase().contains(filterPattern)) {
                                 filteredList.add(game);
                             }
@@ -198,8 +198,8 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
 
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
-            games.clear();
-            games.addAll((List) results.values);
+            m_Games.clear();
+            m_Games.addAll((List) results.values);
             notifyDataSetChanged();
         }
     };

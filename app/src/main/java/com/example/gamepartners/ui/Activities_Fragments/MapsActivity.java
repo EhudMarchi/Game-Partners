@@ -1,4 +1,4 @@
-package com.example.gamepartners.ui.login;
+package com.example.gamepartners.ui.Activities_Fragments;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -10,7 +10,6 @@ import android.os.Bundle;
 
 import com.example.gamepartners.R;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.Result;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -26,10 +25,8 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
@@ -39,7 +36,6 @@ import com.google.android.gms.location.LocationRequest;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Locale;
 
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,

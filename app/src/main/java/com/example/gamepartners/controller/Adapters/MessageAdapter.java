@@ -1,4 +1,4 @@
-package com.example.gamepartners.data.model.Chat;
+package com.example.gamepartners.controller.Adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.example.gamepartners.R;
+import com.example.gamepartners.data.model.Message;
 import com.example.gamepartners.data.model.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;

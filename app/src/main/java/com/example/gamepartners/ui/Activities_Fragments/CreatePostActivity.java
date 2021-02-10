@@ -1,4 +1,4 @@
-package com.example.gamepartners.ui.login;
+package com.example.gamepartners.ui.Activities_Fragments;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,9 +29,9 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.gamepartners.R;
-import com.example.gamepartners.data.model.GamePartnerUtills;
-import com.example.gamepartners.data.model.Game.Game;
-import com.example.gamepartners.data.model.Game.GameAdapter;
+import com.example.gamepartners.controller.GamePartnerUtills;
+import com.example.gamepartners.data.model.Game;
+import com.example.gamepartners.controller.Adapters.GameAdapter;
 import com.example.gamepartners.data.model.Post;
 import com.example.gamepartners.data.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;

@@ -1,4 +1,4 @@
-package com.example.gamepartners.ui.login;
+package com.example.gamepartners.ui.Activities_Fragments;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,11 +23,11 @@ import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.example.gamepartners.R;
-import com.example.gamepartners.data.model.Chat.MessageAdapter;
-import com.example.gamepartners.data.model.GamePartnerUtills;
+import com.example.gamepartners.controller.Adapters.MessageAdapter;
+import com.example.gamepartners.controller.GamePartnerUtills;
 import com.example.gamepartners.data.model.Group;
 import com.example.gamepartners.data.model.User;
-import com.example.gamepartners.data.model.UserAdapter;
+import com.example.gamepartners.controller.Adapters.UserAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
@@ -38,9 +38,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.example.gamepartners.data.model.Chat.Message;
+import com.example.gamepartners.data.model.Message;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -133,6 +136,21 @@ public class ChatActivity extends AppCompatActivity {
                 reference = FirebaseDatabase.getInstance().getReference("groups").child(groupName).child("chat");
                 final Message message = new Message(user.getUid(), user.getDisplayName(), inputMessage.getText().toString(), Message.eMessageType.USER_MESSAGE);
                 if (!message.getText().equals("")) {
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTime(message.getTimeSent());
+                    int day = cal.get(Calendar.DAY_OF_MONTH);
+                    int month = cal.get(Calendar.MONTH);
+                    int year = cal.get(Calendar.YEAR);
+                    cal.setTime(m_ChatMessages.get(m_ChatMessages.size()-1).getTimeSent());
+                    int lastDay = cal.get(Calendar.DAY_OF_MONTH);
+                    int lastMonth = cal.get(Calendar.MONTH);
+                    int lastYear = cal.get(Calendar.YEAR);
+                    if(((day > lastDay)&&(month == lastMonth ))||(month > lastMonth)||(year > lastYear))
+                    {
+                        final SimpleDateFormat format = new SimpleDateFormat("dd/MM/20yy");
+                        String dateString = format.format(new Date());
+                        addGroupMessage(dateString);
+                    }
                     m_ChatMessages.add(message);
                     reference.push().setValue(message).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override

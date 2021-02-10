@@ -1,4 +1,4 @@
-package com.example.gamepartners.data.model;
+package com.example.gamepartners.ui.Activities_Fragments;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -17,6 +17,9 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.example.gamepartners.R;
+import com.example.gamepartners.controller.GamePartnerUtills;
+import com.example.gamepartners.data.model.Group;
+import com.example.gamepartners.controller.Adapters.GroupsAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;

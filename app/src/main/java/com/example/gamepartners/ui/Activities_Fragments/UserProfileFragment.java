@@ -1,4 +1,4 @@
-package com.example.gamepartners.data.model;
+package com.example.gamepartners.ui.Activities_Fragments;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -28,8 +28,10 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.gamepartners.R;
-import com.example.gamepartners.ui.login.AdminActivity;
-import com.example.gamepartners.ui.login.LoginActivity;
+import com.example.gamepartners.controller.GamePartnerUtills;
+import com.example.gamepartners.data.model.Post;
+import com.example.gamepartners.controller.Adapters.PostAdapter;
+import com.example.gamepartners.data.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -97,6 +99,7 @@ public class UserProfileFragment extends Fragment {
         Thread postsFetchThread = new Thread(new Runnable() {
             public void run() {
                 fetchLoggedInUserPosts();
+                getView().findViewById(R.id.loading_panel).setVisibility(View.GONE);
             }
         });
         postsFetchThread.start();
@@ -135,7 +138,6 @@ public class UserProfileFragment extends Fragment {
                 });
                 postAdapter = new PostAdapter(getContext(), postsArrayList);
                 postsRecyclerView.setAdapter(postAdapter);
-                getView().findViewById(R.id.loading_panel).setVisibility(View.GONE);
             }
 
             @Override

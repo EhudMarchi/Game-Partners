@@ -1,10 +1,15 @@
-package com.example.gamepartners.data.model;
+package com.example.gamepartners.controller.Adapters;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
+
+import com.example.gamepartners.ui.Activities_Fragments.ExploreFragment;
+import com.example.gamepartners.ui.Activities_Fragments.FriendsFragment;
+import com.example.gamepartners.ui.Activities_Fragments.GroupsFragment;
+import com.example.gamepartners.ui.Activities_Fragments.UserProfileFragment;
 
 public class TabAccessorAdapter extends FragmentPagerAdapter {
 

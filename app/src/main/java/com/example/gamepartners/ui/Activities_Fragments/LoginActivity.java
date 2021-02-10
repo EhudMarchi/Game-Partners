@@ -1,10 +1,6 @@
-package com.example.gamepartners.ui.login;
-
-import android.app.Activity;
+package com.example.gamepartners.ui.Activities_Fragments;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -14,27 +10,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
-import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Handler;
-import android.os.Parcelable;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.inputmethod.EditorInfo;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.gamepartners.R;
@@ -56,7 +40,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.protobuf.StringValue;
 
 import java.util.ArrayList;
 
@@ -247,7 +230,7 @@ public class LoginActivity extends AppCompatActivity {
                             int i =0;
                             for (DataSnapshot user :dataSnapshot.getChildren()) {
                                 Log.d("result", "iteration "+String.valueOf(i++));
-                                Log.d("result", user.getValue(User.class).getEmail());
+                                //Log.d("result", user.getValue(User.class).getEmail());
                                 Log.d("result", googleAccount.getEmail());
                                 if(user.getValue(User.class).getEmail().equals(googleAccount.getEmail()))
                                 {

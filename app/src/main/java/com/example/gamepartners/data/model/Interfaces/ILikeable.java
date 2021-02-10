@@ -1,4 +1,4 @@
-package com.example.gamepartners.data.model;
+package com.example.gamepartners.data.model.Interfaces;
 
 public interface ILikeable {
     public void Like();

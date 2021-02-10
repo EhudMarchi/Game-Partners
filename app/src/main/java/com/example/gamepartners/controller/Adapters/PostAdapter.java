@@ -1,4 +1,4 @@
-package com.example.gamepartners.data.model;
+package com.example.gamepartners.controller.Adapters;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
@@ -6,12 +6,13 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -19,14 +20,16 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.example.gamepartners.R;
-import com.example.gamepartners.data.model.Game.Game;
-import com.example.gamepartners.ui.login.MainActivity;
+import com.example.gamepartners.data.model.Game;
+import com.example.gamepartners.controller.GamePartnerUtills;
+import com.example.gamepartners.data.model.Post;
+import com.example.gamepartners.data.model.User;
+import com.example.gamepartners.ui.Activities_Fragments.MainActivity;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -37,18 +40,19 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
-public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> {
+public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> implements Filterable {
     Context context;
     String postId;
+    private ArrayList<Post> allPostsArrayList;
     private ArrayList<Post> postArrayList;
     RequestManager glide;
-    Animation fadeInAnimation;
-    Animation fadeOutAnimation;
+    Animation fadeInAnimation, fadeOutAnimation;
     int selectedPostIndex;
     public MainActivity activity;
 
     public PostAdapter(Context context, ArrayList<Post> postArrayList) {
         this.context = context;
+        this.allPostsArrayList = postArrayList;
         this.postArrayList = postArrayList;
         activity = (MainActivity) context;
         glide = Glide.with(context);
@@ -74,7 +78,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         fadeInAnimation = AnimationUtils.loadAnimation(context, R.anim.fragment_fade_enter);
         fadeOutAnimation = AnimationUtils.loadAnimation(context, R.anim.fragment_fade_exit);
         holder.username.setText(post.getPublisher().getFirstName() + " " + post.getPublisher().getLastName());
-        final SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        final SimpleDateFormat format = new SimpleDateFormat("dd/MM/20yy HH:mm");
         String postedDateString = format.format(post.getTimePosted());
         holder.timePosted.setText(postedDateString);
         holder.gameName.setText(post.getGame().getGameName());
@@ -125,6 +129,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         if(holder.isLiked)
         {
             holder.likeText.setText("Liked");
+            holder.like.setAlpha(0.6f);
         }
         if(post.getPublisher().getEmail().equals(GamePartnerUtills.connedtedUser.getEmail()))
         {
@@ -137,10 +142,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
                 if (!holder.isLiked) {
                     post.Like();
                     holder.likeText.setText("Liked");
+                    holder.like.setAlpha(0.6f);
                     holder.isLiked = true;
                 } else {
                     post.Dislike();
                     holder.likeText.setText("Like");
+                    holder.like.setAlpha(1f);
                     holder.isLiked = false;
                 }
                 holder.likes.setText(String.valueOf(post.getLikesCount()));
@@ -186,6 +193,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
 
     public int getSelectedPostIndex() {
         return selectedPostIndex;
+    }
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+    @Override
+    public int getItemViewType(int position) {
+        return position;
     }
     @Override
     public int getItemCount() {
@@ -234,4 +249,34 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
             distance = (TextView)itemView.findViewById(R.id.distance);
         }
     }
+    @Override
+    public Filter getFilter() {
+        return distanceFilter;
+    }
+
+    private Filter distanceFilter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            ArrayList<Post> filteredList = new ArrayList<>();
+            if (constraint == null || constraint.length() == 0) {
+                filteredList.addAll(postArrayList);
+            } else {
+                for (Post post : postArrayList) {
+                    if (GamePartnerUtills.getKmFromLatLong(Float.parseFloat(activity.latitude), Float.parseFloat(activity.longitude), (float) post.getLatitude(), (float) post.getLongitude())<= Integer.parseInt((String) constraint))
+                    {
+                        filteredList.add(post);
+                    }
+                }
+            }
+            FilterResults results = new FilterResults();
+            results.values = filteredList;
+
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            updateData((ArrayList<Post>) results.values);
+        }
+    };
 }

@@ -1,4 +1,4 @@
-package com.example.gamepartners.data.model.Game;
+package com.example.gamepartners.data.model;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

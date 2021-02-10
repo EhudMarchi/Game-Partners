@@ -1,6 +1,6 @@
-package com.example.gamepartners.data.model.Chat;
+package com.example.gamepartners.data.model;
 
-import com.example.gamepartners.data.model.GamePartnerUtills;
+import com.example.gamepartners.controller.GamePartnerUtills;
 
 import java.util.Calendar;
 import java.util.Date;

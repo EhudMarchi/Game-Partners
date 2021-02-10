@@ -1,4 +1,4 @@
-package com.example.gamepartners.data.model.Chat;
+package com.example.gamepartners.data.model;
 
 import com.example.gamepartners.data.model.Group;
 

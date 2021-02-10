@@ -1,4 +1,4 @@
-package com.example.gamepartners.data.model;
+package com.example.gamepartners.controller.Adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -13,7 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.example.gamepartners.R;
-import com.example.gamepartners.ui.login.ChatActivity;
+import com.example.gamepartners.data.model.Group;
+import com.example.gamepartners.ui.Activities_Fragments.ChatActivity;
 
 import java.util.ArrayList;
 

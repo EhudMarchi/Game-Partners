@@ -145,12 +145,13 @@
         android:layout_below="@id/subject"
         android:id="@+id/descriptionLayout"
         android:layout_width="match_parent"
+        android:gravity="center_horizontal"
         android:layout_height="wrap_content">
         <TextView
             android:id="@+id/description"
             android:layout_width="wrap_content"
             android:text="Game Description"
-            android:gravity="left"
+            android:gravity="center_horizontal"
             android:textColor="@color/white"
             android:textSize="13sp"
             android:layout_marginRight="15dp"

@@ -1,4 +1,4 @@
-package com.example.gamepartners.ui.login;
+package com.example.gamepartners.ui.Activities_Fragments;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -11,8 +11,8 @@ import android.location.LocationManager;
 import android.os.Bundle;
 
 import com.example.gamepartners.R;
-import com.example.gamepartners.data.model.GamePartnerUtills;
-import com.example.gamepartners.data.model.TabAccessorAdapter;
+import com.example.gamepartners.controller.GamePartnerUtills;
+import com.example.gamepartners.controller.Adapters.TabAccessorAdapter;
 import com.example.gamepartners.data.model.User;
 import com.google.android.material.tabs.TabLayout;
 

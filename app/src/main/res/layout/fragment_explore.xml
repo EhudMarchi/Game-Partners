@@ -4,12 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".data.model.ExploreFragment"
+    tools:context=".ui.Activities_Fragments.ExploreFragment"
     android:background="@color/darkPurple">
     <SearchView
         android:id="@+id/search"
         android:layout_width="match_parent"
         android:layout_height="60dp"
+        android:layout_toLeftOf="@id/fabDistanceFilter"
         android:background="@color/darkPurple"
         android:scrollbarThumbHorizontal="@color/white"
         android:scrollbarThumbVertical="@color/white"
@@ -17,6 +18,16 @@
         android:queryHint="Search"
         app:actionViewClass="android.widget.SearchView"
         app:showAsAction="ifRoom|collapseActionView"/>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabDistanceFilter"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_alignParentRight="true"
+        android:layout_gravity="top|end"
+        android:layout_margin="@dimen/fab_margin"
+        app:backgroundTint="@color/glowCyan"
+        android:foreground="@drawable/radar"
+        android:foregroundGravity="center" />
     <TextView
         android:id="@+id/no_posts"
         android:layout_width="wrap_content"
@@ -44,7 +55,6 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
-
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab"
             android:layout_width="wrap_content"

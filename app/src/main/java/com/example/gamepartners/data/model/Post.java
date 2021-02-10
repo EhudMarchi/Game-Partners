@@ -1,22 +1,18 @@
 package com.example.gamepartners.data.model;
 
 import android.location.Address;
-import android.location.Location;
 
-import com.example.gamepartners.data.model.Game.Game;
+import com.example.gamepartners.controller.GamePartnerUtills;
+import com.example.gamepartners.data.model.Interfaces.ILikeable;
+import com.example.gamepartners.data.model.Interfaces.IPostable;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.type.DateTime;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-public  class Post implements IPostable, ILikeable{
+public  class Post implements IPostable, ILikeable {
     private String postID;
     private Date timePosted;
     private User publisher;

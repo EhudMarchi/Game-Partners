@@ -1,10 +1,10 @@
 package com.example.gamepartners.data.model;
 
-import com.example.gamepartners.data.model.Chat.Chat;
+import com.example.gamepartners.data.model.Interfaces.IJoinable;
 
 import java.util.List;
 
-public class Group implements IJoinable{
+public class Group implements IJoinable {
     private String groupName;
     private String adminUID;
     private List<User> groupFriends;

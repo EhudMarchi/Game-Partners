@@ -1,10 +1,7 @@
 package com.example.gamepartners.data.model;
 
-import com.example.gamepartners.data.model.Game.Game;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class User {
@@ -16,7 +13,7 @@ public class User {
     String status;
     private String facebookUsername = "";
     private ArrayList<Group> userGroups = new ArrayList<>();
-    private ArrayList<String> userFriends = new ArrayList<>();
+    private HashMap<String,String> userFriends = new HashMap<>();
     private ArrayList<Post> userPosts = new ArrayList<>();
     private String proflieImageURL;
 
@@ -102,11 +99,11 @@ public class User {
         this.favouriteGames = favouriteGames;
     }
 
-    public ArrayList<String> getUserFriends() {
+    public HashMap<String, String> getUserFriends() {
         return userFriends;
     }
 
-    public void setUserFriends(ArrayList<String> userFriends) {
+    public void setUserFriends(HashMap<String, String> userFriends) {
         this.userFriends = userFriends;
     }
 
