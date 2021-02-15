@@ -55,12 +55,13 @@ public  class Post implements IPostable, ILikeable {
         this.city = address.getLocality()+","+address.getCountryName();
         this.address = address.getAddressLine(0).split(",")[0];
         this.likes = new ArrayList<>();
-        likes.add(GamePartnerUtills.connedtedUser.getUid());
+        likes.add(GamePartnerUtills.connectedUser.getUid());
         this.game =  game;
         this.latitude = address.getLatitude();
         this.longitude = address.getLongitude();
         this.timeOccurring = timeOccurring;
         comments = new ArrayList<Comment>();
+        comments.add(new Comment(publisher, description));
     }
 
     public double getLatitude() {
@@ -167,7 +168,7 @@ public  class Post implements IPostable, ILikeable {
     }
 
     @Override
-    public void Post() {
+    public void Post(DatabaseReference reference) {
 
     }
 
@@ -183,14 +184,14 @@ public  class Post implements IPostable, ILikeable {
 
     @Override
     public void Like() {
-        this.likes.add(GamePartnerUtills.connedtedUser.getUid());
+        this.likes.add(GamePartnerUtills.connectedUser.getUid());
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference().child("posts").child(this.postID).child("likes");
         myRef.setValue(this.likes);
     }
 
     @Override
     public void Dislike() {
-        this.likes.remove(GamePartnerUtills.connedtedUser.getUid());
+        this.likes.remove(GamePartnerUtills.connectedUser.getUid());
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference().child("posts").child(this.postID).child("likes");
         myRef.setValue(this.likes);
     }

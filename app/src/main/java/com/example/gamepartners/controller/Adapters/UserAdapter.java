@@ -18,6 +18,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.gamepartners.R;
 import com.example.gamepartners.data.model.User;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +77,24 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         holder.userImage.setImageResource(R.drawable.default_user);
         holder.userName.setText(currentUser.getFirstName() +" "+currentUser.getLastName());
         holder.userEmail.setText(currentUser.getEmail());
-        Glide.with(context).load(currentUser.getProflieImageURL()).into(holder.userImage);
+
+        DatabaseReference mRef = FirebaseDatabase.getInstance().getReference().child("users");
+        mRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot user : snapshot.getChildren()) {
+                    if (user.getValue(User.class).getUid().equals(currentUser.getUid())) {
+                        User publisher = user.getValue(User.class);
+                        assert publisher != null;
+                        Glide.with(context).load(currentUser.getProflieImageURL()).into(holder.userImage);
+                        break;
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -109,7 +131,15 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     public int getItemCount() {
         return users.size();
     }
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
 
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
     @Override
     public Filter getFilter() {
         return userFilter;

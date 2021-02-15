@@ -111,7 +111,7 @@ public class ChatActivity extends AppCompatActivity {
         addParticipants = findViewById(R.id.add);
         addParticipants.setAlpha(0.5f);
         addParticipants.setEnabled(false);
-        if(GamePartnerUtills.connedtedUser.getUid().equals(adminUID)) {
+        if(GamePartnerUtills.connectedUser.getUid().equals(adminUID)) {
             addParticipants.setEnabled(true);
             addParticipants.setAlpha(1f);
             addParticipants.setOnClickListener(new View.OnClickListener() {
@@ -199,10 +199,7 @@ private void addGroupMessage(String i_Message)
     if (!message.getText().equals("")) {
         m_ChatMessages.add(message);
         reference = FirebaseDatabase.getInstance().getReference("groups").child(groupNameView.getText().toString()).child("chat");
-        HashMap<String, String> hashMap = new HashMap<>();
-        hashMap.put("text", message.getText());
-        hashMap.put("type", message.getType().toString());
-        reference.push().setValue(hashMap);
+        reference.push().setValue(message);
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

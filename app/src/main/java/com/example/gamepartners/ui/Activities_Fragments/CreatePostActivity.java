@@ -296,7 +296,7 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("posts");
         String postID = reference.push().getKey();
         if(chooseLocation.getText() != "Choose Location") {
-            User user = new User(GamePartnerUtills.connedtedUser.getFirstName(), GamePartnerUtills.connedtedUser.getLastName(), mAuth.getCurrentUser().getEmail());
+            User user = new User(GamePartnerUtills.connectedUser.getFirstName(), GamePartnerUtills.connectedUser.getLastName(), mAuth.getCurrentUser().getEmail());
             Post post = new Post(postID, user, selectedGame, new Date(), subject, description, selectedAddress, new Date(year, months, day, hour, minute));
             reference.child(postID).setValue(post).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override

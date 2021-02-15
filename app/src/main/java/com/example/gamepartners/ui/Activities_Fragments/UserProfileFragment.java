@@ -1,6 +1,7 @@
 package com.example.gamepartners.ui.Activities_Fragments;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -66,6 +67,7 @@ public class UserProfileFragment extends Fragment {
     RecyclerView postsRecyclerView;
     ArrayList<Post> postsArrayList = new ArrayList<>();
     PostAdapter postAdapter;
+    Dialog commentsDialog;
     public Uri imageUri;
     private FirebaseAuth mAuth;
     private FirebaseStorage mStorage;
@@ -94,7 +96,7 @@ public class UserProfileFragment extends Fragment {
         postsRecyclerView = (RecyclerView) getView().findViewById(R.id.recyclerView);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getContext());
         postsRecyclerView.setLayoutManager(layoutManager);
-        postAdapter = new PostAdapter(this.getContext(), postsArrayList);
+        postAdapter = new PostAdapter(this.getContext(), postsArrayList,commentsDialog);
         postsRecyclerView.setAdapter(postAdapter);
         Thread postsFetchThread = new Thread(new Runnable() {
             public void run() {
@@ -127,7 +129,7 @@ public class UserProfileFragment extends Fragment {
                 for (DataSnapshot ds:snapshot.getChildren()) {
                     Post post =ds.getValue(Post.class);
                     assert post !=null;
-                    if(post.getPublisher().getEmail().equals(GamePartnerUtills.connedtedUser.getEmail())) {
+                    if(post.getPublisher().getEmail().equals(GamePartnerUtills.connectedUser.getEmail())) {
                         postsArrayList.add(post);
                     }
                 }
@@ -136,7 +138,7 @@ public class UserProfileFragment extends Fragment {
                         return Long.valueOf(second.getTimePosted().getTime()).compareTo(first.getTimePosted().getTime());//sort Post from new to old
                     }
                 });
-                postAdapter = new PostAdapter(getContext(), postsArrayList);
+                postAdapter = new PostAdapter(getContext(), postsArrayList, commentsDialog);
                 postsRecyclerView.setAdapter(postAdapter);
             }
 
@@ -227,7 +229,7 @@ public class UserProfileFragment extends Fragment {
 
     private void getProfileImage(){
         mStorageRef = mStorage.getReference();
-        mStorageRef.child("images/" + GamePartnerUtills.connedtedUser.getEmail()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+        mStorageRef.child("images/" + GamePartnerUtills.connectedUser.getEmail()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
                 Log.e("Url", "url: " + uri.toString());
@@ -253,7 +255,7 @@ public class UserProfileFragment extends Fragment {
         {
             imageUri=data.getData();
             Glide.with(this).load(imageUri.toString()).into(imgViewProfilePic);
-            GamePartnerUtills.connedtedUser.setProflieImageURL(imageUri.toString());
+            GamePartnerUtills.connectedUser.setProflieImageURL(imageUri.toString());
             uploadProfilePic();
         }
 
@@ -288,7 +290,7 @@ public class UserProfileFragment extends Fragment {
             }
         });
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("users").child(GamePartnerUtills.connedtedUser.getUid()).child("proflieImageURL");
+        DatabaseReference myRef = database.getReference("users").child(GamePartnerUtills.connectedUser.getUid()).child("proflieImageURL");
         myRef.setValue(imageUri.toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -307,12 +309,12 @@ public class UserProfileFragment extends Fragment {
                 User user = dataSnapshot.child(mAuth.getCurrentUser().getUid()).getValue(User.class);
                 email.setText(user.getEmail());
                 username.setText(user.getFirstName()+" "+user.getLastName());
-                if(GamePartnerUtills.connedtedUser.getProflieImageURL().equals("")) {
+                if(GamePartnerUtills.connectedUser.getProflieImageURL().equals("")) {
                     getProfileImage();
                 }
                 else
                 {
-                    Glide.with(getContext()).load(GamePartnerUtills.connedtedUser.getProflieImageURL()).into(imgViewProfilePic);
+                    Glide.with(getContext()).load(GamePartnerUtills.connectedUser.getProflieImageURL()).into(imgViewProfilePic);
                 }
             }
 

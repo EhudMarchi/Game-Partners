@@ -167,12 +167,12 @@
         android:layout_width="match_parent"
         android:layout_height="320dp"
         android:layout_below="@id/descriptionLayout">
-
         <ImageView
             android:id="@+id/postBack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/gamepartners_background"
+            android:scaleType="fitXY"
             android:translationZ="-2dp" />
 
         <TextView
@@ -248,6 +248,7 @@
                         app:shapeAppearanceOverlay="@style/roundedImageViewRounded" />
                 </androidx.cardview.widget.CardView>
             </RelativeLayout>
+
         </RelativeLayout>
 
         <RelativeLayout
@@ -313,7 +314,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
-                android:text="15"
+                android:text="1"
                 android:textColor="@color/grey"
                 android:textSize="13sp"/>
         </LinearLayout>
@@ -324,7 +325,7 @@
             android:textSize="13sp"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:text="3 comments"/>
+            android:text="1 comments"/>
     </RelativeLayout>
     <ImageView
         android:id="@+id/imgViewLine"

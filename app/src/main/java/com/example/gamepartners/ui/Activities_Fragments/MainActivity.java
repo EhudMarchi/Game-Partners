@@ -65,8 +65,8 @@ public class MainActivity extends AppCompatActivity {
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                GamePartnerUtills.connedtedUser = snapshot.getValue(User.class);
-                Log.e("user", GamePartnerUtills.connedtedUser.getEmail());
+                GamePartnerUtills.connectedUser = snapshot.getValue(User.class);
+                Log.e("user", GamePartnerUtills.connectedUser.getEmail());
             }
 
             @Override

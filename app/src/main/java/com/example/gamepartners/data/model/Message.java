@@ -23,7 +23,7 @@ public class Message {
         }
         else
         {
-            this.senderDisplayName = GamePartnerUtills.connedtedUser.getFirstName()+" "+ GamePartnerUtills.connedtedUser.getLastName();
+            this.senderDisplayName = GamePartnerUtills.connectedUser.getFirstName()+" "+ GamePartnerUtills.connectedUser.getLastName();
         }
         this.text = text;
         this.type = type;

@@ -122,7 +122,7 @@ public class FriendsFragment extends Fragment {
                 startActivity(Intent.createChooser(shareIntent, "Share Game Partners via"));
             }
         });
-        //fetchFriends();
+        fetchFriends();
         if(friends.size() == 0)
         {
             getView().findViewById(R.id.no_friends).setVisibility(View.VISIBLE);
@@ -187,7 +187,7 @@ public class FriendsFragment extends Fragment {
                                 {
                                     getView().findViewById(R.id.no_friends).setVisibility(View.GONE);
                                 }
-                                recyclerViewAdapter.notifyDataSetChanged();
+                                //recyclerViewAdapter.notifyDataSetChanged();
                             }
                             @Override
                             public void onCancelled(@NonNull DatabaseError error) {
@@ -227,5 +227,10 @@ public class FriendsFragment extends Fragment {
 
             }
         });
+    }
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        friends.clear();
     }
 }

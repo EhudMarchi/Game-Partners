@@ -22,6 +22,9 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.example.gamepartners.R;
+import com.example.gamepartners.controller.Adapters.CommentAdapter;
+import com.example.gamepartners.controller.Adapters.GameAdapter;
+import com.example.gamepartners.data.model.Comment;
 import com.example.gamepartners.data.model.Post;
 import com.example.gamepartners.controller.Adapters.PostAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -46,6 +49,8 @@ public class ExploreFragment extends Fragment {
     SearchView searchView;
     int postMaxDistance;
     private TextView distanceTextView;
+    Dialog commentsDialog;
+
     public ExploreFragment() {
         // Required empty public constructor
     }
@@ -69,7 +74,7 @@ public class ExploreFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 postsArrayList.clear();
                 for (DataSnapshot ds:snapshot.getChildren()) {
-                    Post post =ds.getValue(Post.class);
+                    Post post = ds.getValue(Post.class);
                     assert post !=null;
                     postsArrayList.add(post);
                 }
@@ -103,6 +108,9 @@ public class ExploreFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         searchView = (SearchView)getView().findViewById(R.id.search);
+        commentsDialog = new Dialog(getContext());
+        commentsDialog.setContentView(R.layout.dialog_comments);
+        commentsDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         setRecycleView();
         setDistanceDialog();
         final FloatingActionButton fab = getView().findViewById(R.id.fab);
@@ -128,6 +136,11 @@ public class ExploreFragment extends Fragment {
                 }
         });
         postsFetchThread.start();
+        setCommentsRecycleView();
+    }
+
+    private void setCommentsRecycleView() {
+
     }
 
     private void setDistanceDialog() {
@@ -204,7 +217,7 @@ public class ExploreFragment extends Fragment {
         postsRecyclerView = (RecyclerView) getView().findViewById(R.id.recyclerView);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getContext());
         postsRecyclerView.setLayoutManager(layoutManager);
-        postAdapter = new PostAdapter(this.getContext(), postsArrayList);
+        postAdapter = new PostAdapter(this.getContext(), postsArrayList,commentsDialog);
         postsRecyclerView.setAdapter(postAdapter);
     }
 

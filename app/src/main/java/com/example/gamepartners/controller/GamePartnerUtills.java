@@ -28,17 +28,17 @@ public class GamePartnerUtills {
     private static FirebaseAuth mAuth;
     private static FirebaseUser mUser;
     public static DatabaseReference myRef;
-    public static User connedtedUser;
+    public static User connectedUser;
     public static FirebaseStorage mStorage;
     public static StorageReference mStorageRef;
     public static String currentGameImage;
     private static User searchedUser;
-    private static HashMap<String,User> users;
+    private static ArrayList<User> users;
     public static ArrayList<Game> games;
     public static HashMap<String, String> userGroups;
 
     private GamePartnerUtills() {
-        connedtedUser = GetUser(AuthInitialization().getCurrentUser().getUid());
+        connectedUser = GetUser(AuthInitialization().getCurrentUser().getUid());
         myRef = FirebaseDatabase.getInstance().getReference();
         games = new ArrayList<>();
         fetchGames();
@@ -94,10 +94,10 @@ public class GamePartnerUtills {
         });
         reference = FirebaseDatabase.getInstance().getReference("groups").child(i_GroupName).child("groupFriends");
         HashMap<String, String> groupFriendsMap = new HashMap<>();
-        groupFriendsMap.put("uid", GamePartnerUtills.connedtedUser.getUid());
-        groupFriendsMap.put("firstName", GamePartnerUtills.connedtedUser.getFirstName());
-        groupFriendsMap.put("lastName", GamePartnerUtills.connedtedUser.getLastName());
-        groupFriendsMap.put("proflieImageURL", GamePartnerUtills.connedtedUser.getProflieImageURL());
+        groupFriendsMap.put("uid", GamePartnerUtills.connectedUser.getUid());
+        groupFriendsMap.put("firstName", GamePartnerUtills.connectedUser.getFirstName());
+        groupFriendsMap.put("lastName", GamePartnerUtills.connectedUser.getLastName());
+        groupFriendsMap.put("proflieImageURL", GamePartnerUtills.connectedUser.getProflieImageURL());
         groupFriendsMap.put("uid", mAuth.getCurrentUser().getUid());
         reference.child(mAuth.getUid()).setValue(groupFriendsMap);
         reference = FirebaseDatabase.getInstance().getReference("users").child(mAuth.getUid()).child("userGroups").child(i_GroupName);
@@ -118,7 +118,7 @@ public class GamePartnerUtills {
 
     public static void ChangeProfileImageUrl(String url) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("users").child(connedtedUser.getUid()).child("proflieImageURL");
+        DatabaseReference myRef = database.getReference("users").child(connectedUser.getUid()).child("proflieImageURL");
         myRef.setValue(url);
     }
 
@@ -136,7 +136,7 @@ public class GamePartnerUtills {
 
     public static User GetUser(final String i_UserID)
     {
-        users = new HashMap<>();
+        users = new ArrayList<>();
         myRef = FirebaseDatabase.getInstance().getReference().child("users");
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -145,7 +145,11 @@ public class GamePartnerUtills {
                 for (DataSnapshot user :snapshot.getChildren()) {
                     tempUser= user.getValue(User.class);
                     assert tempUser !=null;
-                    users.put(tempUser.getUid(),tempUser);
+                    users.add(tempUser);
+                    if(tempUser.getUid().equals(i_UserID))
+                    {
+                        searchedUser = tempUser;
+                    }
                 }
                 //GenericTypeIndicator<HashMap<String, User>> genericTypeIndicator = new GenericTypeIndicator<HashMap<String, User>>() {};
                // users = snapshot.getValue(genericTypeIndicator);
@@ -156,11 +160,11 @@ public class GamePartnerUtills {
 
             }
         });
-        if(users.get(i_UserID) == null)
-        {
-            Log.d("friends","NUL@@@@@");
-        }
-        return users.get(i_UserID);
+//        if(users.get(i_UserID) == null)
+//        {
+//            Log.d("friends","NUL@@@@@");
+//        }
+        return searchedUser;
     }
 //    public static User GetUser(final String i_UserID)
 //    {

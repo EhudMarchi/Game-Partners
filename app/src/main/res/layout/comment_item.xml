@@ -2,40 +2,63 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardCornerRadius="4dp"
-    android:paddingTop="5dp"
-    android:layout_gravity="center">
-    <EditText
-        android:padding="15dp"
-        android:id="@+id/commentText"
-        style="@style/Widget.AppCompat.EditText"
-        android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/input"
-        android:gravity="center"
-        android:layout_marginStart="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginBottom="20dp"
-        android:layout_centerInParent="true" />
-    <Button
-        android:id="@+id/postButton"
-        android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <RelativeLayout
+        android:id="@+id/commenter_Layout"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/commentText"
-        android:layout_marginTop="60dp"
-        android:layout_marginLeft="80dp"
-        android:layout_marginRight="80dp"
-        android:layout_marginBottom="15dp"
-        android:background="@drawable/choose_button"
-        android:foreground="?attr/selectableItemBackgroundBorderless"
-        android:text="Comment"
-        android:textAllCaps="false"
-        android:translationZ="2dp"
-        android:textColor="@color/white"
-        android:textSize="18dp" />
+        android:layout_marginTop="5dp"
+        android:layout_centerHorizontal="true">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/commenter_imageOut"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            app:cardBackgroundColor="#00FFFFFF"
+            app:cardCornerRadius="50dp">
+            <ImageView
+                android:id="@+id/commenter_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="1dp"
+                android:layout_centerVertical="true"
+                android:background="@drawable/circle"
+                android:scaleType="centerCrop"
+                app:shapeAppearanceOverlay="@style/roundedImageViewRounded"
+                app:srcCompat="@drawable/default_user"/>
+
+        </androidx.cardview.widget.CardView>
+        <TextView
+            android:id="@+id/commenterName"
+            android:layout_toRightOf="@id/commenter_imageOut"
+            android:layout_marginLeft="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Friend Name"
+            android:shadowColor="@color/black"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:layout_centerVertical="true"
+            android:textStyle="bold" />
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_below="@id/commenter_Layout"
+        android:id="@+id/commentLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:background="@drawable/input"
+        android:padding="5dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="Comment"
+            android:padding="10dp"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:id="@+id/comment_text" />
+    </RelativeLayout>
 
 </RelativeLayout>

@@ -11,20 +11,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.example.gamepartners.R;
+import com.example.gamepartners.data.model.Comment;
 import com.example.gamepartners.data.model.Game;
 import com.example.gamepartners.controller.GamePartnerUtills;
 import com.example.gamepartners.data.model.Post;
@@ -47,17 +51,17 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
     private ArrayList<Post> postArrayList;
     RequestManager glide;
     Animation fadeInAnimation, fadeOutAnimation;
+    Dialog commentsDialog;
     int selectedPostIndex;
     public MainActivity activity;
-
-    public PostAdapter(Context context, ArrayList<Post> postArrayList) {
+    public PostAdapter(Context context, ArrayList<Post> postArrayList, Dialog comments) {
         this.context = context;
         this.allPostsArrayList = postArrayList;
         this.postArrayList = postArrayList;
+        this.commentsDialog = comments;
         activity = (MainActivity) context;
         glide = Glide.with(context);
     }
-
     @NonNull
     @Override
     public PostAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -85,6 +89,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         holder.subject.setText(post.getSubject());
         holder.description.setText(post.getDescription());
         holder.likes.setText(String.valueOf(post.getLikesCount()));
+        holder.comments.setText((post.getComments().size())+ " comments");
         holder.city.setText(post.getCity());
         holder.address.setText(post.getLocation());
         try {
@@ -131,7 +136,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
             holder.likeText.setText("Liked");
             holder.like.setAlpha(0.6f);
         }
-        if(post.getPublisher().getEmail().equals(GamePartnerUtills.connedtedUser.getEmail()))
+        if(post.getPublisher().getEmail().equals(GamePartnerUtills.connectedUser.getEmail()))
         {
             holder.like.setEnabled(false);
         }
@@ -159,11 +164,39 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
             @Override
             public void onClick(View v) {
                 holder.comment.setClickable(false);
-                Dialog dialog = new Dialog(context);
-                dialog.setContentView(R.layout.comment_item);
+                final Dialog dialog = new Dialog(context);
+                dialog.setContentView(R.layout.add_comment_item);
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                Button addComment = dialog.findViewById(R.id.postButton);
+                addComment.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("posts").child(post.getPostID()).child("comments").child(String.valueOf(post.getComments().size()));
+                        Comment comment = new Comment(GamePartnerUtills.connectedUser, ((TextView)dialog.findViewById(R.id.commentText)).getText().toString());
+                        post.getComments().add(comment);
+                        comment.Post(reference);
+                        dialog.dismiss();
+                    }
+                });
                 dialog.show();
                 holder.comment.setClickable(true);
+            }
+        });
+        holder.comments.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(post.getComments()!=null) {
+                    RecyclerView commentsRecyclerView;
+                    CommentAdapter commentsAdapter;
+                    holder.comments.setClickable(false);
+                    commentsRecyclerView = commentsDialog.findViewById(R.id.comments_recyclerView);
+                    RecyclerView.LayoutManager commentsLayoutManager = new LinearLayoutManager(context);
+                    commentsRecyclerView.setLayoutManager(commentsLayoutManager);
+                    commentsAdapter = new CommentAdapter(context, post.getComments());
+                    commentsRecyclerView.setAdapter(commentsAdapter);
+                    commentsDialog.show();
+                    holder.comments.setClickable(true);
+                }
             }
         });
         holder.timeOccurring.setOnClickListener(new View.OnClickListener() {
@@ -211,7 +244,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
     boolean isLiked = false;
         for (String uid:post.getLikes())
         {
-            if(uid.equals(GamePartnerUtills.connedtedUser.getUid()))
+            if(uid.equals(GamePartnerUtills.connectedUser.getUid()))
             {
                 isLiked = true;
                 break;
@@ -248,7 +281,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
             timeOccurring = (TextView)itemView.findViewById(R.id.timeOccurring);
             distance = (TextView)itemView.findViewById(R.id.distance);
         }
+
     }
+
     @Override
     public Filter getFilter() {
         return distanceFilter;
