@@ -84,10 +84,18 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
         xbox = findViewById(R.id.xbox);
         uploadProgress= new ProgressDialog(this);
         uploadProgress.setTitle("Uploading Post...");
+        try {
         setFilters();
         fillGames();
         setUpGamesRecyclerView();
         setSearchFilter();
+        }
+        catch (Exception e)
+        {
+            Toast.makeText(getBaseContext(), "Something went wrong..",
+                    Toast.LENGTH_LONG).show();
+            finish();
+        }
         chooseDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -111,11 +119,29 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                fab.setClickable(false);
-                dialog.setContentView(R.layout.dialog_post);
-                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                dialog.show();
-                fab.setClickable(true);
+                if(selectedGame!=null) {
+                    if (chooseTime.getText().equals("Choose Time") || chooseDate.getText().equals("Choose Date")) {
+                        Toast.makeText(getBaseContext(), "Please choose date and time!",
+                                Toast.LENGTH_LONG).show();
+                    } else {
+                        if (!chooseLocation.getText().equals("Choose Location")) {
+                            fab.setClickable(false);
+                            dialog.setContentView(R.layout.dialog_post);
+                            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                            dialog.show();
+                            fab.setClickable(true);
+                        }
+                        else {
+                            Toast.makeText(getBaseContext(), "Please select location!",
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }
+                else
+                {
+                    Toast.makeText(getBaseContext(), "Please select game!",
+                            Toast.LENGTH_LONG).show();
+                }
             }
         });
         gamesRecyclerView.setOnClickListener(new View.OnClickListener() {
@@ -288,40 +314,31 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
     }
 
     public void createPost(final View view) throws ParseException {
-        subject =((EditText)dialog.findViewById(R.id.subject)).getText().toString();
-        description =((EditText)dialog.findViewById(R.id.description)).getText().toString();
-        createGroupChat =(CheckBox)dialog.findViewById(R.id.createGroupCheckBox);
-        uploadProgress.show();
-        FirebaseAuth mAuth =FirebaseAuth.getInstance();
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("posts");
-        String postID = reference.push().getKey();
-        if(chooseLocation.getText() != "Choose Location") {
-            User user = new User(GamePartnerUtills.connectedUser.getFirstName(), GamePartnerUtills.connectedUser.getLastName(), mAuth.getCurrentUser().getEmail());
-            Post post = new Post(postID, user, selectedGame, new Date(), subject, description, selectedAddress, new Date(year, months, day, hour, minute));
-            reference.child(postID).setValue(post).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if (task.isSuccessful()) {
-                        dialog.dismiss();
-                        finish();
-                        Toast.makeText(getBaseContext(), "Post Uploaded Successfully!",
-                                Toast.LENGTH_LONG).show();
-                    }
-                }
-            });
-            if (createGroupChat.isChecked()) {
-                GamePartnerUtills.createGroup(subject);
-            }
-        }
-        else
-        {
-            Toast.makeText(getBaseContext(), "Please select location!",
-                    Toast.LENGTH_LONG).show();
-        }
-//        reference = FirebaseDatabase.getInstance().getReference("users").child(mAuth.getUid()).child("userPosts");
-//        reference.push().setValue(post);
-        uploadProgress.dismiss();
+                subject = ((EditText) dialog.findViewById(R.id.subject)).getText().toString();
+                description = ((EditText) dialog.findViewById(R.id.description)).getText().toString();
+                createGroupChat = (CheckBox) dialog.findViewById(R.id.createGroupCheckBox);
+                uploadProgress.show();
+                DatabaseReference reference = FirebaseDatabase.getInstance().getReference("posts");
+                String postID = reference.push().getKey();
 
+                    User user = GamePartnerUtills.connectedUser;
+                    Post post = new Post(postID, user, selectedGame, new Date(), subject, description, selectedAddress, new Date(year, months, day, hour, minute));
+                    reference.child(postID).setValue(post).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                dialog.dismiss();
+                                finish();
+                                Toast.makeText(getBaseContext(), "Post Uploaded Successfully!",
+                                        Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
+                    if (createGroupChat.isChecked()) {
+                        GamePartnerUtills.createGroup(subject);
+                    }
+
+                uploadProgress.dismiss();
     }
 
     @Override

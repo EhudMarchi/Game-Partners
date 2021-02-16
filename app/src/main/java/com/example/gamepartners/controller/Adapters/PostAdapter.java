@@ -14,10 +14,12 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -33,7 +35,9 @@ import com.example.gamepartners.data.model.Game;
 import com.example.gamepartners.controller.GamePartnerUtills;
 import com.example.gamepartners.data.model.Post;
 import com.example.gamepartners.data.model.User;
+import com.example.gamepartners.ui.Activities_Fragments.LoginActivity;
 import com.example.gamepartners.ui.Activities_Fragments.MainActivity;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -171,10 +175,17 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
                 addComment.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        try {
                         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("posts").child(post.getPostID()).child("comments").child(String.valueOf(post.getComments().size()));
                         Comment comment = new Comment(GamePartnerUtills.connectedUser, ((TextView)dialog.findViewById(R.id.commentText)).getText().toString());
                         post.getComments().add(comment);
                         comment.Post(reference);
+                        Toast.makeText(context, "Comment Added!", Toast.LENGTH_SHORT).show();
+                        }
+                        catch (Exception e)
+                        {
+                            Toast.makeText(context, "Comment Failed", Toast.LENGTH_SHORT).show();
+                        }
                         dialog.dismiss();
                     }
                 });
@@ -190,11 +201,18 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
                     CommentAdapter commentsAdapter;
                     holder.comments.setClickable(false);
                     commentsRecyclerView = commentsDialog.findViewById(R.id.comments_recyclerView);
+                    ImageButton exitButton = commentsDialog.findViewById(R.id.exit);
                     RecyclerView.LayoutManager commentsLayoutManager = new LinearLayoutManager(context);
                     commentsRecyclerView.setLayoutManager(commentsLayoutManager);
                     commentsAdapter = new CommentAdapter(context, post.getComments());
                     commentsRecyclerView.setAdapter(commentsAdapter);
                     commentsDialog.show();
+                    exitButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            commentsDialog.dismiss();
+                        }
+                    });
                     holder.comments.setClickable(true);
                 }
             }

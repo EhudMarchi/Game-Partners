@@ -30,6 +30,10 @@ public class Comment implements IPostable, ILikeable {
         this.senderImageUrl = sender.getProflieImageURL();
     }
 
+    public String getSenderImageUrl() {
+        return senderImageUrl;
+    }
+
     public String getSenderUID() {
         return senderUID;
     }

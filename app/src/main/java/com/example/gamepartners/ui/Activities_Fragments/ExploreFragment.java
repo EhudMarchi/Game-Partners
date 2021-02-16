@@ -83,11 +83,15 @@ public class ExploreFragment extends Fragment {
                         return Long.valueOf(second.getTimePosted().getTime()).compareTo(first.getTimePosted().getTime());//sort Post from new to old
                     }
                 });
+                try {
+
                 getView().findViewById(R.id.loading_panel).setVisibility(View.GONE);
                 if(postsArrayList.size()<1)
                 {
                 getView().findViewById(R.id.no_posts).setVisibility(View.VISIBLE);
                 }
+                }
+                catch (Exception e){}
                 postAdapter.notifyDataSetChanged();
             }
 
