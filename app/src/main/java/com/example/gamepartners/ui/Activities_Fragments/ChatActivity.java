@@ -96,7 +96,7 @@ public class ChatActivity extends AppCompatActivity {
             groupName = (String) b.get("GroupName");
             adminUID = (String) b.get("AdminUID");
         }
-
+        fetchParticipants();
         fillFriends();
         groupName= getIntent().getExtras().getString("GroupName");
         groupNameView.setText(groupName);
@@ -262,6 +262,12 @@ private void addGroupMessage(String i_Message)
         Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.group_friends);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        fetchParticipants();
+        setUpGroupFriendsRecyclerView(dialog);
+        dialog.show();
+    }
+
+    private void fetchParticipants() {
         users = new ArrayList<>();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("groups").child(groupName).child("groupFriends");
         reference.addValueEventListener(new ValueEventListener() {
@@ -280,15 +286,13 @@ private void addGroupMessage(String i_Message)
 
             }
         });
-        setUpGroupFriendsRecyclerView(dialog);
-        dialog.show();
     }
 
     private void addParticipants() {
         Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.dialog_choose_friends);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
+        fillFriends();
         Button addSelected = dialog.findViewById(R.id.addSelected);
         addSelected.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -361,9 +365,11 @@ private void addGroupMessage(String i_Message)
                 for (DataSnapshot ds:snapshot.getChildren()) {
                     User user = ds.getValue(User.class);
                     assert user !=null;
-                    if(!user.getUid().equals(mAuth.getCurrentUser().getUid())) {
+                    if(isNotInGroup(user.getUid())) {
                         //**HERE CHECK IF FRIENDS***
-                        users.add(user);
+                        if(GamePartnerUtills.connectedUser.getUserFriends().containsKey(user.getUid())) {
+                            users.add(user);
+                        }
                     }
                 }
             }
@@ -374,6 +380,18 @@ private void addGroupMessage(String i_Message)
             }
         });
     }
+
+    private boolean isNotInGroup(String uid) {
+        boolean isNotInGroup = true;
+        for (User user:groupFriends) {
+            if(user.getUid().equals(uid))
+            {
+                isNotInGroup = false;
+            }
+        }
+        return isNotInGroup;
+    }
+
     private void fetchMessages() {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("groups").child(groupName).child("chat");
         reference.addValueEventListener(new ValueEventListener() {

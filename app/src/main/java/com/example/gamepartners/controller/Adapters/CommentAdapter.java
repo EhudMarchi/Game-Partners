@@ -74,11 +74,14 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
                     if (user.getValue(User.class).getUid().equals(currentComment.getSenderUID())) {
                         User publisher = user.getValue(User.class);
                         assert publisher != null;
-                        Glide.with(m_Context).load(currentComment.getSenderImageUrl()).into(holder.senderImage);
+                        if(m_Context!=null) {
+                            Glide.with(m_Context).load(publisher.getProflieImageURL()).into(holder.senderImage);
+                        }
                         break;
                     }
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
             }

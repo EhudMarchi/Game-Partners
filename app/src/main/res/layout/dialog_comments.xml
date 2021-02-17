@@ -20,7 +20,9 @@
             android:layout_height="32dp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:background="@drawable/ic_baseline_arrow_back_24" />
+            android:background="@drawable/post_card"
+            android:backgroundTint="@color/gradEnd"
+            android:foreground="@drawable/ic_baseline_arrow_back_24" />
         <androidx.recyclerview.widget.RecyclerView
             android:layout_below="@id/exit"
             android:id="@+id/comments_recyclerView"

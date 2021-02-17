@@ -1,8 +1,12 @@
 package com.example.gamepartners.controller.Adapters;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -83,11 +87,15 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot user : snapshot.getChildren()) {
+                    if (context != null) {
                     if (user.getValue(User.class).getUid().equals(currentUser.getUid())) {
                         User publisher = user.getValue(User.class);
                         assert publisher != null;
-                        Glide.with(context).load(currentUser.getProflieImageURL()).into(holder.userImage);
+                        if(currentUser.getProflieImageURL()!=null) {
+                            Glide.with(context).load(currentUser.getProflieImageURL()).into(holder.userImage);
+                        }
                         break;
+                    }
                     }
                 }
             }

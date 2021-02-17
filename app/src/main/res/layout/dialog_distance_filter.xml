@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/distance"
             android:layout_centerInParent="true"
-            android:max="500"
+            android:max="300"
             android:padding="10dp"
             android:progressBackgroundTint="@color/white"
             android:thumb="@drawable/default_game" />

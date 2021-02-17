@@ -103,13 +103,21 @@ public class UserProfileFragment extends Fragment {
         postsRecyclerView.setLayoutManager(layoutManager);
         postAdapter = new PostAdapter(this.getContext(), postsArrayList,commentsDialog);
         postsRecyclerView.setAdapter(postAdapter);
+        try {
         Thread postsFetchThread = new Thread(new Runnable() {
             public void run() {
                 fetchLoggedInUserPosts();
-                getView().findViewById(R.id.loading_panel).setVisibility(View.GONE);
+
             }
         });
         postsFetchThread.start();
+        postsFetchThread.join();
+        getView().findViewById(R.id.loading_panel).setVisibility(View.GONE);
+        }
+        catch (Exception e)
+        {
+            Toast.makeText(getContext(), "Something went wrong..", Toast.LENGTH_LONG).show();
+        }
         settingsAnimation = AnimationUtils.loadAnimation(getContext(),R.anim.settings_in);
         FloatingActionButton adminFab = getView().findViewById(R.id.fabAdmin);
         if(mAuth.getCurrentUser().getEmail().equals("loyalpiratemusic@gmail.com"))
@@ -143,8 +151,10 @@ public class UserProfileFragment extends Fragment {
                         return Long.valueOf(second.getTimePosted().getTime()).compareTo(first.getTimePosted().getTime());//sort Post from new to old
                     }
                 });
-                postAdapter = new PostAdapter(getContext(), postsArrayList, commentsDialog);
-                postsRecyclerView.setAdapter(postAdapter);
+                if(getContext()!=null) {
+                    postAdapter = new PostAdapter(getContext(), postsArrayList, commentsDialog);
+                    postsRecyclerView.setAdapter(postAdapter);
+                }
             }
 
             @Override
@@ -205,6 +215,7 @@ public class UserProfileFragment extends Fragment {
                 Intent intent =new Intent(getContext(), LoginActivity.class);
                 intent.putExtra("Mode","LoggedOut");
                 startActivity(intent);
+                getActivity().finish();
             }
         });
         imgViewProfilePic.setOnClickListener(new View.OnClickListener() {
@@ -232,7 +243,7 @@ public class UserProfileFragment extends Fragment {
         return view;
     }
 
-    private void getProfileImage(){
+    private void loadProfileImage(){
         mStorageRef = mStorage.getReference();
         mStorageRef.child("images/" + GamePartnerUtills.connectedUser.getEmail()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
@@ -267,41 +278,39 @@ public class UserProfileFragment extends Fragment {
     }
 
     private void uploadProfilePic() {
-        final ProgressDialog uploadProgress= new ProgressDialog(getContext());
+        final ProgressDialog uploadProgress = new ProgressDialog(getContext());
         uploadProgress.setTitle("Uploading Image...");
         uploadProgress.show();
         //final String randomKey = UUID.randomUUID().toString();
-        StorageReference profilePicRef = mStorageRef.child("images/" + mAuth.getCurrentUser().getEmail());
-
+        final StorageReference profilePicRef = mStorageRef.child("images/" + mAuth.getCurrentUser().getEmail());
         profilePicRef.putFile(imageUri)
-                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                     @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        uploadProgress.dismiss();
-                        Snackbar.make(getView(), "Image Uploaded", Snackbar.LENGTH_LONG).show();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-                        uploadProgress.dismiss();
-                        Toast.makeText(getContext(), "Image Upload Failed", Toast.LENGTH_LONG).show();
+                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            uploadProgress.dismiss();
+                            Snackbar.make(getView(), "Image Uploaded", Snackbar.LENGTH_LONG).show();
+                            profilePicRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                                    final DatabaseReference myRef = database.getReference("users").child(GamePartnerUtills.connectedUser.getUid()).child("proflieImageURL");
+                                    myRef.setValue(uri.toString());
+                                }
+                            });
+
+                        } else {
+                            uploadProgress.dismiss();
+                            Toast.makeText(getContext(), "Image Upload Failed", Toast.LENGTH_LONG).show();
+                        }
                     }
                 }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
-                int progressPercent = (int)(100.0 * snapshot.getBytesTransferred()/ snapshot.getTotalByteCount());
+                int progressPercent = (int) (100.0 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount());
                 uploadProgress.setMessage(progressPercent + "%");
             }
         });
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("users").child(GamePartnerUtills.connectedUser.getUid()).child("proflieImageURL");
-        myRef.setValue(imageUri.toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-            }
-        });
-
     }
 
     private void fillUserData() {
@@ -315,7 +324,7 @@ public class UserProfileFragment extends Fragment {
                 email.setText(user.getEmail());
                 username.setText(user.getFirstName()+" "+user.getLastName());
                 if(GamePartnerUtills.connectedUser.getProflieImageURL().equals("")) {
-                    getProfileImage();
+                    loadProfileImage();
                 }
                 else
                 {

@@ -17,6 +17,7 @@ import android.widget.Filterable;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -92,7 +93,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         holder.gameName.setText(post.getGame().getGameName());
         holder.subject.setText(post.getSubject());
         holder.description.setText(post.getDescription());
-        holder.likes.setText(String.valueOf(post.getLikesCount()));
+        holder.likes.setText(String.valueOf(post.getLikes().size()));
         holder.comments.setText((post.getComments().size())+ " comments");
         holder.city.setText(post.getCity());
         holder.address.setText(post.getLocation());
@@ -145,7 +146,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
             holder.like.setEnabled(false);
         }
         holder.like.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("ResourceAsColor")
             @Override
             public void onClick(View v) {
                 if (!holder.isLiked) {
@@ -159,7 +159,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
                     holder.like.setAlpha(1f);
                     holder.isLiked = false;
                 }
-                holder.likes.setText(String.valueOf(post.getLikesCount()));
+                holder.likes.setText(String.valueOf(post.getLikes().size()));
                 notifyDataSetChanged();
             }
         });

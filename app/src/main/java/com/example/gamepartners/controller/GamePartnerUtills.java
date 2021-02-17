@@ -20,6 +20,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -64,7 +65,6 @@ public class GamePartnerUtills {
             }
         });
     }
-
     public static float getKmFromLatLong(float lat1, float lng1, float lat2, float lng2) {
         Location loc1 = new Location("");
         loc1.setLatitude(lat1);
@@ -151,8 +151,6 @@ public class GamePartnerUtills {
                         searchedUser = tempUser;
                     }
                 }
-                //GenericTypeIndicator<HashMap<String, User>> genericTypeIndicator = new GenericTypeIndicator<HashMap<String, User>>() {};
-               // users = snapshot.getValue(genericTypeIndicator);
             }
 
             @Override
@@ -160,10 +158,6 @@ public class GamePartnerUtills {
 
             }
         });
-//        if(users.get(i_UserID) == null)
-//        {
-//            Log.d("friends","NUL@@@@@");
-//        }
         return searchedUser;
     }
 //    public static User GetUser(final String i_UserID)

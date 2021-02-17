@@ -66,7 +66,6 @@ public class FriendsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -86,7 +85,7 @@ public class FriendsFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 fab.setClickable(false);
-                Dialog dialog = new Dialog(getContext());
+                final Dialog dialog = new Dialog(getContext());
                 dialog.setContentView(R.layout.dialog_choose_friends);
                 fetchAllUsers();
                 RecyclerView allUsersRecyclerView = dialog.findViewById(R.id.friendsSelectionRecyclerView);
@@ -104,7 +103,10 @@ public class FriendsFragment extends Fragment {
                         for (User selectedUser:selectedUsers) {
                             reference = FirebaseDatabase.getInstance().getReference("users").child(mAuth.getUid()).child("userFriends");
                             reference.child(selectedUser.getUid()).setValue(selectedUser.getFirstName()+" "+selectedUser.getLastName());
+                            reference = FirebaseDatabase.getInstance().getReference("users").child(selectedUser.getUid()).child("userFriends");
+                            reference.child(mAuth.getUid()).setValue(GamePartnerUtills.connectedUser.getFirstName()+" "+GamePartnerUtills.connectedUser.getLastName());
                         }
+                        dialog.dismiss();
                     }
                 });
                 dialog.show();
@@ -155,8 +157,8 @@ public class FriendsFragment extends Fragment {
         searchView = (SearchView)getView().findViewById(R.id.search);
         usersRecyclerView = getView().findViewById(R.id.friendsRecyclerView);
         usersRecyclerView.setHasFixedSize(true);
-        recyclerViewLayoutManager = new LinearLayoutManager(getContext());
-        recyclerViewAdapter = new UserAdapter(getContext(), friends, false);
+        recyclerViewLayoutManager = new LinearLayoutManager(this.getContext());
+        recyclerViewAdapter = new UserAdapter(this.getContext(), friends, false);
         usersRecyclerView.setLayoutManager(recyclerViewLayoutManager);
         usersRecyclerView.setAdapter(recyclerViewAdapter);
     }
@@ -167,7 +169,6 @@ public class FriendsFragment extends Fragment {
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                friends.clear();
                 for (DataSnapshot ds:snapshot.getChildren()) {
                     if(ds.getKey().equals("userFriends"))
                     {
@@ -177,21 +178,37 @@ public class FriendsFragment extends Fragment {
                                 GenericTypeIndicator<HashMap<String, String>> genericTypeIndicator = new GenericTypeIndicator<HashMap<String, String>>() {};
                                 HashMap<String,String> uids = snapshot.getValue(genericTypeIndicator);
                                 Log.d("friends",String.valueOf(uids.size()));
-                                for (String uid:uids.keySet()) {
-                                    Log.d("friends",uid);
+                                friends.clear();
+                                for (final String uid:uids.keySet()) {
+                                    //Log.d("friends",uid);
                                     assert uid !=null;
-                                    friends.add(GamePartnerUtills.GetUser(uid));
-                                    Log.d("friends",GamePartnerUtills.GetUser(uid).getUid());
+                                    DatabaseReference myRef = FirebaseDatabase.getInstance().getReference().child("users");
+                                    myRef.addValueEventListener(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            User tempUser;
+                                            for (DataSnapshot user :snapshot.getChildren()) {
+                                                tempUser= user.getValue(User.class);
+                                                assert tempUser !=null;
+                                                if(tempUser.getUid().equals(uid) && !friends.contains(tempUser))
+                                                {
+                                                    Log.d("friends",tempUser.getUid());
+                                                    friends.add(tempUser);
+                                                    if(getView()!=null) {
+                                                        getView().findViewById(R.id.no_friends).setVisibility(View.GONE);
+                                                    }
+                                                }
+                                            }
+                                            recyclerViewAdapter.notifyDataSetChanged();
+                                        }
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+                                        }
+                                    });
                                 }
-                                if(friends.size() > 0)
-                                {
-                                    getView().findViewById(R.id.no_friends).setVisibility(View.GONE);
-                                }
-                                //recyclerViewAdapter.notifyDataSetChanged();
                             }
                             @Override
                             public void onCancelled(@NonNull DatabaseError error) {
-
                             }
                         });
                         break;

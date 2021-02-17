@@ -59,7 +59,7 @@ public class LoginActivity extends AppCompatActivity {
     private DatabaseReference myRef;
     SharedPreferences sharedPreferences;
     boolean isExist = false;
-    private ProgressDialog uploadProgress;
+    private ProgressDialog signInProgress;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,8 +69,8 @@ public class LoginActivity extends AppCompatActivity {
         email =findViewById(R.id.editTextEmail);
         password =findViewById(R.id.editTextPassword);
         logoImage = findViewById(R.id.imageViewLogo);
-        uploadProgress= new ProgressDialog(this);
-        uploadProgress.setTitle("Signing in...");
+        signInProgress = new ProgressDialog(this);
+        signInProgress.setTitle("Signing in...");
         initializeIconsList();
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -131,7 +131,7 @@ public class LoginActivity extends AppCompatActivity {
     }
     private void transitionScreen()
     {
-        uploadProgress.dismiss();
+        signInProgress.dismiss();
         fadeOutAnimation = AnimationUtils.loadAnimation(this, R.anim.fadeout_animation);
         logoAnimation = AnimationUtils.loadAnimation(this, R.anim.logo_animation);
         findViewById(R.id.buttonSignIn).startAnimation(fadeOutAnimation);
@@ -159,7 +159,7 @@ public class LoginActivity extends AppCompatActivity {
 
         if(!(email.getText().toString().equals(""))&&!(password.getText().toString().equals("")))
         {
-            uploadProgress.show();
+            signInProgress.show();
             mAuth.signInWithEmailAndPassword(email.getText().toString(), password.getText().toString())
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
 
@@ -174,6 +174,7 @@ public class LoginActivity extends AppCompatActivity {
                             // If sign in fails, display a message to the user.
                             Toast.makeText(LoginActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
+                            signInProgress.dismiss();
                         }
                     }
                 });
@@ -193,7 +194,8 @@ public class LoginActivity extends AppCompatActivity {
     }
     public void signUpWithFacebook(View view)
     {
-
+        Toast.makeText(LoginActivity.this, "Coming soon...",
+                Toast.LENGTH_SHORT).show();
     }
     public void signUpWithGoogle(View view)
     {
@@ -279,7 +281,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void firebaseAuthWithGoogle(String idToken) {
-        uploadProgress.show();
+        signInProgress.show();
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {

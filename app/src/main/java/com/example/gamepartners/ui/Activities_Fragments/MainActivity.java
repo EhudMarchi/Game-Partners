@@ -66,7 +66,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 GamePartnerUtills.connectedUser = snapshot.getValue(User.class);
-                Log.e("user", GamePartnerUtills.connectedUser.getProflieImageURL());
             }
 
             @Override

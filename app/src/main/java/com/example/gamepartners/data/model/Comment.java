@@ -17,7 +17,6 @@ public class Comment implements IPostable, ILikeable {
     private String text;
     private String senderUID;
     private String senderDisplayName;
-    private String senderImageUrl;
     private int likes;
 
     public Comment() {
@@ -27,11 +26,6 @@ public class Comment implements IPostable, ILikeable {
         this.text = text;
         this.senderUID = sender.getUid();
         this.senderDisplayName = sender.getFirstName()+" "+sender.getLastName();
-        this.senderImageUrl = sender.getProflieImageURL();
-    }
-
-    public String getSenderImageUrl() {
-        return senderImageUrl;
     }
 
     public String getSenderUID() {

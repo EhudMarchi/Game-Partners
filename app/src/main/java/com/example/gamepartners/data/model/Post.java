@@ -31,7 +31,7 @@ public  class Post implements IPostable, ILikeable {
     public Post() {
     }
 
-    public Post(User publisher, String gameName, int likes) {
+    public Post(User publisher, String gameName) {
         this.publisher = publisher;
         this.gameName = gameName;
         this.likes = new ArrayList<>();
@@ -150,9 +150,6 @@ public  class Post implements IPostable, ILikeable {
 
     public ArrayList<String> getLikes() {
         return likes;
-    }
-    public int getLikesCount() {
-        return likes.size();
     }
 
     public void setLikes(ArrayList<String> likes) {
