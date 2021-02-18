@@ -34,22 +34,22 @@ import java.util.HashMap;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link GroupsFragment#newInstance} factory method to
+ * Use the {@link ChatsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class GroupsFragment extends Fragment {
+public class ChatsFragment extends Fragment {
     private static final int WAIT = 1100;
-    RecyclerView groupsRecyclerView;
-    ArrayList<Group> groupsArrayList = new ArrayList<>();
-    GroupsAdapter groupsAdapter;
+    RecyclerView chatsRecyclerView;
+    ArrayList<Group> chatsArrayList = new ArrayList<>();
+    GroupsAdapter chatsAdapter;
     HashMap<String, String> userGroups;
 
-    public GroupsFragment() {
+    public ChatsFragment() {
         // Required empty public constructor
     }
 
-    public static GroupsFragment newInstance(String param1, String param2) {
-        GroupsFragment fragment = new GroupsFragment();
+    public static ChatsFragment newInstance(String param1, String param2) {
+        ChatsFragment fragment = new ChatsFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -64,19 +64,19 @@ public class GroupsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_groups, container, false);
+        return inflater.inflate(R.layout.fragment_chats, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        groupsRecyclerView = (RecyclerView) getView().findViewById(R.id.recyclerView);
-        groupsRecyclerView.setHasFixedSize(true);
-        groupsRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
+        chatsRecyclerView = (RecyclerView) getView().findViewById(R.id.recyclerView);
+        chatsRecyclerView.setHasFixedSize(true);
+        chatsRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
         final FloatingActionButton fab = getView().findViewById(R.id.fab);
 
-        groupsArrayList = new ArrayList<>();
-        fetchGroups();
+        chatsArrayList = new ArrayList<>();
+        fetchChats();
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -111,21 +111,21 @@ public class GroupsFragment extends Fragment {
         });
     }
 
-    private void fetchGroups() {
+    private void fetchChats() {
         FirebaseAuth mAuth =FirebaseAuth.getInstance();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users").child(mAuth.getUid()).child("userGroups");
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                groupsArrayList.clear();
+                chatsArrayList.clear();
                 for (DataSnapshot ds:snapshot.getChildren()) {
                     Group group =ds.getValue(Group.class);
                     assert group !=null;
                     group.setGroupFriends(ds.child("groupFriends").getValue(ArrayList.class));
-                    groupsArrayList.add(group);
+                    chatsArrayList.add(group);
                 }
-                groupsAdapter = new GroupsAdapter(getContext(),groupsArrayList);
-                groupsRecyclerView.setAdapter(groupsAdapter);
+                chatsAdapter = new GroupsAdapter(getContext(), chatsArrayList);
+                chatsRecyclerView.setAdapter(chatsAdapter);
             }
 
             @Override
@@ -138,6 +138,6 @@ public class GroupsFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        groupsArrayList.clear();
+        chatsArrayList.clear();
     }
 }

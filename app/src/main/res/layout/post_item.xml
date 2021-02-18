@@ -174,7 +174,25 @@
             android:background="@drawable/gamepartners_background"
             android:scaleType="fitXY"
             android:translationZ="-2dp" />
-
+        <TextView
+            android:id="@+id/privatePost"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="5dp"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="right"
+            android:padding="5dp"
+            android:background="@drawable/post_card"
+            android:drawableLeft="@drawable/private_post"
+            android:text="Private"
+            android:textColor="@color/glowPink"
+            android:textSize="12sp"
+            android:visibility="gone"/>
         <TextView
             android:id="@+id/distance"
             android:layout_width="wrap_content"

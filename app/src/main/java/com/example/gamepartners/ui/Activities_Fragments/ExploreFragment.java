@@ -24,6 +24,7 @@ import android.widget.TextView;
 import com.example.gamepartners.R;
 import com.example.gamepartners.controller.Adapters.CommentAdapter;
 import com.example.gamepartners.controller.Adapters.GameAdapter;
+import com.example.gamepartners.controller.GamePartnerUtills;
 import com.example.gamepartners.data.model.Comment;
 import com.example.gamepartners.data.model.Post;
 import com.example.gamepartners.controller.Adapters.PostAdapter;
@@ -75,8 +76,10 @@ public class ExploreFragment extends Fragment {
                 postsArrayList.clear();
                 for (DataSnapshot ds:snapshot.getChildren()) {
                     Post post = ds.getValue(Post.class);
-                    assert post !=null;
-                    postsArrayList.add(post);
+                    assert post != null;
+                    if ((post.getPublisher().getUid().equals(GamePartnerUtills.connectedUser.getUid()))|| (!post.isPrivate()) || (GamePartnerUtills.connectedUser.getUserFriends().containsKey(post.getPublisher().getUid()))) {
+                        postsArrayList.add(post);
+                    }
                 }
                 Collections.sort(postsArrayList, new Comparator<Post>() {
                     public int compare(Post first, Post second) {

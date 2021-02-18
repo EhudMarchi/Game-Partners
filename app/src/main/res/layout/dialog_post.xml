@@ -58,7 +58,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_centerHorizontal="true"
-            android:layout_above="@id/createGroupCheckBox"
+            android:layout_above="@id/privatePostCheckBox"
             android:background="@drawable/input"
             android:gravity="top"
             android:layout_below="@id/descriptionLabel"
@@ -71,15 +71,17 @@
             android:maxLength="250"/>
 
         <CheckBox
-            android:id="@+id/createGroupCheckBox"
+            android:id="@+id/privatePostCheckBox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Create Group Chat?"
+            android:text="Private Post?\n(Only friends on Game Partners)"
+            android:textAlignment="center"
             android:layout_margin="8dp"
             android:textColor="@color/white"
             android:layout_above="@id/post"
             android:buttonTint="@color/white"
-            android:layout_centerHorizontal="true"/>
+            android:layout_centerHorizontal="true"
+            android:gravity="center_horizontal" />
 
         <Button
             android:id="@+id/post"

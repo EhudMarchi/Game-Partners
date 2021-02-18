@@ -6,6 +6,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.example.gamepartners.data.model.Game;
+import com.example.gamepartners.data.model.Group;
 import com.example.gamepartners.data.model.Post;
 import com.example.gamepartners.data.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -79,12 +80,13 @@ public class GamePartnerUtills {
     public static void createGroup(final String i_GroupName) {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("groups").child(i_GroupName);
-        HashMap<String, String> hashMap = new HashMap<>();
-        hashMap.put("adminUID", mAuth.getUid());
-        hashMap.put("groupName", i_GroupName);
-        hashMap.put("chat", i_GroupName + mAuth.getUid());
+        Group newGroup = new Group(connectedUser, i_GroupName);
+//        HashMap<String, String> hashMap = new HashMap<>();
+//        hashMap.put("adminUID", mAuth.getUid());
+//        hashMap.put("groupName", i_GroupName);
+//        hashMap.put("chat", i_GroupName + mAuth.getUid());
 
-        reference.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+        reference.setValue(newGroup).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
@@ -98,6 +100,7 @@ public class GamePartnerUtills {
         groupFriendsMap.put("firstName", GamePartnerUtills.connectedUser.getFirstName());
         groupFriendsMap.put("lastName", GamePartnerUtills.connectedUser.getLastName());
         groupFriendsMap.put("proflieImageURL", GamePartnerUtills.connectedUser.getProflieImageURL());
+        groupFriendsMap.put("email", GamePartnerUtills.connectedUser.getEmail());
         groupFriendsMap.put("uid", mAuth.getCurrentUser().getUid());
         reference.child(mAuth.getUid()).setValue(groupFriendsMap);
         reference = FirebaseDatabase.getInstance().getReference("users").child(mAuth.getUid()).child("userGroups").child(i_GroupName);

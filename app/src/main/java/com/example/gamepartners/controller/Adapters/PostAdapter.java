@@ -89,6 +89,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         holder.username.setText(post.getPublisher().getFirstName() + " " + post.getPublisher().getLastName());
         final SimpleDateFormat format = new SimpleDateFormat("dd/MM/20yy HH:mm");
         String postedDateString = format.format(post.getTimePosted());
+        if(post.isPrivate())
+        {
+            holder.isPrivate.setVisibility(View.VISIBLE);
+        }
         holder.timePosted.setText(postedDateString);
         holder.gameName.setText(post.getGame().getGameName());
         holder.subject.setText(post.getSubject());
@@ -273,7 +277,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
     public class MyViewHolder extends RecyclerView.ViewHolder
     {
         private boolean isLiked=false, isTimeClicked=false;
-        TextView username, timePosted, likes, comments, gameName, subject, description, city, address , distance, likeText, timeOccurring;
+        TextView username, timePosted, likes, comments, gameName, subject, description, city, address , distance, likeText, timeOccurring , isPrivate;
         ImageView imgViewProfilePic, ImgViewPostPic, realityIcon, pcIcon, playstaionIcon, xboxIcon;
         LinearLayout like , comment;
         public MyViewHolder(@NonNull View itemView) {
@@ -298,6 +302,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
             address = (TextView)itemView.findViewById(R.id.location);
             timeOccurring = (TextView)itemView.findViewById(R.id.timeOccurring);
             distance = (TextView)itemView.findViewById(R.id.distance);
+            isPrivate = (TextView)itemView.findViewById(R.id.privatePost);
         }
 
     }

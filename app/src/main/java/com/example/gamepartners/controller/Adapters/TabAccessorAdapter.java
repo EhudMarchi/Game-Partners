@@ -8,7 +8,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.example.gamepartners.ui.Activities_Fragments.ExploreFragment;
 import com.example.gamepartners.ui.Activities_Fragments.FriendsFragment;
-import com.example.gamepartners.ui.Activities_Fragments.GroupsFragment;
+import com.example.gamepartners.ui.Activities_Fragments.ChatsFragment;
 import com.example.gamepartners.ui.Activities_Fragments.UserProfileFragment;
 
 public class TabAccessorAdapter extends FragmentPagerAdapter {
@@ -26,8 +26,8 @@ public class TabAccessorAdapter extends FragmentPagerAdapter {
                 ExploreFragment exploreFragment = new ExploreFragment();
                 return  exploreFragment;
             case  1:
-                GroupsFragment groupsFragment = new GroupsFragment();
-                return  groupsFragment;
+                ChatsFragment chatsFragment = new ChatsFragment();
+                return  chatsFragment;
             case  2:
                 FriendsFragment friendsFragment = new FriendsFragment();
                 return friendsFragment;
@@ -53,7 +53,7 @@ public class TabAccessorAdapter extends FragmentPagerAdapter {
             case  0:
                 return  "Explore";
             case  1:
-                return  "Groups";
+                return  "Chats";
             case  2:
                 return  "Friends";
             case  3:

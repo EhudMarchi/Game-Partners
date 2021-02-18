@@ -19,6 +19,7 @@ public  class Post implements IPostable, ILikeable {
     private String subject;
     private String description;
     private Game game;
+    private boolean isPrivate = false;
     private String gameName;
     private Date timeOccurring;
     private String address;
@@ -45,11 +46,12 @@ public  class Post implements IPostable, ILikeable {
         this.postID = postID;
     }
 
-    public Post(String postID, User publisher, Game game, Date timePosted, String subject, String description, Address address, Date timeOccurring) {
+    public Post(String postID, User publisher, Game game, Date timePosted, String subject, String description, Address address, Date timeOccurring, boolean isPrivate) {
         this.postID = postID;
         this.timePosted = timePosted;
         this.game = game;
         this.publisher = publisher;
+        this.isPrivate = isPrivate;
         this.subject = subject;
         this.description = description;
         this.city = address.getLocality()+","+address.getCountryName();
@@ -164,6 +166,13 @@ public  class Post implements IPostable, ILikeable {
         this.comments = comments;
     }
 
+    public boolean isPrivate() {
+        return isPrivate;
+    }
+
+    public void setPrivate(boolean aPrivate) {
+        isPrivate = aPrivate;
+    }
     @Override
     public void Post(DatabaseReference reference) {
 

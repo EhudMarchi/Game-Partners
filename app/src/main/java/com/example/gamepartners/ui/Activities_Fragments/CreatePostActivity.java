@@ -38,7 +38,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.shivtechs.maplocationpicker.MapUtility;
@@ -65,7 +64,7 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
     int year, months,day,hour,minute;
     public boolean realityCheck = true, pcCheck = true, playstationCheck = true, xboxCheck = true;
     private ProgressDialog uploadProgress;
-    CheckBox createGroupChat;
+    CheckBox privatePost;
     String subject="", description="";
     Dialog dialog;
     @Override
@@ -85,10 +84,10 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
         uploadProgress= new ProgressDialog(this);
         uploadProgress.setTitle("Uploading Post...");
         try {
-        setFilters();
-        fillGames();
-        setUpGamesRecyclerView();
-        setSearchFilter();
+            setFilters();
+            fillGames();
+            setUpGamesRecyclerView();
+            setSearchFilter();
         }
         catch (Exception e)
         {
@@ -260,8 +259,6 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
 
     private void showLocationPicker() {
         MapUtility.apiKey = getResources().getString(R.string.api_key);
-        //Intent intent =new Intent(this, LocationPickerActivity.class);
-        //startActivityForResult(intent, ADDRESS_PICKER_REQUEST);
         Intent intent = new Intent(this, MapsActivity.class);
         startActivityForResult(intent, PICK_MAP_POINT_REQUEST);
     }
@@ -288,7 +285,7 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
                 Calendar.getInstance().get(Calendar.MINUTE),
                 true);
 
-                timePickerDialog.show();
+        timePickerDialog.show();
     }
     public void showDatePickerDialog(){
         DatePickerDialog datePickerDialog = new DatePickerDialog(
@@ -314,31 +311,28 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
     }
 
     public void createPost(final View view) throws ParseException {
-                subject = ((EditText) dialog.findViewById(R.id.subject)).getText().toString();
-                description = ((EditText) dialog.findViewById(R.id.description)).getText().toString();
-                createGroupChat = (CheckBox) dialog.findViewById(R.id.createGroupCheckBox);
-                uploadProgress.show();
-                DatabaseReference reference = FirebaseDatabase.getInstance().getReference("posts");
-                String postID = reference.push().getKey();
+        subject = ((EditText) dialog.findViewById(R.id.subject)).getText().toString();
+        description = ((EditText) dialog.findViewById(R.id.description)).getText().toString();
+        privatePost = (CheckBox) dialog.findViewById(R.id.privatePostCheckBox);
+        uploadProgress.show();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("posts");
+        String postID = reference.push().getKey();
 
-                    User user = GamePartnerUtills.connectedUser;
-                    Post post = new Post(postID, user, selectedGame, new Date(), subject, description, selectedAddress, new Date(year, months, day, hour, minute));
-                    reference.child(postID).setValue(post).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                dialog.dismiss();
-                                finish();
-                                Toast.makeText(getBaseContext(), "Post Uploaded Successfully!",
-                                        Toast.LENGTH_LONG).show();
-                            }
-                        }
-                    });
-                    if (createGroupChat.isChecked()) {
-                        GamePartnerUtills.createGroup(subject);
-                    }
-
-                uploadProgress.dismiss();
+        User user = GamePartnerUtills.connectedUser;
+        Post post = new Post(postID, user, selectedGame, new Date(), subject, description, selectedAddress, new Date(year, months, day, hour, minute), privatePost.isChecked());
+        reference.child(postID).setValue(post).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    dialog.dismiss();
+                    finish();
+                    Toast.makeText(getBaseContext(), "Post Uploaded Successfully!",
+                            Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+        GamePartnerUtills.createGroup(subject);
+        uploadProgress.dismiss();
     }
 
     @Override

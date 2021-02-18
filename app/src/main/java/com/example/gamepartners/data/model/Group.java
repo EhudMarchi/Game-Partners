@@ -2,6 +2,7 @@ package com.example.gamepartners.data.model;
 
 import com.example.gamepartners.data.model.Interfaces.IJoinable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Group implements IJoinable {
@@ -14,8 +15,11 @@ public class Group implements IJoinable {
     public Group() {
     }
 
-    public Group(String groupName) {
+    public Group(User admin, String groupName) {
         this.groupName = groupName;
+        this.adminUID = admin.getUid();
+        groupFriends = new ArrayList<>();
+        chat = new Chat();
     }
     @Override
     public void Join() {

@@ -92,7 +92,15 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
                         User publisher = user.getValue(User.class);
                         assert publisher != null;
                         if(currentUser.getProflieImageURL()!=null) {
-                            Glide.with(context).load(currentUser.getProflieImageURL()).into(holder.userImage);
+                            if(context!= null) {
+                                try {
+                                Glide.with(context).load(currentUser.getProflieImageURL()).into(holder.userImage);
+                                }
+                                catch (Exception e)
+                                {
+
+                                }
+                            }
                         }
                         break;
                     }

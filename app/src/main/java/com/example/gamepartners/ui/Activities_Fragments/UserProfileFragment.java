@@ -328,7 +328,9 @@ public class UserProfileFragment extends Fragment {
                 }
                 else
                 {
-                    Glide.with(getContext()).load(GamePartnerUtills.connectedUser.getProflieImageURL()).into(imgViewProfilePic);
+                    if(getContext()!=null) {
+                        Glide.with(getContext()).load(GamePartnerUtills.connectedUser.getProflieImageURL()).into(imgViewProfilePic);
+                    }
                 }
             }
 
