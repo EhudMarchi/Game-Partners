@@ -13,6 +13,8 @@ import android.os.Bundle;
 import com.example.gamepartners.R;
 import com.example.gamepartners.controller.GamePartnerUtills;
 import com.example.gamepartners.controller.Adapters.TabAccessorAdapter;
+import com.example.gamepartners.data.model.Game;
+import com.example.gamepartners.data.model.Request;
 import com.example.gamepartners.data.model.User;
 import com.google.android.material.tabs.TabLayout;
 
@@ -32,6 +34,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
+
+import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -66,6 +70,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 GamePartnerUtills.connectedUser = snapshot.getValue(User.class);
+                if(GamePartnerUtills.connectedUser.getRequests()!= null) {
+                    if (GamePartnerUtills.connectedUser.getRequests().size() > 0) {
+                        tabLayout.getTabAt(3).view.performClick();
+                    }
+                }
             }
 
             @Override
@@ -73,7 +82,9 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
     }
+
     private void OnGPS() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Enable GPS").setCancelable(false).setPositiveButton("Yes", new  DialogInterface.OnClickListener() {

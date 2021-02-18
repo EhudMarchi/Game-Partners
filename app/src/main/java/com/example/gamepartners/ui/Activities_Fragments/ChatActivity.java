@@ -289,7 +289,7 @@ private void addGroupMessage(String i_Message)
     }
 
     private void addParticipants() {
-        Dialog dialog = new Dialog(this);
+        final Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.dialog_choose_friends);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         fillFriends();
@@ -313,9 +313,11 @@ private void addGroupMessage(String i_Message)
                     groupFriendsMap.put("firstName",selectedUser.getFirstName());
                     groupFriendsMap.put("lastName",selectedUser.getLastName());
                     groupFriendsMap.put("proflieImageURL",selectedUser.getProflieImageURL());
+                    groupFriendsMap.put("email",selectedUser.getEmail());
                     reference.child(selectedUser.getUid()).setValue(groupFriendsMap);
                     addGroupMessage(selectedUser.getFirstName()+" "+selectedUser.getLastName()+" joined");
                 }
+                dialog.dismiss();
             }
         });
         SearchView searchView = (SearchView)dialog.findViewById(R.id.search);

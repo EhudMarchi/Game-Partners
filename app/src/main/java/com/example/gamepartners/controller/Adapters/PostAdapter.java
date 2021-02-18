@@ -17,8 +17,6 @@ import android.widget.Filterable;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,10 +33,10 @@ import com.example.gamepartners.data.model.Comment;
 import com.example.gamepartners.data.model.Game;
 import com.example.gamepartners.controller.GamePartnerUtills;
 import com.example.gamepartners.data.model.Post;
+import com.example.gamepartners.data.model.Request;
 import com.example.gamepartners.data.model.User;
-import com.example.gamepartners.ui.Activities_Fragments.LoginActivity;
 import com.example.gamepartners.ui.Activities_Fragments.MainActivity;
-import com.google.android.material.snackbar.Snackbar;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -197,6 +195,21 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
                 holder.comment.setClickable(true);
             }
         });
+        holder.join.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Request joinRequest = new Request(Request.eRequestType.JOIN_GROUP, GamePartnerUtills.connectedUser.getUid(), GamePartnerUtills.connectedUser.getFirstName()+" "+GamePartnerUtills.connectedUser.getLastName(), postId, post.getSubject());
+                DatabaseReference mRef = FirebaseDatabase.getInstance().getReference().child("users").child(post.getPublisher().getUid()).child("requests").child(String.valueOf(GamePartnerUtills.GetUser(post.getPublisher().getUid()).getRequests().size()));
+                post.getPublisher().getRequests().add(joinRequest);
+                mRef.setValue(joinRequest).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(context, "Request sent", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+            }
+        });
         holder.comments.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -279,7 +292,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         private boolean isLiked=false, isTimeClicked=false;
         TextView username, timePosted, likes, comments, gameName, subject, description, city, address , distance, likeText, timeOccurring , isPrivate;
         ImageView imgViewProfilePic, ImgViewPostPic, realityIcon, pcIcon, playstaionIcon, xboxIcon;
-        LinearLayout like , comment;
+        LinearLayout like , comment , join;
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             like = (LinearLayout)itemView.findViewById(R.id.like);
@@ -303,6 +316,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
             timeOccurring = (TextView)itemView.findViewById(R.id.timeOccurring);
             distance = (TextView)itemView.findViewById(R.id.distance);
             isPrivate = (TextView)itemView.findViewById(R.id.privatePost);
+            join = (LinearLayout)itemView.findViewById(R.id.join);
         }
 
     }

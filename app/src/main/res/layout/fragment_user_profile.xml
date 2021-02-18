@@ -73,6 +73,23 @@
             android:text="Email"
             android:textColor="@color/grey"
             android:textSize="15sp" />
+        <TextView
+            android:id="@+id/requests"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/email"
+            android:paddingRight="6dp"
+            android:paddingLeft="6dp"
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp"
+            android:layout_toRightOf="@id/imgUser"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="5sp"
+            android:layout_marginLeft="15dp"
+            android:text="Requests"
+            android:background="@drawable/choose_button"
+            android:textColor="@color/white"
+            android:textSize="13sp" />
 
 
         <ImageView

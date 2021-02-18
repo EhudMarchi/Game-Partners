@@ -6,6 +6,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.gamepartners.R;
 import com.example.gamepartners.data.model.Comment;
+import com.example.gamepartners.data.model.Request;
 import com.example.gamepartners.data.model.User;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -23,52 +26,56 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentViewHolder>{
-    private ArrayList<Comment> m_Comments;
-    Comment m_SelectedComment = new Comment();
+public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestViewHolder>{
+    private ArrayList<Request> m_Requests;
+    Request m_SelectedRequest = new Request();
     Context m_Context;
     int m_SelectedItemIndex = 0;
+    private String groupName;
 
-    public class CommentViewHolder extends RecyclerView.ViewHolder {
-        public TextView commentText, senderName;
+    public class RequestViewHolder extends RecyclerView.ViewHolder {
+        public TextView requestText, senderName;
         public ImageView senderImage;
+        public ImageView confirm, decline;
 
-        public CommentViewHolder(View itemView) {
+        public RequestViewHolder(View itemView) {
             super(itemView);
             itemView.setClickable(true);
-            commentText = itemView.findViewById(R.id.comment_text);
-            senderName = itemView.findViewById(R.id.commenterName);
-            senderImage = itemView.findViewById(R.id.commenter_image);
+            requestText = itemView.findViewById(R.id.request_text);
+            senderName = itemView.findViewById(R.id.requesterName);
+            senderImage = itemView.findViewById(R.id.requester_image);
+            confirm = itemView.findViewById(R.id.confirm);
+            decline = itemView.findViewById(R.id.decline);
         }
     }
 
-    public CommentAdapter(Context context, ArrayList<Comment> commentsList) {
-        m_Comments = commentsList;
+    public RequestAdapter(Context context, ArrayList<Request> requestsList) {
+        m_Requests = requestsList;
         this.m_Context = context;
     }
 
     @Override
-    public CommentViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RequestViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
-        View gamesView = inflater.inflate(R.layout.comment_item, parent, false);
-        CommentAdapter.CommentViewHolder viewHolder = new CommentAdapter.CommentViewHolder(gamesView);
+        View gamesView = inflater.inflate(R.layout.request_item, parent, false);
+        RequestViewHolder viewHolder = new RequestViewHolder(gamesView);
 
         return viewHolder;
     }
 
     @SuppressLint("ResourceAsColor")
     @Override
-    public void onBindViewHolder(final CommentViewHolder holder, final int position) {
-        final Comment currentComment = m_Comments.get(position);
-        holder.commentText.setText(currentComment.getText());
-        holder.senderName.setText(currentComment.getSenderDisplayName());
+    public void onBindViewHolder(final RequestViewHolder holder, final int position) {
+        final Request currentRequest = m_Requests.get(position);
+        holder.senderName.setText(currentRequest.getSenderDisplayName());
+        holder.requestText.setText(currentRequest.getRequestText());
         DatabaseReference mRef = FirebaseDatabase.getInstance().getReference().child("users");
         mRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot user : snapshot.getChildren()) {
-                    if (user.getValue(User.class).getUid().equals(currentComment.getSenderUID())) {
+                    if (user.getValue(User.class).getUid().equals(currentRequest.getSenderID())) {
                         User publisher = user.getValue(User.class);
                         assert publisher != null;
                         if(m_Context!=null) {
@@ -88,18 +95,16 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
-
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 m_SelectedItemIndex = position;
-                m_SelectedComment = m_Comments.get(m_SelectedItemIndex);
+                m_SelectedRequest = m_Requests.get(m_SelectedItemIndex);
             }
         });
     }
-    public Comment getSelectedComment() {
-        Log.e("game", "game: " + m_Comments.get(m_SelectedItemIndex).getText());
-        return m_SelectedComment;
+    public Request getSelectedComment() {
+        return m_SelectedRequest;
     }
     @Override
     public long getItemId(int position) {
@@ -112,7 +117,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
     }
     @Override
     public int getItemCount() {
-        return m_Comments.size();
+        return m_Requests.size();
     }
 
 }

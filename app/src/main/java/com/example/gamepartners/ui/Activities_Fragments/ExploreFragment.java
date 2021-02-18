@@ -22,10 +22,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.example.gamepartners.R;
-import com.example.gamepartners.controller.Adapters.CommentAdapter;
-import com.example.gamepartners.controller.Adapters.GameAdapter;
 import com.example.gamepartners.controller.GamePartnerUtills;
-import com.example.gamepartners.data.model.Comment;
 import com.example.gamepartners.data.model.Post;
 import com.example.gamepartners.controller.Adapters.PostAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;

@@ -77,15 +77,10 @@ public class GamePartnerUtills {
         return distanceInMeters / 1000;
     }
 
-    public static void createGroup(final String i_GroupName) {
+    public static void createGroup(final String i_GroupID, String i_GroupName) {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("groups").child(i_GroupName);
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("groups").child(i_GroupID);
         Group newGroup = new Group(connectedUser, i_GroupName);
-//        HashMap<String, String> hashMap = new HashMap<>();
-//        hashMap.put("adminUID", mAuth.getUid());
-//        hashMap.put("groupName", i_GroupName);
-//        hashMap.put("chat", i_GroupName + mAuth.getUid());
-
         reference.setValue(newGroup).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -94,7 +89,7 @@ public class GamePartnerUtills {
                 }
             }
         });
-        reference = FirebaseDatabase.getInstance().getReference("groups").child(i_GroupName).child("groupFriends");
+        reference = FirebaseDatabase.getInstance().getReference("groups").child(i_GroupID).child("groupFriends");
         HashMap<String, String> groupFriendsMap = new HashMap<>();
         groupFriendsMap.put("uid", GamePartnerUtills.connectedUser.getUid());
         groupFriendsMap.put("firstName", GamePartnerUtills.connectedUser.getFirstName());
@@ -103,11 +98,11 @@ public class GamePartnerUtills {
         groupFriendsMap.put("email", GamePartnerUtills.connectedUser.getEmail());
         groupFriendsMap.put("uid", mAuth.getCurrentUser().getUid());
         reference.child(mAuth.getUid()).setValue(groupFriendsMap);
-        reference = FirebaseDatabase.getInstance().getReference("users").child(mAuth.getUid()).child("userGroups").child(i_GroupName);
+        reference = FirebaseDatabase.getInstance().getReference("users").child(mAuth.getUid()).child("userGroups").child(i_GroupID);
         userGroups = new HashMap<>();
         userGroups.put("adminUID", mAuth.getUid());
         userGroups.put("groupName", i_GroupName);
-        userGroups.put("chat", i_GroupName + mAuth.getUid());
+        userGroups.put("chat", i_GroupID + mAuth.getUid());
         reference.setValue(userGroups);
     }
 
@@ -163,34 +158,6 @@ public class GamePartnerUtills {
         });
         return searchedUser;
     }
-//    public static User GetUser(final String i_UserID)
-//    {
-//        User a = new User();
-//        myRef = FirebaseDatabase.getInstance().getReference().child("users");
-//        myRef.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                for (DataSnapshot user :dataSnapshot.getChildren()) {
-//                    if(user.getValue(User.class).getUid().equals(i_UserID))
-//                    {
-//                        searchedUser = user.getValue(User.class);
-//                        break;
-//                    }
-//                }
-//            }
-//            @Override
-//            public void onCancelled(DatabaseError error) {
-//                // Failed to read value
-//            }
-//        });
-//        if(searchedUser!=null)
-//        {
-//            Log.d("friends","not null");
-//            a = searchedUser;
-//        }
-//
-//        return a;
-//    }
     public void UpdatePostLikes(Post i_Post)
     {
 

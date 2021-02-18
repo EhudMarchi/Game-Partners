@@ -318,8 +318,9 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("posts");
         String postID = reference.push().getKey();
 
-        User user = GamePartnerUtills.connectedUser;
+        final User user = GamePartnerUtills.connectedUser;
         Post post = new Post(postID, user, selectedGame, new Date(), subject, description, selectedAddress, new Date(year, months, day, hour, minute), privatePost.isChecked());
+        user.getUserPosts().add(postID);
         reference.child(postID).setValue(post).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -328,10 +329,12 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
                     finish();
                     Toast.makeText(getBaseContext(), "Post Uploaded Successfully!",
                             Toast.LENGTH_LONG).show();
+                    DatabaseReference updateMyPostsRef = FirebaseDatabase.getInstance().getReference("users").child(user.getUid()).child("postsID");
+                    updateMyPostsRef.setValue(user.getUserPosts());
                 }
             }
         });
-        GamePartnerUtills.createGroup(subject);
+        GamePartnerUtills.createGroup(postID, post.getSubject());
         uploadProgress.dismiss();
     }
 

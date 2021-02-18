@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <RelativeLayout
-        android:id="@+id/commenter_Layout"
+        android:id="@+id/requester_Layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
@@ -12,13 +12,13 @@
         android:layout_centerHorizontal="true">
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/commenter_imageOut"
+            android:id="@+id/requester_imageOut"
             android:layout_width="32dp"
             android:layout_height="32dp"
             app:cardBackgroundColor="#00FFFFFF"
             app:cardCornerRadius="50dp">
             <ImageView
-                android:id="@+id/commenter_image"
+                android:id="@+id/requester_image"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -29,8 +29,8 @@
 
         </androidx.cardview.widget.CardView>
         <TextView
-            android:id="@+id/commenterName"
-            android:layout_toRightOf="@id/commenter_imageOut"
+            android:id="@+id/requesterName"
+            android:layout_toRightOf="@id/requester_imageOut"
             android:layout_marginLeft="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -48,12 +48,13 @@
             android:textStyle="bold" />
     </RelativeLayout>
     <RelativeLayout
-        android:layout_below="@id/commenter_Layout"
+        android:layout_below="@id/requester_Layout"
         android:id="@+id/commentLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
+        android:padding="2dp"
         android:background="@drawable/input"
         android:backgroundTint="@color/white"
         android:paddingRight="5dp"
@@ -62,11 +63,42 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:text="Comment"
+            android:text="Request"
             android:padding="10dp"
             android:textSize="18sp"
             android:textColor="@color/black"
-            android:id="@+id/comment_text" />
+            android:id="@+id/request_text" />
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/request_text"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp">
+        <ImageView
+            android:id="@+id/confirm"
+            android:layout_width="52dp"
+            android:layout_marginRight="10dp"
+            android:layout_height="32dp"
+            android:backgroundTint="@color/green"
+            app:srcCompat="@drawable/confirm"
+            android:padding="5dp"
+            android:background="@drawable/post_card">
+        </ImageView>
+        <ImageView
+            android:id="@+id/decline"
+            android:layout_toRightOf="@id/confirm"
+            android:layout_marginLeft="10dp"
+            android:layout_width="52dp"
+            android:layout_height="32dp"
+            android:padding="5dp"
+            android:backgroundTint="@color/red"
+            android:background="@drawable/post_card"
+            app:srcCompat="@drawable/decline"
+            >
+        </ImageView>
+        </RelativeLayout>
     </RelativeLayout>
 
 </RelativeLayout>

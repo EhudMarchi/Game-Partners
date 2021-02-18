@@ -31,6 +31,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.UUID;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -98,7 +99,7 @@ public class ChatsFragment extends Fragment {
                                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        GamePartnerUtills.createGroup(taskEditText.getText().toString());
+                                        GamePartnerUtills.createGroup(UUID.randomUUID().toString(),taskEditText.getText().toString());
                                     }
                                 })
                                 .create();

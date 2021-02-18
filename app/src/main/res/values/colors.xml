@@ -14,4 +14,6 @@
     <color name="solidCircle">#AAFFFFFF</color>
     <color name="gradEnd">#6700CC</color>
     <color name="gradStart">#2A0053</color>
+    <color name="green">#08BC25</color>
+    <color name="red">#BC0808</color>
 </resources>

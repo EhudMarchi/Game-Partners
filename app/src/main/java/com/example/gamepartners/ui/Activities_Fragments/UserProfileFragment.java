@@ -24,6 +24,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -31,9 +32,12 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.gamepartners.R;
+import com.example.gamepartners.controller.Adapters.CommentAdapter;
+import com.example.gamepartners.controller.Adapters.RequestAdapter;
 import com.example.gamepartners.controller.GamePartnerUtills;
 import com.example.gamepartners.data.model.Post;
 import com.example.gamepartners.controller.Adapters.PostAdapter;
+import com.example.gamepartners.data.model.Request;
 import com.example.gamepartners.data.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -62,13 +66,14 @@ import java.util.Comparator;
  * create an instance of this fragment.
  */
 public class UserProfileFragment extends Fragment {
-    TextView username, email;
+    TextView username, email, requests;
     ImageView imgViewProfilePic , profileSettingsPic;
     RelativeLayout settingsLayout;
     Button editProfile,logout;
     RecyclerView postsRecyclerView;
     ArrayList<Post> postsArrayList = new ArrayList<>();
     PostAdapter postAdapter;
+    Dialog requestsDialog;
     Dialog commentsDialog;
     public Uri imageUri;
     private FirebaseAuth mAuth;
@@ -98,21 +103,24 @@ public class UserProfileFragment extends Fragment {
         commentsDialog = new Dialog(getContext());
         commentsDialog.setContentView(R.layout.dialog_comments);
         commentsDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        requestsDialog = new Dialog(getContext());
+        requestsDialog.setContentView(R.layout.dialog_requests);
+        requestsDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         postsRecyclerView = (RecyclerView) getView().findViewById(R.id.recyclerView);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getContext());
         postsRecyclerView.setLayoutManager(layoutManager);
         postAdapter = new PostAdapter(this.getContext(), postsArrayList,commentsDialog);
         postsRecyclerView.setAdapter(postAdapter);
         try {
-        Thread postsFetchThread = new Thread(new Runnable() {
-            public void run() {
-                fetchLoggedInUserPosts();
-
+            Thread FetchThread = new Thread(new Runnable() {
+                public void run() {
+                    fetchLoggedInUserPosts();
+                }
+            });
+            FetchThread.start();
+            if(getView()!=null) {
+                getView().findViewById(R.id.loading_panel).setVisibility(View.GONE);
             }
-        });
-        postsFetchThread.start();
-        postsFetchThread.join();
-        getView().findViewById(R.id.loading_panel).setVisibility(View.GONE);
         }
         catch (Exception e)
         {
@@ -132,7 +140,6 @@ public class UserProfileFragment extends Fragment {
             });
         }
     }
-
     private void fetchLoggedInUserPosts() {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("posts");
         reference.addValueEventListener(new ValueEventListener() {
@@ -174,6 +181,7 @@ public class UserProfileFragment extends Fragment {
         imgViewProfilePic = view.findViewById(R.id.profile_pic);
         username = view.findViewById(R.id.username);
         email = view.findViewById(R.id.email);
+        requests = view.findViewById(R.id.requests);
         profileSettingsPic = view.findViewById(R.id.settings);
         settingsLayout = view.findViewById(R.id.settingsLayout);
         editProfile = view.findViewById(R.id.editProfile);
@@ -207,6 +215,30 @@ public class UserProfileFragment extends Fragment {
 
                 }
 
+            }
+        });
+        requests.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(GamePartnerUtills.connectedUser.getRequests().size()>0) {
+                    RecyclerView requestsRecyclerView;
+                    RequestAdapter requestsAdapter;
+                    requests.setClickable(false);
+                    requestsRecyclerView = requestsDialog.findViewById(R.id.requests_recyclerView);
+                    ImageButton exitButton = requestsDialog.findViewById(R.id.exit);
+                    RecyclerView.LayoutManager requestsLayoutManager = new LinearLayoutManager(getContext());
+                    requestsRecyclerView.setLayoutManager(requestsLayoutManager);
+                    requestsAdapter = new RequestAdapter(getContext(), GamePartnerUtills.connectedUser.getRequests());
+                    requestsRecyclerView.setAdapter(requestsAdapter);
+                    requestsDialog.show();
+                    exitButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            requestsDialog.dismiss();
+                        }
+                    });
+                    requests.setClickable(true);
+                }
             }
         });
         logout.setOnClickListener(new View.OnClickListener() {
