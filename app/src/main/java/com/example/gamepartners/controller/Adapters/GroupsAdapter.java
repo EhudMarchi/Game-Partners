@@ -58,6 +58,7 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
                 Intent intent =new Intent(mContext, ChatActivity.class);
                 intent.putExtra("GroupName",group.getGroupName());
                 intent.putExtra("AdminUID",group.getAdminUID());
+                intent.putExtra("GroupID",group.getGroupID());
                 mContext.startActivity(intent);
             }
         });

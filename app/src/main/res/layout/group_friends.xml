@@ -8,6 +8,22 @@
         android:layout_height="80dp"
         android:background="@drawable/gradient"
         android:paddingBottom="20dp">
+        <LinearLayout
+            android:id="@+id/back_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp">
+
+            <ImageButton
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:id="@+id/back_to_chat"
+                android:background="@drawable/ic_baseline_arrow_back_24"
+                android:foreground="?attr/selectableItemBackgroundBorderless"
+                android:layout_marginLeft="5dp" />
+        </LinearLayout>
     <TextView
         android:id="@+id/groupFriends"
         android:layout_width="wrap_content"

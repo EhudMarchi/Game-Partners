@@ -7,6 +7,7 @@ import java.util.List;
 
 public class Group implements IJoinable {
     private String groupName;
+    private String groupID;
     private String adminUID;
     private List<User> groupFriends;
     private Chat chat;
@@ -15,12 +16,22 @@ public class Group implements IJoinable {
     public Group() {
     }
 
-    public Group(User admin, String groupName) {
+    public Group(User admin, String groupName, String groupID) {
         this.groupName = groupName;
         this.adminUID = admin.getUid();
         groupFriends = new ArrayList<>();
         chat = new Chat();
+        this.groupID = groupID;
     }
+
+    public String getGroupID() {
+        return groupID;
+    }
+
+    public void setGroupID(String groupID) {
+        this.groupID = groupID;
+    }
+
     @Override
     public void Join() {
 

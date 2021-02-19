@@ -66,22 +66,21 @@
                     android:layout_marginLeft="5dp" />
             </LinearLayout>
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginEnd="20dp"
+                android:layout_marginRight="8dp"
                 android:gravity="right"
-
-                android:layout_marginRight="20dp">
-
-
+                android:padding="2dp">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/chat_groupname"
-                    android:textSize="18sp"
+                    android:textSize="14sp"
                     android:text="Group Name"
+                    android:layout_toLeftOf="@id/group_img"
+                    android:layout_centerVertical="true"
                     android:layout_gravity="center"
                     android:textColor="#fff"
                     android:textStyle="bold"
@@ -94,14 +93,16 @@
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:id="@+id/group_img"
-                    android:layout_marginEnd="5dp"
+                    android:layout_alignParentEnd="true"
                     android:src="@mipmap/ic_launcher"
-                    android:layout_marginRight="5dp" />
+                    android:layout_marginRight="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_alignParentRight="true" />
 
 
 
 
-            </LinearLayout>
+            </RelativeLayout>
 
 
 

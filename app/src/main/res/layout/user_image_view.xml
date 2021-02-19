@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="4dp"
+    android:paddingTop="5dp"
+    android:layout_gravity="center">
+    <RelativeLayout
+        android:id="@+id/imgUser"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/circle_border">
+        <androidx.cardview.widget.CardView
+            android:id="@+id/myCardView"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:layout_margin="5dp"
+            app:cardBackgroundColor="#00FFFFFF"
+            app:cardCornerRadius="250dp"
+            >
+            <ImageView
+                android:id="@+id/user_pic"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:adjustViewBounds="true"
+                android:background="@drawable/circle"
+                android:scaleType="centerCrop"
+                app:shapeAppearanceOverlay="@style/roundedImageViewRounded"
+                app:srcCompat="@drawable/default_user" />
+
+        </androidx.cardview.widget.CardView>
+        <RelativeLayout
+            android:id="@+id/nameLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:translationZ="5dp"
+            android:background="@drawable/dialog"
+            android:padding="7dp">
+            <TextView
+                android:id="@+id/userDisplayName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="User Name"
+                android:textColor="@color/white"
+                android:textSize="18dp"/>
+
+        </RelativeLayout>
+    </RelativeLayout>
+
+</RelativeLayout>

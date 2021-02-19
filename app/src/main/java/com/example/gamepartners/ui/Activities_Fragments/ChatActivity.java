@@ -19,6 +19,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
 
@@ -54,6 +55,7 @@ public class ChatActivity extends AppCompatActivity {
     RecyclerView messagesRecyclerView;
     MessageAdapter messagesAdapter;
     String groupName;
+    String groupID;
     String adminUID;
     TextView groupNameView;
     EditText inputMessage;
@@ -95,6 +97,7 @@ public class ChatActivity extends AppCompatActivity {
         {
             groupName = (String) b.get("GroupName");
             adminUID = (String) b.get("AdminUID");
+            groupID = (String) b.get("GroupID");
         }
         fetchParticipants();
         fillFriends();
@@ -133,7 +136,7 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //add message
-                reference = FirebaseDatabase.getInstance().getReference("groups").child(groupName).child("chat");
+                reference = FirebaseDatabase.getInstance().getReference("groups").child(groupID).child("chat");
                 final Message message = new Message(user.getUid(), user.getDisplayName(), inputMessage.getText().toString(), Message.eMessageType.USER_MESSAGE);
                 if (!message.getText().equals("")) {
                     Calendar cal = Calendar.getInstance();
@@ -198,7 +201,7 @@ private void addGroupMessage(String i_Message)
     final Message message = new Message(user.getUid(), user.getDisplayName(), i_Message, Message.eMessageType.GROUP_MESSAGE);
     if (!message.getText().equals("")) {
         m_ChatMessages.add(message);
-        reference = FirebaseDatabase.getInstance().getReference("groups").child(groupNameView.getText().toString()).child("chat");
+        reference = FirebaseDatabase.getInstance().getReference("groups").child(groupID).child("chat");
         reference.push().setValue(message);
         reference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -259,17 +262,24 @@ private void addGroupMessage(String i_Message)
 //        });
 //    }
     private void viewParticipants() {
-        Dialog dialog = new Dialog(this);
+        final Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.group_friends);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         fetchParticipants();
         setUpGroupFriendsRecyclerView(dialog);
         dialog.show();
+        ImageButton back = dialog.findViewById(R.id.back_to_chat);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
     }
 
     private void fetchParticipants() {
         users = new ArrayList<>();
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("groups").child(groupName).child("groupFriends");
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("groups").child(groupID).child("groupFriends");
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -301,13 +311,14 @@ private void addGroupMessage(String i_Message)
                 selectedUsers = recyclerViewAdapter.getSelectedUsers();
                 for (User selectedUser:selectedUsers) {
                     //**NEED TO SET UID**
-                    reference = FirebaseDatabase.getInstance().getReference("users").child(selectedUser.getUid()).child("userGroups").child(groupName);
+                    reference = FirebaseDatabase.getInstance().getReference("users").child(selectedUser.getUid()).child("userGroups").child(groupID);
                     HashMap userGroups = new HashMap<>();
                     userGroups.put("adminUID",adminUID);
                     userGroups.put("groupName",groupName);
                     userGroups.put("chat",groupName+" "+adminUID);
+                    userGroups.put("groupID",groupID);
                     reference.setValue(userGroups);
-                    reference = FirebaseDatabase.getInstance().getReference("groups").child(groupName).child("groupFriends");
+                    reference = FirebaseDatabase.getInstance().getReference("groups").child(groupID).child("groupFriends");
                     HashMap<String, String> groupFriendsMap = new HashMap<>();
                     groupFriendsMap.put("uid",selectedUser.getUid());
                     groupFriendsMap.put("firstName",selectedUser.getFirstName());
@@ -395,7 +406,7 @@ private void addGroupMessage(String i_Message)
     }
 
     private void fetchMessages() {
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("groups").child(groupName).child("chat");
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("groups").child(groupID).child("chat");
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

@@ -125,8 +125,15 @@ public class ChatsFragment extends Fragment {
                     group.setGroupFriends(ds.child("groupFriends").getValue(ArrayList.class));
                     chatsArrayList.add(group);
                 }
-                chatsAdapter = new GroupsAdapter(getContext(), chatsArrayList);
-                chatsRecyclerView.setAdapter(chatsAdapter);
+                if(getContext()!= null) {
+                    try {
+                    chatsAdapter = new GroupsAdapter(getContext(), chatsArrayList);
+                    chatsRecyclerView.setAdapter(chatsAdapter);
+                    }
+                    catch (Exception e)
+                    {
+                    }
+                }
             }
 
             @Override

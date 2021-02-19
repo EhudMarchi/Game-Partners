@@ -3,6 +3,7 @@ package com.example.gamepartners.controller.Adapters;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
@@ -87,6 +88,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         holder.username.setText(post.getPublisher().getFirstName() + " " + post.getPublisher().getLastName());
         final SimpleDateFormat format = new SimpleDateFormat("dd/MM/20yy HH:mm");
         String postedDateString = format.format(post.getTimePosted());
+        final Dialog imageView = new Dialog(context);
+        imageView.setContentView(R.layout.user_image_view);
+        imageView.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         if(post.isPrivate())
         {
             holder.isPrivate.setVisibility(View.VISIBLE);
@@ -114,6 +118,16 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
                         User publisher = user.getValue(User.class);
                         assert publisher != null;
                         glide.load(publisher.getProflieImageURL()).into(holder.imgViewProfilePic);
+                        if(imageView.getContext()!=null) {
+                            try {
+                            Glide.with(imageView.getContext()).load(publisher.getProflieImageURL()).into((ImageView) imageView.findViewById(R.id.user_pic));
+                            TextView userName = imageView.findViewById(R.id.userDisplayName);
+                            userName.setText(holder.username.getText().toString());
+                            }
+                            catch (Exception e)
+                            {
+                            }
+                        }
                         break;
                     }
                 }
@@ -121,6 +135,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+        holder.imgViewProfilePic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                holder.imgViewProfilePic.setClickable(false);
+                imageView.show();
+                holder.imgViewProfilePic.setClickable(true);
             }
         });
         glide.load(post.getGame().getGamePictureURL()).into(holder.ImgViewPostPic);

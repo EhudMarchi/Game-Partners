@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.Activities_Fragments.AdminActivity">
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@drawable/dialog"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:id="@+id/headline">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Edit Profile"
+            android:textSize="26dp"
+            android:layout_centerHorizontal="true"
+            android:textColor="@color/white"
+            android:background="@drawable/dialog"
+            android:padding="12dp"/>
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/addBlock"
+        android:layout_below="@id/headline"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:gravity="center"
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp"
+        android:padding="8dp">
+        <TextView
+            android:id="@+id/firstNameLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="First Name:"
+            android:layout_marginBottom="5dp"
+            android:textSize="20dp"
+            android:textColor="@color/white"
+            android:layout_centerHorizontal="true"/>
+        <EditText
+            android:id="@+id/newFirstName"
+            android:layout_below="@id/firstNameLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="25dp"
+            android:layout_marginLeft="25dp"
+            android:hint="First Name"
+            android:layout_marginBottom="5dp"
+            android:textColor="@color/black"
+            android:background="@drawable/input"
+            android:padding="12dp" />
+        <TextView
+            android:id="@+id/lastNameLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Last Name:"
+            android:layout_below="@+id/newFirstName"
+            android:layout_marginBottom="5dp"
+            android:textSize="20dp"
+            android:textColor="@color/white"
+            android:layout_centerHorizontal="true"/>
+        <EditText
+            android:id="@+id/newLastName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="25dp"
+            android:layout_marginLeft="25dp"
+            android:layout_below="@+id/lastNameLabel"
+            android:hint="Last Name"
+            android:layout_marginBottom="5dp"
+            android:textColor="@color/black"
+            android:background="@drawable/input"
+            android:padding="12dp" />
+        <TextView
+            android:id="@+id/passwordLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Password:"
+            android:layout_below="@+id/newLastName"
+            android:layout_marginBottom="5dp"
+            android:textSize="20dp"
+            android:textColor="@color/white"
+            android:layout_centerHorizontal="true"/>
+        <EditText
+            android:id="@+id/newPassword"
+            android:layout_below="@+id/passwordLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="25dp"
+            android:layout_marginLeft="25dp"
+            android:hint="Password"
+            android:layout_marginBottom="5dp"
+            android:textColor="@color/black"
+            android:background="@drawable/input"
+            android:padding="12dp"/>
+
+        <Button
+            android:id="@+id/addGame"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/newPassword"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="25dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="25dp"
+            android:background="@drawable/choose_button"
+            android:foreground="?attr/selectableItemBackground"
+            android:text="Confirm Changes"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="20dp" />
+    </RelativeLayout>
+</RelativeLayout>
+    </RelativeLayout>

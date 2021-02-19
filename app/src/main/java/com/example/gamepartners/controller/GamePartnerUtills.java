@@ -80,7 +80,7 @@ public class GamePartnerUtills {
     public static void createGroup(final String i_GroupID, String i_GroupName) {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("groups").child(i_GroupID);
-        Group newGroup = new Group(connectedUser, i_GroupName);
+        Group newGroup = new Group(connectedUser, i_GroupName, i_GroupID);
         reference.setValue(newGroup).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -103,6 +103,7 @@ public class GamePartnerUtills {
         userGroups.put("adminUID", mAuth.getUid());
         userGroups.put("groupName", i_GroupName);
         userGroups.put("chat", i_GroupID + mAuth.getUid());
+        userGroups.put("groupID", i_GroupID);
         reference.setValue(userGroups);
     }
 

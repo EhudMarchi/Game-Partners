@@ -33,6 +33,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.provider.Settings;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -45,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
     private TabAccessorAdapter tabAccessorAdapter;
     LocationManager locationManager;
     public String latitude, longitude;
-
+    Animation requestsAnimation;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,7 +75,12 @@ public class MainActivity extends AppCompatActivity {
                 GamePartnerUtills.connectedUser = snapshot.getValue(User.class);
                 if(GamePartnerUtills.connectedUser.getRequests()!= null) {
                     if (GamePartnerUtills.connectedUser.getRequests().size() > 0) {
-                        tabLayout.getTabAt(3).view.performClick();
+                        requestsAnimation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.fragment_fade_enter);
+                        requestsAnimation.setRepeatCount(Animation.INFINITE);
+                        requestsAnimation.setDuration(2500);
+                        tabLayout.getTabAt(3).view.setAnimation(requestsAnimation);
+                        tabLayout.getTabAt(3).view.animate();
+                        tabLayout.getTabAt(3).view.getTab().setText("● Profile");
                     }
                 }
             }

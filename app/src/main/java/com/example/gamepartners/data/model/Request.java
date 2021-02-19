@@ -15,7 +15,7 @@ public class Request {
         this.senderID = senderID;
         this.senderDisplayName = senderDisplayName;
         this.targetID = targetID;
-        requestText = senderDisplayName+" wants to join to \""+groupName+"\"!";
+        requestText = senderDisplayName+" wants to join \""+groupName+"\"!";
     }
 
     public enum eRequestType {

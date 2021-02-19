@@ -24,6 +24,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -75,6 +76,7 @@ public class UserProfileFragment extends Fragment {
     PostAdapter postAdapter;
     Dialog requestsDialog;
     Dialog commentsDialog;
+    Dialog editProfileDialog;
     public Uri imageUri;
     private FirebaseAuth mAuth;
     private FirebaseStorage mStorage;
@@ -106,10 +108,13 @@ public class UserProfileFragment extends Fragment {
         requestsDialog = new Dialog(getContext());
         requestsDialog.setContentView(R.layout.dialog_requests);
         requestsDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        editProfileDialog = new Dialog(getContext());
+        editProfileDialog.setContentView(R.layout.dialog_edit_profile);
+        editProfileDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         postsRecyclerView = (RecyclerView) getView().findViewById(R.id.recyclerView);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getContext());
         postsRecyclerView.setLayoutManager(layoutManager);
-        postAdapter = new PostAdapter(this.getContext(), postsArrayList,commentsDialog);
+        postAdapter = new PostAdapter(this.getContext(), postsArrayList, commentsDialog);
         postsRecyclerView.setAdapter(postAdapter);
         try {
             Thread FetchThread = new Thread(new Runnable() {
@@ -118,26 +123,33 @@ public class UserProfileFragment extends Fragment {
                 }
             });
             FetchThread.start();
-            if(getView()!=null) {
+            if (getView() != null) {
                 getView().findViewById(R.id.loading_panel).setVisibility(View.GONE);
             }
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             Toast.makeText(getContext(), "Something went wrong..", Toast.LENGTH_LONG).show();
         }
-        settingsAnimation = AnimationUtils.loadAnimation(getContext(),R.anim.settings_in);
+        settingsAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.settings_in);
         FloatingActionButton adminFab = getView().findViewById(R.id.fabAdmin);
-        if(mAuth.getCurrentUser().getEmail().equals("loyalpiratemusic@gmail.com"))
-        {
+        if (mAuth.getCurrentUser().getEmail().equals("loyalpiratemusic@gmail.com")) {
             adminFab.setVisibility(View.VISIBLE);
             adminFab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent =new Intent(getContext(), AdminActivity.class);
+                    Intent intent = new Intent(getContext(), AdminActivity.class);
                     startActivity(intent);
                 }
             });
+        }
+        if(GamePartnerUtills.connectedUser!= null) {
+            requests.setText(GamePartnerUtills.connectedUser.getRequests().size() + " Requests");
+            if (GamePartnerUtills.connectedUser.getRequests().size() > 0) {
+                requests.setEnabled(true);
+                requests.setAlpha(1f);
+            } else {
+                requests.setEnabled(false);
+                requests.setAlpha(0.4f);
+            }
         }
     }
     private void fetchLoggedInUserPosts() {
@@ -239,6 +251,20 @@ public class UserProfileFragment extends Fragment {
                     });
                     requests.setClickable(true);
                 }
+            }
+        });
+        editProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                editProfile.setClickable(false);
+                editProfileDialog.show();
+                EditText firstName = editProfileDialog.findViewById(R.id.newFirstName);
+                firstName.setText(GamePartnerUtills.connectedUser.getFirstName());
+                EditText lastName = editProfileDialog.findViewById(R.id.newLastName);
+                lastName.setText(GamePartnerUtills.connectedUser.getLastName());
+                EditText password = editProfileDialog.findViewById(R.id.newPassword);
+                password.setText(GamePartnerUtills.connectedUser.getPassword());
+                editProfile.setClickable(true);
             }
         });
         logout.setOnClickListener(new View.OnClickListener() {
