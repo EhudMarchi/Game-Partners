@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -75,8 +76,6 @@ public class ChatsFragment extends Fragment {
         chatsRecyclerView.setHasFixedSize(true);
         chatsRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
         final FloatingActionButton fab = getView().findViewById(R.id.fab);
-
-        chatsArrayList = new ArrayList<>();
         fetchChats();
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,7 +98,7 @@ public class ChatsFragment extends Fragment {
                                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        GamePartnerUtills.createGroup(UUID.randomUUID().toString(),taskEditText.getText().toString());
+                                        GamePartnerUtills.createGroup(UUID.randomUUID().toString(),taskEditText.getText().toString(), "");
                                     }
                                 })
                                 .create();
@@ -120,9 +119,8 @@ public class ChatsFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 chatsArrayList.clear();
                 for (DataSnapshot ds:snapshot.getChildren()) {
-                    Group group =ds.getValue(Group.class);
+                    Group group =GamePartnerUtills.GetGroupByID(ds.getValue(String.class));
                     assert group !=null;
-                    group.setGroupFriends(ds.child("groupFriends").getValue(ArrayList.class));
                     chatsArrayList.add(group);
                 }
                 if(getContext()!= null) {

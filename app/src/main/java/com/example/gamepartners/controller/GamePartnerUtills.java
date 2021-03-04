@@ -7,8 +7,10 @@ import androidx.annotation.NonNull;
 
 import com.example.gamepartners.data.model.Game;
 import com.example.gamepartners.data.model.Group;
+import com.example.gamepartners.data.model.Message;
 import com.example.gamepartners.data.model.Post;
 import com.example.gamepartners.data.model.User;
+import com.example.gamepartners.ui.Activities_Fragments.AdminActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -34,18 +36,42 @@ public class GamePartnerUtills {
     public static FirebaseStorage mStorage;
     public static StorageReference mStorageRef;
     public static String currentGameImage;
-    private static User searchedUser;
+    private static ArrayList<Group> groups;
     private static ArrayList<User> users;
     public static ArrayList<Game> games;
     public static HashMap<String, String> userGroups;
 
     private GamePartnerUtills() {
+        users = new ArrayList<>();
+        FetchAllUsers();
+        groups = new ArrayList<>();
+        FetchAllGroups();
         connectedUser = GetUser(AuthInitialization().getCurrentUser().getUid());
         myRef = FirebaseDatabase.getInstance().getReference();
         games = new ArrayList<>();
         fetchGames();
     }
+    public static void AddUserToGroup(User selectedUser, Group group) {
+        DatabaseReference reference;
+        reference = FirebaseDatabase.getInstance().getReference("users").child(selectedUser.getUid()).child("userGroups");
+        ArrayList<String> userGroups = selectedUser.getUserGroups();
+        userGroups.add(group.getGroupID());
+        //Group newGroup = new Group(selectedUser.getUid(), group.getGroupName(), group.getGroupID(), group.getGroupImageURL());
+        //newGroup.getGroupFriends().add(selectedUser);
+        reference.setValue(userGroups).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
 
+                }
+            }
+        });
+        reference = FirebaseDatabase.getInstance().getReference("groups").child(group.getGroupID()).child("groupFriends");
+        ArrayList<User> groupFriends = (ArrayList<User>) group.getGroupFriends();
+        groupFriends.add(selectedUser);
+        reference.setValue(groupFriends);
+       // AddGroupMessage(connectedUser, group , selectedUser.getFirstName()+" "+selectedUser.getLastName()+" joined", group.getChat().getMessages());
+    }
     private void fetchGames() {
         myRef = FirebaseDatabase.getInstance().getReference().child("games");
         myRef.addValueEventListener(new ValueEventListener() {
@@ -77,10 +103,11 @@ public class GamePartnerUtills {
         return distanceInMeters / 1000;
     }
 
-    public static void createGroup(final String i_GroupID, String i_GroupName) {
+    public static void createGroup(final String i_GroupID, String i_GroupName, String groupImageURL) {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("groups").child(i_GroupID);
-        Group newGroup = new Group(connectedUser, i_GroupName, i_GroupID);
+        Group newGroup = new Group(connectedUser.getUid(), i_GroupName, i_GroupID, groupImageURL);
+        newGroup.getGroupFriends().add(connectedUser);
         reference.setValue(newGroup).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -89,24 +116,48 @@ public class GamePartnerUtills {
                 }
             }
         });
-        reference = FirebaseDatabase.getInstance().getReference("groups").child(i_GroupID).child("groupFriends");
-        HashMap<String, String> groupFriendsMap = new HashMap<>();
-        groupFriendsMap.put("uid", GamePartnerUtills.connectedUser.getUid());
-        groupFriendsMap.put("firstName", GamePartnerUtills.connectedUser.getFirstName());
-        groupFriendsMap.put("lastName", GamePartnerUtills.connectedUser.getLastName());
-        groupFriendsMap.put("proflieImageURL", GamePartnerUtills.connectedUser.getProflieImageURL());
-        groupFriendsMap.put("email", GamePartnerUtills.connectedUser.getEmail());
-        groupFriendsMap.put("uid", mAuth.getCurrentUser().getUid());
-        reference.child(mAuth.getUid()).setValue(groupFriendsMap);
-        reference = FirebaseDatabase.getInstance().getReference("users").child(mAuth.getUid()).child("userGroups").child(i_GroupID);
-        userGroups = new HashMap<>();
-        userGroups.put("adminUID", mAuth.getUid());
-        userGroups.put("groupName", i_GroupName);
-        userGroups.put("chat", i_GroupID + mAuth.getUid());
-        userGroups.put("groupID", i_GroupID);
-        reference.setValue(userGroups);
-    }
+        reference = FirebaseDatabase.getInstance().getReference("users").child(mAuth.getUid()).child("userGroups");
+        ArrayList<String> userGroups = GamePartnerUtills.connectedUser.getUserGroups();
+        userGroups.add(i_GroupID);
+        reference.setValue(userGroups).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
 
+                }
+            }
+        });
+//        userGroups = new HashMap<>();
+//        userGroups.put("adminUID", mAuth.getUid());
+//        userGroups.put("groupName", i_GroupName);
+//        userGroups.put("chat", i_GroupID + mAuth.getUid());
+//        userGroups.put("groupImageURL", groupImageURL);
+//        userGroups.put("groupFriends", newGroup.getGroupFriends());
+//        userGroups.put("groupID", i_GroupID);
+//        reference.setValue(userGroups);
+    }
+    public static void AddGroupMessage(User sender, Group group, String i_Message , ArrayList<Message> i_ChatMessages)
+    {
+        final Message message = new Message(sender.getUid(), sender.getFirstName()+" "+sender.getLastName(), i_Message, Message.eMessageType.GROUP_MESSAGE);
+        if (!message.getText().equals("")) {
+            i_ChatMessages.add(message);
+            DatabaseReference reference;
+            reference = FirebaseDatabase.getInstance().getReference("groups").child(group.getGroupID()).child("chat");
+            reference.push().setValue(message);
+            reference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }
+    }
     public static GamePartnerUtills GetInstance() {
         if (mSingleInstance == null) {
             mSingleInstance = new GamePartnerUtills();
@@ -132,10 +183,9 @@ public class GamePartnerUtills {
 
         return mUser;
     }
-
-    public static User GetUser(final String i_UserID)
+    public void FetchAllUsers()
     {
-        users = new ArrayList<>();
+        users.clear();
         myRef = FirebaseDatabase.getInstance().getReference().child("users");
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -145,18 +195,58 @@ public class GamePartnerUtills {
                     tempUser= user.getValue(User.class);
                     assert tempUser !=null;
                     users.add(tempUser);
-                    if(tempUser.getUid().equals(i_UserID))
-                    {
-                        searchedUser = tempUser;
-                    }
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
         });
+    }
+    public void FetchAllGroups()
+    {
+        groups.clear();
+        myRef = FirebaseDatabase.getInstance().getReference().child("groups");
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Group tempGroup;
+                for (DataSnapshot group :snapshot.getChildren()) {
+                    tempGroup= group.getValue(Group.class);
+                    assert tempGroup !=null;
+                    groups.add(tempGroup);
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+    public static Group GetGroupByID(final String i_GroupID)
+    {
+        Group searched = new Group();
+        for (Group group:groups) {
+            if (group.getGroupID().equals(i_GroupID))
+            {
+                searched = group;
+            }
+        }
+
+        return searched;
+    }
+
+    public static User GetUser(final String i_UserID)
+    {
+        User searchedUser = new User();
+        for (User user:users) {
+            if (user.getUid().equals(i_UserID))
+            {
+                searchedUser = user;
+                break;
+            }
+        }
+
         return searchedUser;
     }
     public void UpdatePostLikes(Post i_Post)

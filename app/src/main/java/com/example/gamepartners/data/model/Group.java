@@ -9,19 +9,29 @@ public class Group implements IJoinable {
     private String groupName;
     private String groupID;
     private String adminUID;
-    private List<User> groupFriends;
+    private ArrayList<User> groupFriends;
     private Chat chat;
-    private String groupImageURL;
+    private String groupImageURL = "";
 
     public Group() {
     }
 
-    public Group(User admin, String groupName, String groupID) {
+
+    public Group(String adminUID, String groupName, String groupID, String groupImageURL) {
         this.groupName = groupName;
-        this.adminUID = admin.getUid();
+        this.adminUID = adminUID;
         groupFriends = new ArrayList<>();
         chat = new Chat();
         this.groupID = groupID;
+        this.groupImageURL=groupImageURL;
+    }
+
+    public String getGroupImageURL() {
+        return groupImageURL;
+    }
+
+    public void setGroupImageURL(String groupImageURL) {
+        this.groupImageURL = groupImageURL;
     }
 
     public String getGroupID() {
@@ -54,19 +64,12 @@ public class Group implements IJoinable {
         this.groupName = groupName;
     }
 
-    public String getGroupImageURL() {
-        return groupImageURL;
-    }
-
-    public void setGroupImageURL(String groupImageURL) {
-        this.groupImageURL = groupImageURL;
-    }
 
     public List<User> getGroupFriends() {
         return groupFriends;
     }
 
-    public void setGroupFriends(List<User> groupFriends) {
+    public void setGroupFriends(ArrayList<User> groupFriends) {
         this.groupFriends = groupFriends;
     }
 }

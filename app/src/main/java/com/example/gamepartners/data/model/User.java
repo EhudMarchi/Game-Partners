@@ -12,7 +12,8 @@ public class User {
     private String password;
     private ArrayList<Request> requests = new ArrayList<>();
     private String facebookUsername = "";
-    private ArrayList<Group> userGroups = new ArrayList<>();
+    private ArrayList<String> userGroups = new ArrayList<>();
+    private ArrayList<Game> favouriteGames = new ArrayList<>();
     private HashMap<String,String> userFriends = new HashMap<>();
     private ArrayList<String> postsID = new ArrayList<>();
     private String proflieImageURL;
@@ -25,6 +26,22 @@ public class User {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+    }
+
+    public ArrayList<String> getUserGroups() {
+        return userGroups;
+    }
+
+    public void setUserGroups(ArrayList<String> userGroups) {
+        this.userGroups = userGroups;
+    }
+
+    public ArrayList<Game> getFavouriteGames() {
+        return favouriteGames;
+    }
+
+    public void setFavouriteGames(ArrayList<Game> favouriteGames) {
+        this.favouriteGames = favouriteGames;
     }
 
     public ArrayList<String> getUserPosts() {
@@ -84,14 +101,6 @@ public class User {
         this.favouriteGamesRatings = favouriteGamesRatings;
     }
 
-    public List<Game> getFavouriteGames() {
-        return favouriteGames;
-    }
-
-    public void setFavouriteGames(List<Game> favouriteGames) {
-        this.favouriteGames = favouriteGames;
-    }
-
     public HashMap<String, String> getUserFriends() {
         return userFriends;
     }
@@ -109,7 +118,6 @@ public class User {
     }
 
     private List<Float> favouriteGamesRatings;
-    private List<Game> favouriteGames;
 
     public User(String firstName, String lastName, String email, String password, String proflieImageURL) {
         this.firstName = firstName;

@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,11 +43,13 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> implements Filterable {
     Context context;
@@ -58,6 +61,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
     Dialog commentsDialog;
     int selectedPostIndex;
     public MainActivity activity;
+
     public PostAdapter(Context context, ArrayList<Post> postArrayList, Dialog comments) {
         this.context = context;
         this.allPostsArrayList = postArrayList;
@@ -217,6 +221,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
                 holder.comment.setClickable(true);
             }
         });
+        if((post.getPublisher().getUid().equals(GamePartnerUtills.connectedUser.getUid()))||(isJoined()))
+        {
+            holder.join.setEnabled(false);
+            holder.joinText.setText("Joined");
+            holder.join.setAlpha(0.6f);
+        }
         holder.join.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -275,6 +285,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
             }
         });
     }
+
+    private boolean isJoined() {
+        return false;
+    }
+
     public void updateData(ArrayList<Post> posts) {
         postArrayList.clear();
         postArrayList.addAll(posts);
@@ -312,13 +327,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
     public class MyViewHolder extends RecyclerView.ViewHolder
     {
         private boolean isLiked=false, isTimeClicked=false;
-        TextView username, timePosted, likes, comments, gameName, subject, description, city, address , distance, likeText, timeOccurring , isPrivate;
+        TextView username, timePosted, likes, comments, gameName, subject, description, city, address , distance, likeText, joinText, timeOccurring , isPrivate;
         ImageView imgViewProfilePic, ImgViewPostPic, realityIcon, pcIcon, playstaionIcon, xboxIcon;
         LinearLayout like , comment , join;
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             like = (LinearLayout)itemView.findViewById(R.id.like);
             likeText = (TextView)itemView.findViewById(R.id.likeText);
+            joinText = (TextView)itemView.findViewById(R.id.joinText);
             comment = (LinearLayout)itemView.findViewById(R.id.comment);
             imgViewProfilePic = (ImageView)itemView.findViewById(R.id.imgView_profilePic);
             ImgViewPostPic = (ImageView)itemView.findViewById(R.id.imgView_postpic);

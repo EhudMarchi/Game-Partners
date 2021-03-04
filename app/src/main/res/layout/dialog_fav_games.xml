@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:id="@+id/base_relative_layout"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="@drawable/gradient"
+        android:paddingBottom="20dp">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp">
+
+            <ImageButton
+                android:id="@+id/exit"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/ic_baseline_arrow_back_24"
+                android:foreground="?attr/selectableItemBackgroundBorderless"
+                android:layout_marginLeft="5dp" />
+        </LinearLayout>
+        <TextView
+            android:id="@+id/favGamesLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="15sp"
+            android:layout_toRightOf="@+id/imgUser"
+            android:fontFamily="sans-serif-light"
+            android:text="Favourite Games"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/favGamesRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_below="@id/base_relative_layout"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="0dp"
+        android:layout_above="@id/add"
+        android:background="@color/darkPurple"/>
+
+    <ImageButton
+        android:id="@+id/add"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_marginLeft="5dp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/create"
+        android:backgroundTint="@color/glowCyan"
+        android:foreground="?attr/selectableItemBackgroundBorderless"
+        android:layout_centerHorizontal="true"/>
+</RelativeLayout>

@@ -27,15 +27,19 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.gamepartners.R;
 import com.example.gamepartners.controller.Adapters.CommentAdapter;
+import com.example.gamepartners.controller.Adapters.GameAdapter;
 import com.example.gamepartners.controller.Adapters.RequestAdapter;
 import com.example.gamepartners.controller.GamePartnerUtills;
+import com.example.gamepartners.data.model.Game;
 import com.example.gamepartners.data.model.Post;
 import com.example.gamepartners.controller.Adapters.PostAdapter;
 import com.example.gamepartners.data.model.Request;
@@ -60,23 +64,19 @@ import com.google.firebase.storage.UploadTask;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link UserProfileFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class UserProfileFragment extends Fragment {
-    TextView username, email, requests;
+    TextView username, email, requests, favGames;
     ImageView imgViewProfilePic , profileSettingsPic;
     RelativeLayout settingsLayout;
     Button editProfile,logout;
     RecyclerView postsRecyclerView;
     ArrayList<Post> postsArrayList = new ArrayList<>();
+    ArrayList<Game> gamesToAdd;
     PostAdapter postAdapter;
-    Dialog requestsDialog;
-    Dialog commentsDialog;
-    Dialog editProfileDialog;
+    ArrayList<Game> games;
+    Dialog requestsDialog, commentsDialog, editProfileDialog, favGamesDialog;
     public Uri imageUri;
     private FirebaseAuth mAuth;
     private FirebaseStorage mStorage;
@@ -108,6 +108,9 @@ public class UserProfileFragment extends Fragment {
         requestsDialog = new Dialog(getContext());
         requestsDialog.setContentView(R.layout.dialog_requests);
         requestsDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        favGamesDialog = new Dialog(getContext());
+        favGamesDialog.setContentView(R.layout.dialog_fav_games);
+        favGamesDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         editProfileDialog = new Dialog(getContext());
         editProfileDialog.setContentView(R.layout.dialog_edit_profile);
         editProfileDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -116,6 +119,7 @@ public class UserProfileFragment extends Fragment {
         postsRecyclerView.setLayoutManager(layoutManager);
         postAdapter = new PostAdapter(this.getContext(), postsArrayList, commentsDialog);
         postsRecyclerView.setAdapter(postAdapter);
+        setGamesToShow();
         try {
             Thread FetchThread = new Thread(new Runnable() {
                 public void run() {
@@ -194,6 +198,7 @@ public class UserProfileFragment extends Fragment {
         username = view.findViewById(R.id.username);
         email = view.findViewById(R.id.email);
         requests = view.findViewById(R.id.requests);
+        favGames = view.findViewById(R.id.favGames);
         profileSettingsPic = view.findViewById(R.id.settings);
         settingsLayout = view.findViewById(R.id.settingsLayout);
         editProfile = view.findViewById(R.id.editProfile);
@@ -227,6 +232,62 @@ public class UserProfileFragment extends Fragment {
 
                 }
 
+            }
+        });
+        favGames.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    RecyclerView favGamesRecyclerView;
+                    final GameAdapter favGamesAdapter;
+                    favGames.setClickable(false);
+                    favGamesRecyclerView = favGamesDialog.findViewById(R.id.favGamesRecyclerView);
+                    ImageButton exitButton = favGamesDialog.findViewById(R.id.exit);
+                    final ImageButton addButton = favGamesDialog.findViewById(R.id.add);
+                    RecyclerView.LayoutManager requestsLayoutManager = new LinearLayoutManager(getContext());
+                    favGamesRecyclerView.setLayoutManager(requestsLayoutManager);
+                    favGamesAdapter = new GameAdapter(getContext(), GamePartnerUtills.connectedUser.getFavouriteGames(), true);
+                    favGamesRecyclerView.setAdapter(favGamesAdapter);
+                    favGamesDialog.show();
+                    exitButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            favGamesDialog.dismiss();
+                        }
+                    });
+                addButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        final Dialog chooseGamesDialog = new Dialog(getContext());
+                        chooseGamesDialog.setContentView(R.layout.dialog_choose_games);
+                        chooseGamesDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        RecyclerView allGamesRecyclerView;
+                        final GameAdapter allGamesAdapter;
+                        addButton.setClickable(false);
+                        allGamesRecyclerView = chooseGamesDialog.findViewById(R.id.gamesSelectionRecyclerView);
+                        final Button addSelectedButton = chooseGamesDialog.findViewById(R.id.addSelected);
+                        RecyclerView.LayoutManager requestsLayoutManager = new LinearLayoutManager(getContext());
+                        allGamesRecyclerView.setLayoutManager(requestsLayoutManager);
+                        allGamesAdapter = new GameAdapter(getContext(), games, true);
+                        allGamesRecyclerView.setAdapter(allGamesAdapter);
+                        chooseGamesDialog.show();
+                        addSelectedButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                addSelectedButton.setClickable(false);
+                                addFavGames(allGamesAdapter);
+                                favGamesAdapter.notifyDataSetChanged();
+                                chooseGamesDialog.dismiss();
+                                addButton.setClickable(true);
+                                setGamesToShow();
+                                allGamesAdapter.notifyDataSetChanged();
+                            }
+
+                        });
+                        addSelectedButton.setClickable(true);
+                    }
+                });
+                addButton.setClickable(true);
+                favGames.setClickable(true);
             }
         });
         requests.setOnClickListener(new View.OnClickListener() {
@@ -300,7 +361,33 @@ public class UserProfileFragment extends Fragment {
         fillUserData();
         return view;
     }
+    private void setGamesToShow()
+    {
+        games = new ArrayList<>();
 
+        for (Game game:GamePartnerUtills.games) {
+            games.add(game);
+            for (Game favGame:GamePartnerUtills.connectedUser.getFavouriteGames()) {
+                if(favGame.getGameName().equals(game.getGameName()))
+                {
+                    games.remove(game);
+                    break;
+                }
+            }
+        }
+    }
+    private void addFavGames(GameAdapter adapter) {
+                gamesToAdd = adapter.getSelectedGames();
+                ArrayList<Game> favouriteGames = GamePartnerUtills.connectedUser.getFavouriteGames();
+                for (Game selectedGame:gamesToAdd) {
+                    if(!favouriteGames.contains(selectedGame))
+                    {
+                        favouriteGames.add(selectedGame);
+                    }
+                }
+                DatabaseReference favGamesRef = FirebaseDatabase.getInstance().getReference().child("users").child(GamePartnerUtills.connectedUser.getUid()).child("favouriteGames");
+                favGamesRef.setValue(favouriteGames);
+            }
     private void loadProfileImage(){
         mStorageRef = mStorage.getReference();
         mStorageRef.child("images/" + GamePartnerUtills.connectedUser.getEmail()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {

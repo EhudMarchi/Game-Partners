@@ -14,6 +14,7 @@
             android:id="@+id/search"
             android:layout_width="match_parent"
             android:layout_height="60dp"
+            android:elevation="10dp"
             android:background="@color/purple"
             android:scrollbarThumbHorizontal="@color/white"
             android:scrollbarThumbVertical="@color/white"

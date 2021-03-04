@@ -334,7 +334,7 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
                 }
             }
         });
-        GamePartnerUtills.createGroup(postID, post.getSubject());
+        GamePartnerUtills.createGroup(postID, post.getSubject(), post.getGame().getGamePictureURL());
         uploadProgress.dismiss();
     }
 

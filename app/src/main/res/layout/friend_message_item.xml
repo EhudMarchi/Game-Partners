@@ -14,6 +14,7 @@
         android:layout_marginRight="5dp" />
         <RelativeLayout
             android:padding="8dp"
+            android:elevation="3dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/chat_image_left"

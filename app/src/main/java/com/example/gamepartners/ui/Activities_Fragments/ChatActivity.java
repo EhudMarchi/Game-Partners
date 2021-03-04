@@ -26,6 +26,7 @@ import android.widget.TextView;
 import com.example.gamepartners.R;
 import com.example.gamepartners.controller.Adapters.MessageAdapter;
 import com.example.gamepartners.controller.GamePartnerUtills;
+import com.example.gamepartners.data.model.Game;
 import com.example.gamepartners.data.model.Group;
 import com.example.gamepartners.data.model.User;
 import com.example.gamepartners.controller.Adapters.UserAdapter;
@@ -54,9 +55,7 @@ public class ChatActivity extends AppCompatActivity {
     DatabaseReference reference;
     RecyclerView messagesRecyclerView;
     MessageAdapter messagesAdapter;
-    String groupName;
-    String groupID;
-    String adminUID;
+    String groupName, groupID, adminUID, groupImageURL;
     TextView groupNameView;
     EditText inputMessage;
     Group group;
@@ -98,6 +97,8 @@ public class ChatActivity extends AppCompatActivity {
             groupName = (String) b.get("GroupName");
             adminUID = (String) b.get("AdminUID");
             groupID = (String) b.get("GroupID");
+            groupImageURL = (String) b.get("GroupImageURL");
+            group = new Group(adminUID, groupName, groupID, groupImageURL);
         }
         fetchParticipants();
         fillFriends();
@@ -152,7 +153,8 @@ public class ChatActivity extends AppCompatActivity {
                     {
                         final SimpleDateFormat format = new SimpleDateFormat("dd/MM/20yy");
                         String dateString = format.format(new Date());
-                        addGroupMessage(dateString);
+                        GamePartnerUtills.AddGroupMessage(GamePartnerUtills.connectedUser, group, dateString,m_ChatMessages);
+
                     }
                     m_ChatMessages.add(message);
                     reference.push().setValue(message).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -196,28 +198,28 @@ public class ChatActivity extends AppCompatActivity {
         intent.setAction(intent.ACTION_GET_CONTENT);
         startActivityForResult(intent,1);
     }
-private void addGroupMessage(String i_Message)
-{
-    final Message message = new Message(user.getUid(), user.getDisplayName(), i_Message, Message.eMessageType.GROUP_MESSAGE);
-    if (!message.getText().equals("")) {
-        m_ChatMessages.add(message);
-        reference = FirebaseDatabase.getInstance().getReference("groups").child(groupID).child("chat");
-        reference.push().setValue(message);
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-        inputMessage.setText("");
-    }
-}
+//private void addGroupMessage(String i_Message)
+//{
+//    final Message message = new Message(user.getUid(), user.getDisplayName(), i_Message, Message.eMessageType.GROUP_MESSAGE);
+//    if (!message.getText().equals("")) {
+//        m_ChatMessages.add(message);
+//        reference = FirebaseDatabase.getInstance().getReference("groups").child(groupID).child("chat");
+//        reference.push().setValue(message);
+//        reference.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
+//        inputMessage.setText("");
+//    }
+//}
 //    @Override
 //    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
 //        super.onActivityResult(requestCode, resultCode, data);
@@ -310,23 +312,8 @@ private void addGroupMessage(String i_Message)
                 Snackbar.make(v, "Add Selected", Snackbar.LENGTH_LONG).show();
                 selectedUsers = recyclerViewAdapter.getSelectedUsers();
                 for (User selectedUser:selectedUsers) {
-                    //**NEED TO SET UID**
-                    reference = FirebaseDatabase.getInstance().getReference("users").child(selectedUser.getUid()).child("userGroups").child(groupID);
-                    HashMap userGroups = new HashMap<>();
-                    userGroups.put("adminUID",adminUID);
-                    userGroups.put("groupName",groupName);
-                    userGroups.put("chat",groupName+" "+adminUID);
-                    userGroups.put("groupID",groupID);
-                    reference.setValue(userGroups);
-                    reference = FirebaseDatabase.getInstance().getReference("groups").child(groupID).child("groupFriends");
-                    HashMap<String, String> groupFriendsMap = new HashMap<>();
-                    groupFriendsMap.put("uid",selectedUser.getUid());
-                    groupFriendsMap.put("firstName",selectedUser.getFirstName());
-                    groupFriendsMap.put("lastName",selectedUser.getLastName());
-                    groupFriendsMap.put("proflieImageURL",selectedUser.getProflieImageURL());
-                    groupFriendsMap.put("email",selectedUser.getEmail());
-                    reference.child(selectedUser.getUid()).setValue(groupFriendsMap);
-                    addGroupMessage(selectedUser.getFirstName()+" "+selectedUser.getLastName()+" joined");
+                    GamePartnerUtills.AddUserToGroup(selectedUser,GamePartnerUtills.GetGroupByID(group.getGroupID()));
+                    GamePartnerUtills.AddGroupMessage(selectedUser, GamePartnerUtills.GetGroupByID(group.getGroupID()), selectedUser.getFirstName()+" "+selectedUser.getLastName()+" joined",m_ChatMessages);
                 }
                 dialog.dismiss();
             }
@@ -336,6 +323,9 @@ private void addGroupMessage(String i_Message)
         dialog.show();
 
     }
+
+
+
     private void setSearchFilter(SearchView searchView, final UserAdapter recyclerViewAdapter) {
         searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {

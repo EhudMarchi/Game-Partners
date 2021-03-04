@@ -16,6 +16,7 @@ import com.example.gamepartners.controller.Adapters.TabAccessorAdapter;
 import com.example.gamepartners.data.model.Game;
 import com.example.gamepartners.data.model.Request;
 import com.example.gamepartners.data.model.User;
+import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.material.tabs.TabLayout;
 
 import androidx.annotation.NonNull;

@@ -2,6 +2,7 @@ package com.example.gamepartners.controller.Adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,12 +11,14 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.gamepartners.R;
 import com.example.gamepartners.data.model.Game;
+import com.example.gamepartners.data.model.User;
 import com.example.gamepartners.ui.Activities_Fragments.CreatePostActivity;
 
 import java.util.ArrayList;
@@ -24,10 +27,12 @@ import java.util.List;
 public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder> implements Filterable {
     private ArrayList<Game> m_Games;
     private ArrayList<Game> m_AllGames;
+    private ArrayList<Game> selectedGames;
     Game m_SelectedGame = new Game();
     Context m_Context;
     int m_SelectedItemIndex = 0;
     public CreatePostActivity m_Activity;
+    boolean isDialog = false;
 
     public class GameViewHolder extends RecyclerView.ViewHolder {
         public ImageView gameImage, realityIcon, pcIcon, playstationIcon, xboxIcon;
@@ -44,12 +49,22 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
             xboxIcon = itemView.findViewById(R.id.xboxIcon);
         }
     }
-
+    public GameAdapter(Context context, ArrayList<Game> gamesList, boolean isDialog) {
+        m_Games = gamesList;
+        m_AllGames = new ArrayList<>(gamesList);
+        selectedGames = new ArrayList<>();
+        this.m_Context = context;
+        this.isDialog = isDialog;
+    }
     public GameAdapter(Context context, ArrayList<Game> gamesList) {
         m_Games = gamesList;
         m_AllGames = new ArrayList<>(gamesList);
         this.m_Context = context;
         m_Activity = (CreatePostActivity) context;
+    }
+
+    public ArrayList<Game> getSelectedGames() {
+        return selectedGames;
     }
 
     @Override
@@ -68,6 +83,10 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
             Game currentGame = m_Games.get(position);
             Glide.with(m_Context).load(currentGame.getGamePictureURL()).into(holder.gameImage);
             holder.gameName.setText(currentGame.getGameName());
+            if(isDialog)
+            {
+                holder.gameName.setTextSize(13f);
+            }
             if (currentGame.getPlatforms().contains(Game.ePlatform.REALITY)) {
                 holder.realityIcon.setVisibility(View.VISIBLE);
             } else {
@@ -99,12 +118,26 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
                 public void onClick(View view) {
                     m_SelectedItemIndex = position;
                     m_SelectedGame = m_Games.get(m_SelectedItemIndex);
-                    m_Activity.selectedGame = m_SelectedGame;
+                    if(!isDialog)
+                    { m_Activity.selectedGame = m_SelectedGame;
                     if (m_Activity.selectedGame != null) {
                         m_Activity.selectedGameName.setText(m_SelectedGame.getGameName());
                         Glide.with(m_Activity).load(m_SelectedGame.getGamePictureURL()).into(m_Activity.selectedGameImage);
-                    }
+                        }
                     Log.e("game", "game: " + m_Games.get(m_SelectedItemIndex).getGameName());
+                    }
+                    else
+                    {
+                            holder.itemView.setBackgroundColor(R.color.glowCyan);
+                            if(!selectedGames.contains(m_Games.get(position))) {
+                                selectedGames.add(m_Games.get(position));
+                            }
+                            else
+                            {
+                                holder.itemView.setBackgroundColor(Color.TRANSPARENT);
+                                selectedGames.remove(m_Games.get(position));
+                            }
+                    }
                 }
             });
     }

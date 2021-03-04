@@ -8,6 +8,7 @@
     android:layout_marginBottom="15dp">
 
     <RelativeLayout
+        android:elevation="5dp"
         android:id="@+id/relativeLayoutUser"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -114,8 +115,8 @@
         android:id="@+id/subject"
         android:layout_width="wrap_content"
         android:text="Post Subject"
-        android:textColor="@color/white"
-        android:textSize="16sp"
+        android:textColor="@color/glowCyan"
+        android:textSize="17sp"
         android:textStyle="bold"
         android:layout_marginRight="15dp"
         android:layout_marginLeft="15dp"
@@ -129,15 +130,22 @@
         android:id="@+id/postGame"
         android:layout_width="wrap_content"
         android:text="Game"
-        android:textColor="@color/glowCyan"
-        android:textSize="15sp"
+        android:textColor="@color/white"
+        android:textSize="16sp"
         android:textStyle="bold"
         android:layout_marginTop="4dp"
         android:layout_marginRight="15dp"
         android:layout_marginLeft="15dp"
+        android:shadowColor="@color/black"
+        android:shadowRadius="3"
         android:gravity="center"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="2dp"
+        android:paddingRight="8dp"
+        android:paddingLeft="8dp"
+        android:paddingTop="1dp"
+        android:paddingBottom="1dp"
+        android:background="@drawable/choose_button"
         android:layout_below="@id/relativeLayoutUser"
         android:fontFamily="sans-serif-medium"
         android:layout_height="wrap_content"/>
@@ -247,6 +255,7 @@
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/myCardView"
+                    android:elevation="10dp"
                     android:layout_width="280dp"
                     android:layout_height="280dp"
                     android:layout_centerInParent="true"
@@ -435,6 +444,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:text="Join"
+                    android:id="@+id/joinText"
                     android:textColor="@color/white"
                     android:layout_marginLeft="10dp"
                     android:textSize="16sp"

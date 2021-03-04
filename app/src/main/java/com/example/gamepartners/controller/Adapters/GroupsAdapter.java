@@ -14,7 +14,10 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.example.gamepartners.R;
 import com.example.gamepartners.data.model.Group;
+import com.example.gamepartners.data.model.User;
 import com.example.gamepartners.ui.Activities_Fragments.ChatActivity;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
@@ -44,7 +47,7 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
     public void onBindViewHolder(@NonNull GroupsAdapter.MyViewHolder holder, final int position) {
         final Group group = mGroups.get(position);
         holder.groupName.setText(group.getGroupName());
-        if(group.getGroupFriends ()!= null) {
+        if(group.getGroupFriends()!= null) {
             holder.participantsAmount.setText(group.getGroupFriends().size() + " Members");
         }
         if(group.getGroupImageURL()!=null) {
@@ -59,11 +62,20 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
                 intent.putExtra("GroupName",group.getGroupName());
                 intent.putExtra("AdminUID",group.getAdminUID());
                 intent.putExtra("GroupID",group.getGroupID());
+                intent.putExtra("GroupImageURL",group.getGroupImageURL());
                 mContext.startActivity(intent);
             }
         });
     }
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
 
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
     @Override
     public int getItemCount() {
         return mGroups.size();

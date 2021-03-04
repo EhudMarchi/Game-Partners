@@ -8,6 +8,7 @@
     android:background="@color/darkPurple">
 
     <RelativeLayout
+        android:elevation="10dp"
         android:id="@+id/selected_relative_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -70,6 +71,9 @@
             android:layout_toRightOf="@+id/imgGame"
             android:foreground="?attr/selectableItemBackground"
             android:text="Choose Date"
+            android:shadowColor="@color/black"
+            android:shadowRadius="10"
+            android:textSize="17dp"
             android:textColor="@color/white"
             android:background="@drawable/choose_button"
             android:textAllCaps="false" />
@@ -82,9 +86,12 @@
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_marginTop="8dp"
+            android:shadowColor="@color/black"
+            android:shadowRadius="10"
             android:layout_toRightOf="@+id/imgGame"
             android:foreground="?attr/selectableItemBackground"
             android:text="Choose Time"
+            android:textSize="17dp"
             android:textColor="@color/white"
             android:background="@drawable/choose_button"
             android:textAllCaps="false" />
@@ -98,6 +105,9 @@
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_marginTop="8dp"
+            android:textSize="17dp"
+            android:shadowColor="@color/black"
+            android:shadowRadius="10"
             android:layout_toRightOf="@+id/imgGame"
             android:text="Choose Location"
             android:textColor="@color/white"
@@ -117,6 +127,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
+            android:elevation="10dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="1"
@@ -216,8 +227,10 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|end"
                 android:layout_margin="@dimen/fab_margin"
+                android:foregroundGravity="center"
+                android:foregroundTint="@color/darkPurple"
                 app:backgroundTint="@color/glowCyan"
-                app:srcCompat="@drawable/ic_action_name" />
+                android:foreground="@drawable/ic_action_name" />
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     </RelativeLayout>

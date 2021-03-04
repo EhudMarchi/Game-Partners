@@ -232,7 +232,7 @@ public class FriendsFragment extends Fragment {
                 {
                     User user = ds.getValue(User.class);
                     assert user !=null;
-                    if(!user.getUid().equals(mAuth.getUid()))
+                    if(!user.getUid().equals(mAuth.getUid())&&(!isFriend(user.getUid())))
                     {
                         users.add(user);
                     }
@@ -244,6 +244,17 @@ public class FriendsFragment extends Fragment {
 
             }
         });
+    }
+    private boolean isFriend(String uid)
+    {
+        boolean isFriend = false;
+        for (User friend:friends) {
+            if(friend.getUid().equals(uid))
+            {
+                isFriend = true;
+            }
+        }
+        return isFriend;
     }
     @Override
     public void onDestroyView() {

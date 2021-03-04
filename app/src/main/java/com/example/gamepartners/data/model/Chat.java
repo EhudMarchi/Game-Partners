@@ -24,4 +24,7 @@ public class Chat {
         this.m_GroupName = i_GroupName;
     }
 
+    public ArrayList<Message> getMessages() {
+        return messages;
+    }
 }

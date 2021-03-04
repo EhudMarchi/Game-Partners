@@ -120,8 +120,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
                     holder.itemView.setBackgroundColor(R.color.glowCyan);
                     if(!selectedUsers.contains(users.get(position))) {
                         selectedUsers.add(users.get(position));
-                        Toast.makeText(context, users.get(position).getFirstName(),
-                                Toast.LENGTH_SHORT).show();
                     }
                     else
                     {

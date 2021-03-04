@@ -7,6 +7,7 @@
     android:paddingTop="5dp"
     android:layout_gravity="center">
     <RelativeLayout
+        android:elevation="3dp"
         android:paddingLeft="15dp"
         android:paddingRight="15dp"
         android:id="@+id/distanceLayout"
@@ -45,6 +46,7 @@
     </RelativeLayout>
     <Button
         android:id="@+id/filterButton"
+        android:elevation="3dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/distanceLayout"
