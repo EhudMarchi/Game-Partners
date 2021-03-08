@@ -86,7 +86,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
     public void onBindViewHolder(@NonNull final PostAdapter.MyViewHolder holder, final int position) {
         final Post post = postArrayList.get(position);
         selectedPostIndex = position;
-        postId = post.getPostID();
         fadeInAnimation = AnimationUtils.loadAnimation(context, R.anim.fragment_fade_enter);
         fadeOutAnimation = AnimationUtils.loadAnimation(context, R.anim.fragment_fade_exit);
         holder.username.setText(post.getPublisher().getFirstName() + " " + post.getPublisher().getLastName());
@@ -230,16 +229,18 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         holder.join.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Request joinRequest = new Request(Request.eRequestType.JOIN_GROUP, GamePartnerUtills.connectedUser.getUid(), GamePartnerUtills.connectedUser.getFirstName()+" "+GamePartnerUtills.connectedUser.getLastName(), postId, post.getSubject());
+                Request joinRequest = new Request(Request.eRequestType.JOIN_GROUP, GamePartnerUtills.connectedUser.getUid(), GamePartnerUtills.connectedUser.getFirstName()+" "+GamePartnerUtills.connectedUser.getLastName(), post.getPostID(), post.getSubject());
                 DatabaseReference mRef = FirebaseDatabase.getInstance().getReference().child("users").child(post.getPublisher().getUid()).child("requests").child(String.valueOf(GamePartnerUtills.GetUser(post.getPublisher().getUid()).getRequests().size()));
-                post.getPublisher().getRequests().add(joinRequest);
+                GamePartnerUtills.GetUser(post.getPublisher().getUid()).getRequests().add(joinRequest);
                 mRef.setValue(joinRequest).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Toast.makeText(context, "Request sent", Toast.LENGTH_SHORT).show();
                     }
                 });
-
+                holder.join.setEnabled(false);
+                holder.joinText.setText("Pending");
+                holder.join.setAlpha(0.6f);
             }
         });
         holder.comments.setOnClickListener(new View.OnClickListener() {
@@ -287,7 +288,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
     }
 
     private boolean isJoined() {
-        return false;
+        boolean isJoined = false;
+        if(GamePartnerUtills.connectedUser.getUserGroups().contains(postId))
+        {
+            isJoined = true;
+        }
+        return isJoined;
     }
 
     public void updateData(ArrayList<Post> posts) {
@@ -368,15 +374,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             ArrayList<Post> filteredList = new ArrayList<>();
-            if (constraint == null || constraint.length() == 0) {
-                filteredList.addAll(postArrayList);
-            } else {
-                for (Post post : postArrayList) {
+                for (Post post : allPostsArrayList) {
                     if (GamePartnerUtills.getKmFromLatLong(Float.parseFloat(activity.latitude), Float.parseFloat(activity.longitude), (float) post.getLatitude(), (float) post.getLongitude())<= Integer.parseInt((String) constraint))
                     {
                         filteredList.add(post);
                     }
-                }
             }
             FilterResults results = new FilterResults();
             results.values = filteredList;

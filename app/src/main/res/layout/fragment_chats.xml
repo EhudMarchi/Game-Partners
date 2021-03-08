@@ -6,18 +6,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.Activities_Fragments.ChatsFragment"
     android:background="@color/darkPurple">
-        <SearchView
-            android:id="@+id/search"
-            android:elevation="10dp"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:background="@color/purple"
-            android:scrollbarThumbHorizontal="@color/white"
-            android:scrollbarThumbVertical="@color/white"
-            android:theme="@style/AppSearchView"
-            android:queryHint="Search"
-            app:actionViewClass="android.widget.SearchView"
-            app:showAsAction="ifRoom|collapseActionView"/>
 
 
     <androidx.recyclerview.widget.RecyclerView

@@ -125,8 +125,8 @@ public class ChatsFragment extends Fragment {
                 }
                 if(getContext()!= null) {
                     try {
-                    chatsAdapter = new GroupsAdapter(getContext(), chatsArrayList);
-                    chatsRecyclerView.setAdapter(chatsAdapter);
+                        chatsAdapter = new GroupsAdapter(getContext(), chatsArrayList);
+                        chatsRecyclerView.setAdapter(chatsAdapter);
                     }
                     catch (Exception e)
                     {

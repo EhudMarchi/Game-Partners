@@ -102,37 +102,42 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
             @Override
             public void onClick(View v) {
                 DatabaseReference mRef = FirebaseDatabase.getInstance().getReference().child("users").child(GamePartnerUtills.connectedUser.getUid()).child("requests");
-                try {
+//                try {
                     if (currentRequest.getType() == Request.eRequestType.JOIN_GROUP) {
                         User addingUser = GamePartnerUtills.GetUser(currentRequest.getSenderID());
                         GamePartnerUtills.AddUserToGroup(addingUser, GamePartnerUtills.GetGroupByID(currentRequest.getTargetID()));
                         m_Requests.remove(currentRequest);
+                        GamePartnerUtills.ChangeUserRequests(GamePartnerUtills.connectedUser.getUid(), m_Requests);
                         mRef.setValue(m_Requests).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
                                 Toast.makeText(m_Context, "Request confirmed", Toast.LENGTH_SHORT).show();
+                                notifyDataSetChanged();
                             }
                         });
                     } else {
-                        m_Requests.remove(currentRequest);
-                        mRef.setValue(m_Requests).addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                Toast.makeText(m_Context, "Request denied", Toast.LENGTH_SHORT).show();
-                            }
-                        });
                     }
                     notifyDataSetChanged();
-                }
-                catch (Exception e)
-                {
-                    Toast.makeText(m_Context, "Something went wrong..", Toast.LENGTH_SHORT).show();
-                }
+                //}
+//                catch (Exception e)
+//                {
+//                    Toast.makeText(m_Context, "Something went wrong..", Toast.LENGTH_SHORT).show();
+//                }
             }
         });
         holder.decline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                DatabaseReference mRef = FirebaseDatabase.getInstance().getReference().child("users").child(GamePartnerUtills.connectedUser.getUid()).child("requests");
+                m_Requests.remove(currentRequest);
+                GamePartnerUtills.ChangeUserRequests(GamePartnerUtills.connectedUser.getUid(), m_Requests);
+                mRef.setValue(m_Requests).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(m_Context, "Request denied", Toast.LENGTH_SHORT).show();
+                        notifyDataSetChanged();
+                    }
+                });
             }
         });
         holder.itemView.setOnClickListener(new View.OnClickListener() {

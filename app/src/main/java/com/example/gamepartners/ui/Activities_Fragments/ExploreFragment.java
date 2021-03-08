@@ -20,9 +20,11 @@ import android.widget.Button;
 import android.widget.SearchView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.gamepartners.R;
 import com.example.gamepartners.controller.GamePartnerUtills;
+import com.example.gamepartners.data.model.Game;
 import com.example.gamepartners.data.model.Post;
 import com.example.gamepartners.controller.Adapters.PostAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -48,7 +50,7 @@ public class ExploreFragment extends Fragment {
     int postMaxDistance;
     private TextView distanceTextView;
     Dialog commentsDialog;
-
+    boolean favouriteFilterOn = false;
     public ExploreFragment() {
         // Required empty public constructor
     }
@@ -74,9 +76,21 @@ public class ExploreFragment extends Fragment {
                 for (DataSnapshot ds:snapshot.getChildren()) {
                     Post post = ds.getValue(Post.class);
                     assert post != null;
-                    if ((post.getPublisher().getUid().equals(GamePartnerUtills.connectedUser.getUid()))|| (!post.isPrivate()) || (GamePartnerUtills.connectedUser.getUserFriends().containsKey(post.getPublisher().getUid()))) {
-                        postsArrayList.add(post);
-                    }
+                        if ((post.getPublisher().getUid().equals(GamePartnerUtills.connectedUser.getUid())) || (!post.isPrivate()) || (GamePartnerUtills.connectedUser.getUserFriends().containsKey(post.getPublisher().getUid()))) {
+                            if(!favouriteFilterOn)
+                            {
+                                postsArrayList.add(post);
+                            }
+                            else
+                            {
+                                for (Game favGame:GamePartnerUtills.connectedUser.getFavouriteGames()) {
+                                    if(favGame.getGameName().equals(post.getGame().getGameName()))
+                                    {
+                                        postsArrayList.add(post);
+                                    }
+                                }
+                            }
+                        }
                 }
                 Collections.sort(postsArrayList, new Comparator<Post>() {
                     public int compare(Post first, Post second) {
@@ -84,7 +98,6 @@ public class ExploreFragment extends Fragment {
                     }
                 });
                 try {
-
                 getView().findViewById(R.id.loading_panel).setVisibility(View.GONE);
                 if(postsArrayList.size()<1)
                 {
@@ -141,6 +154,30 @@ public class ExploreFragment extends Fragment {
         });
         postsFetchThread.start();
         setCommentsRecycleView();
+        final FloatingActionButton favouriteFilter = getView().findViewById(R.id.fabFavouriteFilter);
+        favouriteFilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                favouriteFilterOn = !favouriteFilterOn;
+                if(favouriteFilterOn) {
+                    Toast.makeText(getContext(), "Favourite Games Filter On",
+                            Toast.LENGTH_LONG).show();
+                    favouriteFilter.setAlpha(1f);
+                }
+                else
+                {
+                    Toast.makeText(getContext(), "Favourite Games Filter Off",
+                            Toast.LENGTH_LONG).show();
+                    favouriteFilter.setAlpha(0.4f);
+                }
+                Thread postsFetchThread = new Thread(new Runnable() {
+                    public void run() {
+                        fetchPosts();
+                    }
+                });
+                postsFetchThread.start();
+            }
+        });
     }
 
     private void setCommentsRecycleView() {

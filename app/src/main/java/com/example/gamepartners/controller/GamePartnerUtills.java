@@ -9,6 +9,7 @@ import com.example.gamepartners.data.model.Game;
 import com.example.gamepartners.data.model.Group;
 import com.example.gamepartners.data.model.Message;
 import com.example.gamepartners.data.model.Post;
+import com.example.gamepartners.data.model.Request;
 import com.example.gamepartners.data.model.User;
 import com.example.gamepartners.ui.Activities_Fragments.AdminActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -26,6 +27,7 @@ import com.google.firebase.storage.StorageReference;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class GamePartnerUtills {
     private static GamePartnerUtills mSingleInstance = null;
@@ -36,7 +38,7 @@ public class GamePartnerUtills {
     public static FirebaseStorage mStorage;
     public static StorageReference mStorageRef;
     public static String currentGameImage;
-    private static ArrayList<Group> groups;
+    public static ArrayList<Group> groups;
     private static ArrayList<User> users;
     public static ArrayList<Game> games;
     public static HashMap<String, String> userGroups;
@@ -50,6 +52,16 @@ public class GamePartnerUtills {
         myRef = FirebaseDatabase.getInstance().getReference();
         games = new ArrayList<>();
         fetchGames();
+    }
+    public static void ChangeUserRequests(String i_Uid, ArrayList<Request> i_Requests)
+    {
+        for (User user:users) {
+            if(user.getUid().equals(i_Uid))
+            {
+                user.setRequests(i_Requests);
+                break;
+            }
+        }
     }
     public static void AddUserToGroup(User selectedUser, Group group) {
         DatabaseReference reference;
@@ -203,7 +215,7 @@ public class GamePartnerUtills {
             }
         });
     }
-    public void FetchAllGroups()
+    public static void FetchAllGroups()
     {
         groups.clear();
         myRef = FirebaseDatabase.getInstance().getReference().child("groups");

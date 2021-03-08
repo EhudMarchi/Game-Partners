@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:elevation="10dp"
-        android:layout_toLeftOf="@id/fabDistanceFilter"
+        android:layout_toLeftOf="@id/fabFavouriteFilter"
         android:background="@color/darkPurple"
         android:scrollbarThumbHorizontal="@color/white"
         android:scrollbarThumbVertical="@color/white"
@@ -28,7 +28,20 @@
         android:layout_margin="@dimen/fab_margin"
         app:backgroundTint="@color/glowCyan"
         android:foreground="@drawable/radar"
-        android:foregroundGravity="center" />
+        android:foregroundGravity="center"
+        android:elevation="10dp"/>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabFavouriteFilter"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_gravity="top|end"
+        android:layout_toLeftOf="@id/fabDistanceFilter"
+        android:layout_marginTop="16dp"
+        app:backgroundTint="@color/glowPink"
+        android:foreground="@drawable/star"
+        android:foregroundGravity="center"
+        android:alpha="0.4"
+        android:elevation="10dp"/>
     <TextView
         android:id="@+id/no_posts"
         android:layout_width="wrap_content"
@@ -53,9 +66,11 @@
         android:layout_height="wrap_content">
 
     </androidx.recyclerview.widget.RecyclerView>
+
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent">
+
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab"
             android:layout_width="wrap_content"

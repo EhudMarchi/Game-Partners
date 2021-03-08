@@ -145,11 +145,14 @@ public class ChatActivity extends AppCompatActivity {
                     int day = cal.get(Calendar.DAY_OF_MONTH);
                     int month = cal.get(Calendar.MONTH);
                     int year = cal.get(Calendar.YEAR);
-                    cal.setTime(m_ChatMessages.get(m_ChatMessages.size()-1).getTimeSent());
+                    if(m_ChatMessages.size()>0)
+                    {
+                        cal.setTime(m_ChatMessages.get(m_ChatMessages.size()-1).getTimeSent());
+                    }
                     int lastDay = cal.get(Calendar.DAY_OF_MONTH);
                     int lastMonth = cal.get(Calendar.MONTH);
                     int lastYear = cal.get(Calendar.YEAR);
-                    if(((day > lastDay)&&(month == lastMonth ))||(month > lastMonth)||(year > lastYear))
+                    if((((day > lastDay)&&(month == lastMonth ))||(month > lastMonth)||(year > lastYear))||(m_ChatMessages.size()==0))
                     {
                         final SimpleDateFormat format = new SimpleDateFormat("dd/MM/20yy");
                         String dateString = format.format(new Date());
@@ -198,40 +201,7 @@ public class ChatActivity extends AppCompatActivity {
         intent.setAction(intent.ACTION_GET_CONTENT);
         startActivityForResult(intent,1);
     }
-//private void addGroupMessage(String i_Message)
-//{
-//    final Message message = new Message(user.getUid(), user.getDisplayName(), i_Message, Message.eMessageType.GROUP_MESSAGE);
-//    if (!message.getText().equals("")) {
-//        m_ChatMessages.add(message);
-//        reference = FirebaseDatabase.getInstance().getReference("groups").child(groupID).child("chat");
-//        reference.push().setValue(message);
-//        reference.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
-//        inputMessage.setText("");
-//    }
-//}
-//    @Override
-//    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        if(requestCode == 1 && data!= null && data.getData()!= null)
-//        {
-//            imageUri=data.getData();
-//            Glide.with(this).load(imageUri.toString()).into(imgViewProfilePic);
-//            FirebaseUtills.connedtedUser.setProflieImageURL(imageUri.toString());
-//            uploadProfilePic();
-//        }
-//
-//    }
+
 //
 //    private void uploadGroupPic() {
 //        final ProgressDialog uploadProgress= new ProgressDialog(this);
@@ -369,7 +339,7 @@ public class ChatActivity extends AppCompatActivity {
                     User user = ds.getValue(User.class);
                     assert user !=null;
                     if(isNotInGroup(user.getUid())) {
-                        //**HERE CHECK IF FRIENDS***
+                        //CHECK IF FRIENDS
                         if(GamePartnerUtills.connectedUser.getUserFriends().containsKey(user.getUid())) {
                             users.add(user);
                         }
