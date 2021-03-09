@@ -220,10 +220,16 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
                 holder.comment.setClickable(true);
             }
         });
-        if((post.getPublisher().getUid().equals(GamePartnerUtills.connectedUser.getUid()))||(isJoined()))
+        if((post.getPublisher().getUid().equals(GamePartnerUtills.connectedUser.getUid()))||(isJoined(post.getPostID())))
         {
             holder.join.setEnabled(false);
             holder.joinText.setText("Joined");
+            holder.join.setAlpha(0.6f);
+        }
+        else if(isPending(post.getPostID(),GamePartnerUtills.GetUser(post.getPublisher().getUid())))
+        {
+            holder.join.setEnabled(false);
+            holder.joinText.setText("Pending");
             holder.join.setAlpha(0.6f);
         }
         holder.join.setOnClickListener(new View.OnClickListener() {
@@ -287,13 +293,27 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         });
     }
 
-    private boolean isJoined() {
+    private boolean isJoined(String i_GroupID) {
         boolean isJoined = false;
-        if(GamePartnerUtills.connectedUser.getUserGroups().contains(postId))
-        {
-            isJoined = true;
+        for (String groupID:GamePartnerUtills.connectedUser.getUserGroups()) {
+            if(groupID.equals(i_GroupID))
+            {
+                isJoined = true;
+                break;
+            }
         }
         return isJoined;
+    }
+    private boolean isPending(String i_GroupID, User publisher) {
+        boolean isPending = false;
+        for (Request request:publisher.getRequests()) {
+            if(request.getSenderID().equals(GamePartnerUtills.connectedUser.getUid()))
+            {
+                isPending = true;
+                break;
+            }
+        }
+        return isPending;
     }
 
     public void updateData(ArrayList<Post> posts) {

@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/post_card"
-    android:layout_marginBottom="15dp">
+    android:layout_marginBottom="15dp"
+    android:elevation="8dp">
 
     <RelativeLayout
         android:elevation="5dp"
@@ -24,6 +25,7 @@
         android:id="@+id/imgView_profilePicOut"
         android:layout_width="45dp"
         android:layout_height="45dp"
+        android:layout_alignParentLeft="true"
         app:cardBackgroundColor="#00FFFFFF"
         app:cardCornerRadius="50dp">
 
@@ -331,7 +333,8 @@
         android:layout_height="wrap_content">
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true">
             <ImageView
                 android:layout_width="15dp"
                 android:layout_height="15dp"

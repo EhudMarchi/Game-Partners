@@ -17,6 +17,7 @@
         android:layout_width="32dp"
         android:layout_height="32dp"
         app:cardBackgroundColor="#00FFFFFF"
+        android:layout_alignParentLeft="true"
         app:cardCornerRadius="50dp">
         <ImageView
             android:id="@+id/game_image"

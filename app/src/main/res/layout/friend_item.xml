@@ -9,7 +9,7 @@
         android:id="@+id/friend_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="4dp">
+        android:layout_margin="5dp">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/friend_imageOut"
@@ -17,16 +17,18 @@
             android:layout_height="32dp"
             app:cardBackgroundColor="#00FFFFFF"
             android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
             app:cardCornerRadius="50dp">
+
             <ImageView
                 android:id="@+id/friend_image"
-                android:layout_width="match_parent"
+                android:layout_width="32dp"
                 android:layout_height="match_parent"
                 android:layout_centerVertical="true"
                 android:background="@drawable/circle"
                 android:scaleType="centerCrop"
                 app:shapeAppearanceOverlay="@style/roundedImageViewRounded"
-                app:srcCompat="@drawable/default_user"/>
+                app:srcCompat="@drawable/default_user" />
         </androidx.cardview.widget.CardView>
         <RelativeLayout
             android:id="@+id/friendText"

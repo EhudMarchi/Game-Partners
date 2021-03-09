@@ -4,19 +4,16 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:padding="8dp"
-    android:layout_gravity="right"
-    android:gravity="right"
-
     >
 
     <RelativeLayout
         android:elevation="3dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:background="@drawable/background_right"
-        android:gravity="right"
-        android:padding="8dp">
+        android:padding="8dp"
+        android:layout_alignParentRight="true">
 
         <TextView
             android:id="@+id/show_message"
