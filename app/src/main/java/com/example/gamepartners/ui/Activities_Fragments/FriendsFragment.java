@@ -20,11 +20,14 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.gamepartners.R;
 import com.example.gamepartners.controller.GamePartnerUtills;
+import com.example.gamepartners.data.model.Request;
 import com.example.gamepartners.data.model.User;
 import com.example.gamepartners.controller.Adapters.UserAdapter;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
@@ -101,10 +104,17 @@ public class FriendsFragment extends Fragment {
                         Snackbar.make(v, "Add Selected", Snackbar.LENGTH_LONG).show();
                         selectedUsers = allUsersAdapter.getSelectedUsers();
                         for (User selectedUser:selectedUsers) {
-                            reference = FirebaseDatabase.getInstance().getReference("users").child(mAuth.getUid()).child("userFriends");
-                            reference.child(selectedUser.getUid()).setValue(selectedUser.getFirstName()+" "+selectedUser.getLastName());
-                            reference = FirebaseDatabase.getInstance().getReference("users").child(selectedUser.getUid()).child("userFriends");
-                            reference.child(mAuth.getUid()).setValue(GamePartnerUtills.connectedUser.getFirstName()+" "+GamePartnerUtills.connectedUser.getLastName());
+                            Request friendRequest = new Request(Request.eRequestType.FRIEND, GamePartnerUtills.connectedUser.getUid(),
+                                    GamePartnerUtills.connectedUser.getFirstName()+" "+GamePartnerUtills.connectedUser.getLastName(),
+                                    selectedUser.getUid());
+                            DatabaseReference mRef = FirebaseDatabase.getInstance().getReference().child("users").child(selectedUser.getUid()).child("requests").child(String.valueOf(GamePartnerUtills.GetUser(selectedUser.getUid()).getRequests().size()));
+                            GamePartnerUtills.GetUser(selectedUser.getUid()).getRequests().add(friendRequest);
+                            mRef.setValue(friendRequest).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Toast.makeText(getContext(), "Request sent", Toast.LENGTH_SHORT).show();
+                                }
+                            });
                         }
                         dialog.dismiss();
                     }
@@ -178,7 +188,7 @@ public class FriendsFragment extends Fragment {
                                 GenericTypeIndicator<HashMap<String, String>> genericTypeIndicator = new GenericTypeIndicator<HashMap<String, String>>() {};
                                 HashMap<String,String> uids = snapshot.getValue(genericTypeIndicator);
                                 Log.d("friends",String.valueOf(uids.size()));
-                                friends.clear();
+                                //friends.clear();
                                 for (final String uid:uids.keySet()) {
                                     //Log.d("friends",uid);
                                     assert uid !=null;
@@ -186,6 +196,7 @@ public class FriendsFragment extends Fragment {
                                     myRef.addValueEventListener(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            friends.clear();
                                             User tempUser;
                                             for (DataSnapshot user :snapshot.getChildren()) {
                                                 tempUser= user.getValue(User.class);

@@ -301,7 +301,7 @@ public class UserProfileFragment extends Fragment {
                     ImageButton exitButton = requestsDialog.findViewById(R.id.exit);
                     RecyclerView.LayoutManager requestsLayoutManager = new LinearLayoutManager(getContext());
                     requestsRecyclerView.setLayoutManager(requestsLayoutManager);
-                    requestsAdapter = new RequestAdapter(getContext(), GamePartnerUtills.connectedUser.getRequests());
+                    requestsAdapter = new RequestAdapter(getContext(), GamePartnerUtills.connectedUser.getRequests(), requestsDialog, requests);
                     requestsRecyclerView.setAdapter(requestsAdapter);
                     requestsDialog.show();
                     exitButton.setOnClickListener(new View.OnClickListener() {
@@ -319,12 +319,27 @@ public class UserProfileFragment extends Fragment {
             public void onClick(View v) {
                 editProfile.setClickable(false);
                 editProfileDialog.show();
-                EditText firstName = editProfileDialog.findViewById(R.id.newFirstName);
+                final EditText firstName = editProfileDialog.findViewById(R.id.newFirstName);
                 firstName.setText(GamePartnerUtills.connectedUser.getFirstName());
-                EditText lastName = editProfileDialog.findViewById(R.id.newLastName);
+                final EditText lastName = editProfileDialog.findViewById(R.id.newLastName);
                 lastName.setText(GamePartnerUtills.connectedUser.getLastName());
-                EditText password = editProfileDialog.findViewById(R.id.newPassword);
+                final EditText password = editProfileDialog.findViewById(R.id.newPassword);
                 password.setText(GamePartnerUtills.connectedUser.getPassword());
+                Button confirm =  editProfileDialog.findViewById(R.id.confirm_changes);
+                confirm.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(GamePartnerUtills.UpdateUserData(firstName.getText().toString(), lastName.getText().toString(), password.getText().toString()))
+                        {
+                            Toast.makeText(getContext(), "User Data Updated!", Toast.LENGTH_LONG).show();
+                            editProfileDialog.dismiss();
+                        }
+                        else
+                        {
+                            Toast.makeText(getContext(), "Wrong input!\n first and last name cannot contain digits.\n password length should be at least 6 characters.", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
                 editProfile.setClickable(true);
             }
         });
@@ -426,7 +441,7 @@ public class UserProfileFragment extends Fragment {
         final ProgressDialog uploadProgress = new ProgressDialog(getContext());
         uploadProgress.setTitle("Uploading Image...");
         uploadProgress.show();
-        //final String randomKey = UUID.randomUUID().toString();
+
         final StorageReference profilePicRef = mStorageRef.child("images/" + mAuth.getCurrentUser().getEmail());
         profilePicRef.putFile(imageUri)
                 .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {

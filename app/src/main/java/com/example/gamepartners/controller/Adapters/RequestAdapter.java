@@ -1,6 +1,7 @@
 package com.example.gamepartners.controller.Adapters;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -35,6 +36,8 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
     Context m_Context;
     int m_SelectedItemIndex = 0;
     private String groupName;
+    Dialog requestDialog;
+    TextView requestsTextView;
 
     public class RequestViewHolder extends RecyclerView.ViewHolder {
         public TextView requestText, senderName;
@@ -52,9 +55,11 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
         }
     }
 
-    public RequestAdapter(Context context, ArrayList<Request> requestsList) {
+    public RequestAdapter(Context context, ArrayList<Request> requestsList , Dialog req, TextView requestsTextView) {
         m_Requests = requestsList;
         this.m_Context = context;
+        requestDialog = req;
+        this.requestsTextView = requestsTextView;
     }
 
     @Override
@@ -101,28 +106,29 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
         holder.confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DatabaseReference mRef = FirebaseDatabase.getInstance().getReference().child("users").child(GamePartnerUtills.connectedUser.getUid()).child("requests");
-//                try {
+                DatabaseReference mRef;
                     if (currentRequest.getType() == Request.eRequestType.JOIN_GROUP) {
                         User addingUser = GamePartnerUtills.GetUser(currentRequest.getSenderID());
                         GamePartnerUtills.AddUserToGroup(addingUser, GamePartnerUtills.GetGroupByID(currentRequest.getTargetID()));
-                        m_Requests.remove(currentRequest);
-                        GamePartnerUtills.ChangeUserRequests(GamePartnerUtills.connectedUser.getUid(), m_Requests);
-                        mRef.setValue(m_Requests).addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                Toast.makeText(m_Context, "Request confirmed", Toast.LENGTH_SHORT).show();
-                                notifyDataSetChanged();
-                            }
-                        });
-                    } else {
                     }
-                    notifyDataSetChanged();
-                //}
-//                catch (Exception e)
-//                {
-//                    Toast.makeText(m_Context, "Something went wrong..", Toast.LENGTH_SHORT).show();
-//                }
+                    else {
+                        mRef = FirebaseDatabase.getInstance().getReference("users").child(currentRequest.getTargetID()).child("userFriends");
+                        mRef.child(currentRequest.getSenderID()).setValue(currentRequest.getSenderDisplayName());
+                        mRef = FirebaseDatabase.getInstance().getReference("users").child(currentRequest.getSenderID()).child("userFriends");
+                        mRef.child(currentRequest.getTargetID()).setValue(GamePartnerUtills.connectedUser.getFirstName()+" "+GamePartnerUtills.connectedUser.getLastName());
+                    }
+                mRef = FirebaseDatabase.getInstance().getReference().child("users").child(GamePartnerUtills.connectedUser.getUid()).child("requests");
+                m_Requests.remove(currentRequest);
+                GamePartnerUtills.ChangeUserRequests(GamePartnerUtills.connectedUser.getUid(), m_Requests);
+                mRef.setValue(m_Requests).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(m_Context, "Request confirmed", Toast.LENGTH_SHORT).show();
+                        notifyDataSetChanged();
+                        requestsTextView.setText(m_Requests.size() + " Requests");
+                    }
+                });
+                updateRequestsAmount();
             }
         });
         holder.decline.setOnClickListener(new View.OnClickListener() {
@@ -136,8 +142,10 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
                     public void onSuccess(Void aVoid) {
                         Toast.makeText(m_Context, "Request denied", Toast.LENGTH_SHORT).show();
                         notifyDataSetChanged();
+                        requestsTextView.setText(m_Requests.size() + " Requests");
                     }
                 });
+                updateRequestsAmount();
             }
         });
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -148,6 +156,18 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
             }
         });
     }
+
+    private void updateRequestsAmount() {
+        if (m_Requests.size() == 0) {
+            requestDialog.dismiss();
+            requestsTextView.setEnabled(false);
+            requestsTextView.setAlpha(0.4f);
+        } else {
+            requestsTextView.setEnabled(true);
+            requestsTextView.setAlpha(1f);
+        }
+    }
+
     public Request getSelectedComment() {
         return m_SelectedRequest;
     }

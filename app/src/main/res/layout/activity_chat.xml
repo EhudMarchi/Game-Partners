@@ -79,7 +79,7 @@
                     android:id="@+id/chat_groupname"
                     android:textSize="14sp"
                     android:text="Group Name"
-                    android:layout_toLeftOf="@id/group_img"
+                    android:layout_toLeftOf="@id/group_imgCard"
                     android:layout_centerVertical="true"
                     android:layout_gravity="center"
                     android:textColor="#fff"
@@ -88,16 +88,25 @@
                     android:layout_marginStart="25dp"
                     android:layout_marginLeft="25dp"
                     android:layout_marginRight="15dp" />
-
-                <de.hdodenhof.circleimageview.CircleImageView
+                <androidx.cardview.widget.CardView
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:id="@+id/group_img"
+                    android:id="@+id/group_imgCard"
                     android:layout_alignParentEnd="true"
                     android:src="@mipmap/ic_launcher"
                     android:layout_marginRight="5dp"
                     android:layout_marginLeft="5dp"
-                    android:layout_alignParentRight="true" />
+                    app:cardCornerRadius="50dp"
+                    android:layout_alignParentRight="true">
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@mipmap/ic_launcher"
+                        android:id="@+id/group_img"
+                        android:layout_gravity="center"
+                        android:scaleType="centerCrop"/>
+
+                </androidx.cardview.widget.CardView>
 
 
 

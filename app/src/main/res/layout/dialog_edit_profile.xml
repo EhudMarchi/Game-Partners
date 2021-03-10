@@ -108,7 +108,7 @@
             android:padding="12dp"/>
 
         <Button
-            android:id="@+id/addGame"
+            android:id="@+id/confirm_changes"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/newPassword"

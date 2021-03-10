@@ -2,6 +2,7 @@ package com.example.gamepartners.controller;
 
 import android.location.Location;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -41,6 +42,7 @@ public class GamePartnerUtills {
     public static ArrayList<Group> groups;
     private static ArrayList<User> users;
     public static ArrayList<Game> games;
+    public static boolean isLocationEnabled = false;
     public static HashMap<String, String> userGroups;
 
     private GamePartnerUtills() {
@@ -234,6 +236,23 @@ public class GamePartnerUtills {
 
             }
         });
+    }
+    public static boolean UpdateUserData(String i_FirstName, String i_LastName, String i_Password)
+    {
+        boolean isSuccessful = false;
+        if((!i_FirstName.equals(""))&&(!i_LastName.equals(""))&&(i_Password.length()>5))
+        {
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference myRef = database.getReference("users").child(connectedUser.getUid()).child("firstName");
+            myRef.setValue(i_FirstName);
+            myRef = database.getReference("users").child(connectedUser.getUid()).child("lastName");
+            myRef.setValue(i_LastName);
+            myRef = database.getReference("users").child(connectedUser.getUid()).child("password");
+            myRef.setValue(i_Password);
+            isSuccessful = true;
+        }
+
+        return isSuccessful;
     }
     public static Group GetGroupByID(final String i_GroupID)
     {

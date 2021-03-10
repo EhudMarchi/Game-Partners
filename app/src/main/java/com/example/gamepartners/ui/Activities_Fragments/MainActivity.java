@@ -2,10 +2,13 @@ package com.example.gamepartners.ui.Activities_Fragments;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.location.GpsStatus;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -17,6 +20,8 @@ import com.example.gamepartners.data.model.Game;
 import com.example.gamepartners.data.model.Request;
 import com.example.gamepartners.data.model.User;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.tabs.TabLayout;
 
 import androidx.annotation.NonNull;
@@ -28,6 +33,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
@@ -42,12 +48,13 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 
-public class MainActivity extends AppCompatActivity {
-    private static final int REQUEST_LOCATION = 1;
+public class MainActivity extends AppCompatActivity{
+    private static final int REQUEST_LOCATION = 1, GPS_EVENT_STARTED = 2, GPS_EVENT_STOPPED = 3;
     private ViewPager viewPager;
     private TabLayout tabLayout;
     private TabAccessorAdapter tabAccessorAdapter;
     LocationManager locationManager;
+
     public String latitude, longitude;
     Animation requestsAnimation;
     @Override
@@ -83,6 +90,11 @@ public class MainActivity extends AppCompatActivity {
                         tabLayout.getTabAt(3).view.animate();
                         tabLayout.getTabAt(3).view.getTab().setText("● Profile");
                     }
+                    else
+                    {
+                        tabLayout.getTabAt(3).view.clearAnimation();
+                        tabLayout.getTabAt(3).view.getTab().setText("Profile");
+                    }
                 }
             }
 
@@ -91,6 +103,16 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+        BroadcastReceiver mGpsSwitchStateReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+
+                if (intent.getAction().matches("android.location.PROVIDERS_CHANGED")) {
+                    getLocation();
+                }
+            }
+        };
+        registerReceiver(mGpsSwitchStateReceiver, new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
 
     }
 
@@ -110,22 +132,30 @@ public class MainActivity extends AppCompatActivity {
         final AlertDialog alertDialog = builder.create();
         alertDialog.show();
     }
+
+
     private void getLocation() {
         if (ActivityCompat.checkSelfPermission(
                 MainActivity.this,Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
                 MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
-        } else {
+        }
+        else
+            {
+
             Location locationGPS = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             if (locationGPS != null) {
+                GamePartnerUtills.isLocationEnabled = true;
                 double lat = locationGPS.getLatitude();
                 double longi = locationGPS.getLongitude();
                 latitude = String.valueOf(lat);
                 longitude = String.valueOf(longi);
-                //showLocation.setText("Your Location: " + "\n" + "Latitude: " + latitude + "\n" + "Longitude: " + longitude);
-            } else {
+            }
+            else {
                 Toast.makeText(this, "Unable to find location.", Toast.LENGTH_SHORT).show();
             }
         }
     }
+
+
 }

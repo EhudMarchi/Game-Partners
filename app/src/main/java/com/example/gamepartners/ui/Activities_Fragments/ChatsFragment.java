@@ -111,6 +111,20 @@ public class ChatsFragment extends Fragment {
         });
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(chatsAdapter!=null) {
+                    chatsAdapter.notifyDataSetChanged();
+                }
+            }
+        },100);
+    }
+
     private void fetchChats() {
         FirebaseAuth mAuth =FirebaseAuth.getInstance();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users").child(mAuth.getUid()).child("userGroups");

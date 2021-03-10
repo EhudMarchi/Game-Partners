@@ -1,9 +1,11 @@
 package com.example.gamepartners.ui.Activities_Fragments;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.location.LocationManager;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -193,65 +195,65 @@ public class ExploreFragment extends Fragment {
         distanceFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                distanceFilter.setClickable(false);
-                final SeekBar distanceSeekbar = distanceDialog.findViewById(R.id.seekBarDistance);
-                distanceSeekbar.setProgress((int)distanceSeekbar.getMax()/2);
-                distanceTextView.setText(String.valueOf(distanceSeekbar.getProgress())+" km");
-                distanceSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                    @Override
-                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                        postMaxDistance = progress;
-                        distanceTextView.setText(postMaxDistance+" km");
-                        if(progress == distanceSeekbar.getMax())
-                        {
-                            distanceTextView.setText("Any distance");
-                        }
-                    }
-
-                    @Override
-                    public void onStartTrackingTouch(SeekBar seekBar) {
-
-                    }
-
-                    @Override
-                    public void onStopTrackingTouch(SeekBar seekBar) {
-
-                    }
-                });
-                Button filter = distanceDialog.findViewById(R.id.filterButton);
-                filter.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Thread postsFetchThread = new Thread(new Runnable() {
-                            public void run() {
-                                fetchPosts();
+                if (!GamePartnerUtills.isLocationEnabled) {
+                    Toast.makeText(getContext(), "Unable to find location.", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    distanceFilter.setClickable(false);
+                    final SeekBar distanceSeekbar = distanceDialog.findViewById(R.id.seekBarDistance);
+                    distanceSeekbar.setProgress((int) distanceSeekbar.getMax() / 2);
+                    distanceTextView.setText(String.valueOf(distanceSeekbar.getProgress()) + " km");
+                    distanceSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                        @Override
+                        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                            postMaxDistance = progress;
+                            distanceTextView.setText(postMaxDistance + " km");
+                            if (progress == distanceSeekbar.getMax()) {
+                                distanceTextView.setText("Any distance");
                             }
-                        });
-                        postsFetchThread.start();
-                        try {
-                            postsFetchThread.join();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
                         }
-                        if(!distanceTextView.getText().toString().equals("Any distance")) {
-                            postAdapter.getFilter().filter(String.valueOf(postMaxDistance));
+
+                        @Override
+                        public void onStartTrackingTouch(SeekBar seekBar) {
+
                         }
-                        if(postAdapter.getItemCount() == 0)
-                        {
-                            getView().findViewById(R.id.no_posts).setVisibility(View.VISIBLE);
+
+                        @Override
+                        public void onStopTrackingTouch(SeekBar seekBar) {
+
                         }
-                        else
-                        {
-                            getView().findViewById(R.id.no_posts).setVisibility(View.GONE);
+                    });
+                    Button filter = distanceDialog.findViewById(R.id.filterButton);
+                    filter.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Thread postsFetchThread = new Thread(new Runnable() {
+                                public void run() {
+                                    fetchPosts();
+                                }
+                            });
+                            postsFetchThread.start();
+                            try {
+                                postsFetchThread.join();
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            if (!distanceTextView.getText().toString().equals("Any distance")) {
+                                postAdapter.getFilter().filter(String.valueOf(postMaxDistance));
+                            }
+                            if (postAdapter.getItemCount() == 0) {
+                                getView().findViewById(R.id.no_posts).setVisibility(View.VISIBLE);
+                            } else {
+                                getView().findViewById(R.id.no_posts).setVisibility(View.GONE);
+                            }
+                            distanceDialog.dismiss();
                         }
-                        distanceDialog.dismiss();
-                    }
-                });
-                distanceDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                distanceDialog.show();
-                distanceFilter.setClickable(true);
-            }
-        });
+                    });
+                    distanceDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    distanceDialog.show();
+                    distanceFilter.setClickable(true);
+                }
+            }});
     }
 
     private void setRecycleView() {

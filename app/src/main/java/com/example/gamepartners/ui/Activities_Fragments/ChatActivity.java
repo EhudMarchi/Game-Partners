@@ -1,12 +1,14 @@
 package com.example.gamepartners.ui.Activities_Fragments;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -19,10 +21,13 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.gamepartners.R;
 import com.example.gamepartners.controller.Adapters.MessageAdapter;
 import com.example.gamepartners.controller.GamePartnerUtills;
@@ -31,6 +36,7 @@ import com.example.gamepartners.data.model.Group;
 import com.example.gamepartners.data.model.User;
 import com.example.gamepartners.controller.Adapters.UserAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
@@ -41,6 +47,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.example.gamepartners.data.model.Message;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -69,13 +79,17 @@ public class ChatActivity extends AppCompatActivity {
     RecyclerView usersRecyclerView ,groupFriendsRecyclerView;
     LinearLayoutManager recyclerViewLayoutManager,groupFriendsRecyclerViewLayoutManager;
     UserAdapter recyclerViewAdapter;
-    CircleImageView groupImage;
+    ImageView groupImage;
     public Uri imageUri;
     Context context;
+    private FirebaseStorage mStorage;
+    private StorageReference mStorageRef;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+        mStorage = FirebaseStorage.getInstance();
+        mStorageRef= mStorage.getReference();
         user = FirebaseAuth.getInstance().getCurrentUser();
         groupNameView = findViewById(R.id.chat_groupname);
         inputMessage = findViewById(R.id.chat_text_input);
@@ -100,6 +114,7 @@ public class ChatActivity extends AppCompatActivity {
             groupImageURL = (String) b.get("GroupImageURL");
             group = new Group(adminUID, groupName, groupID, groupImageURL);
         }
+        Glide.with(this).load(groupImageURL).into(groupImage);
         fetchParticipants();
         fillFriends();
         groupName= getIntent().getExtras().getString("GroupName");
@@ -185,7 +200,7 @@ public class ChatActivity extends AppCompatActivity {
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                //choosePicture();
+                                choosePicture();
                             }
                         })
                         .setIcon(R.mipmap.ic_launcher)
@@ -199,8 +214,54 @@ public class ChatActivity extends AppCompatActivity {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent,1);
+        startActivityForResult(intent,2);
     }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 2 && data != null && data.getData() != null) {
+            imageUri = data.getData();
+            Glide.with(this).load(imageUri.toString()).into(groupImage);
+            Group group = GamePartnerUtills.GetGroupByID(groupID);
+            group.setGroupImageURL(imageUri.toString());
+            uploadGroupPic();
+        }
+    }
+        private void uploadGroupPic() {
+            final ProgressDialog uploadProgress = new ProgressDialog(this);
+            uploadProgress.setTitle("Uploading Image...");
+            uploadProgress.show();
+
+            final StorageReference profilePicRef = mStorageRef.child("images/" + groupID);
+            profilePicRef.putFile(imageUri)
+                    .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                uploadProgress.dismiss();
+                                Toast.makeText(getApplicationContext(), "Image Uploaded!", Toast.LENGTH_LONG).show();
+                                profilePicRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+                                        FirebaseDatabase database = FirebaseDatabase.getInstance();
+                                        final DatabaseReference myRef = database.getReference("groups").child(groupID).child("groupImageURL");
+                                        myRef.setValue(uri.toString());
+                                    }
+                                });
+
+                            } else {
+                                uploadProgress.dismiss();
+                                Toast.makeText(getApplicationContext(), "Image Upload Failed", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
+                    int progressPercent = (int) (100.0 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount());
+                    uploadProgress.setMessage(progressPercent + "%");
+                }
+            });
+        }
 
 //
 //    private void uploadGroupPic() {
