@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/login_gradient"
-    tools:context=".SignUpActivity">
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -39,7 +40,7 @@
             android:gravity="center"
             android:orientation="horizontal">
 
-            <EditText
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/editTextFirstName"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -48,12 +49,18 @@
                 android:layout_weight="1"
                 android:foregroundGravity="center"
                 android:hint="First Name"
+                app:hintTextColor="@color/black"
                 android:inputType="textEmailAddress"
                 android:selectAllOnFocus="true"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>
 
@@ -64,13 +71,14 @@
             android:gravity="center"
             android:orientation="horizontal">
 
-            <EditText
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/editTextLastName"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
                 android:layout_marginEnd="24dp"
                 android:layout_weight="1"
+                app:hintTextColor="@color/black"
                 android:foregroundGravity="center"
                 android:hint="Last Name"
                 android:inputType="textEmailAddress"
@@ -78,7 +86,12 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>
 
@@ -89,8 +102,8 @@
             android:gravity="center"
             android:orientation="horizontal">
 
-            <EditText
-                android:id="@+id/editTextEmail"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/registerEditTextEmail"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
@@ -98,12 +111,19 @@
                 android:layout_weight="1"
                 android:foregroundGravity="center"
                 android:hint="@string/prompt_email"
+                app:hintTextColor="@color/black"
                 android:inputType="textEmailAddress"
                 android:selectAllOnFocus="true"
+                app:startIconDrawable="@android:drawable/sym_action_email"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>
 
@@ -114,8 +134,8 @@
             android:gravity="center"
             android:orientation="horizontal">
 
-            <EditText
-                android:id="@+id/editTextPassword"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/registerEditTextPassword"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
@@ -128,11 +148,19 @@
                 android:imeOptions="actionDone"
                 android:inputType="textPassword"
                 android:selectAllOnFocus="true"
+                app:hintTextColor="@color/black"
+                app:startIconDrawable="@android:drawable/ic_lock_idle_lock"
+
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/editTextEmail"
-                app:layout_constraintVertical_bias="0.03" />
+                app:layout_constraintVertical_bias="0.03">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>
 
@@ -142,11 +170,12 @@
             android:layout_weight="0.5">
 
             <Button
-                android:id="@+id/buttonSignUp2"
+                android:id="@+id/buttonSignUp"
                 android:layout_width="225dp"
                 android:layout_height="47dp"
                 android:layout_weight="1"
-                android:background="@color/darkPurple"
+                android:backgroundTint="@color/darkPurple"
+                android:background="@drawable/round_dialog"
                 android:foreground="?attr/selectableItemBackgroundBorderless"
                 android:onClick="signUp"
                 android:text="Sign Up"

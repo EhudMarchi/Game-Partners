@@ -18,16 +18,16 @@
         android:layout_height="32dp"
         app:cardBackgroundColor="#00FFFFFF"
         android:layout_alignParentLeft="true"
-        app:cardCornerRadius="50dp">
+        app:cardCornerRadius="50dp"
+        android:elevation="3dp">
         <ImageView
             android:id="@+id/game_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_centerVertical="true"
-            android:background="@drawable/circle"
+            android:background="@drawable/default_game"
             android:scaleType="centerCrop"
-            app:shapeAppearanceOverlay="@style/roundedImageViewRounded"
-            app:srcCompat="@drawable/default_game"/>
+            app:shapeAppearanceOverlay="@style/roundedImageViewRounded" />
     </androidx.cardview.widget.CardView>
 
 

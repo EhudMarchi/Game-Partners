@@ -6,7 +6,7 @@
     android:name="com.google.android.gms.maps.SupportMapFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.Activities_Fragments.MapsActivity">
+    tools:context=".ui.Activities_Fragments.MapsFragment">
 
     <ImageButton
         android:id="@+id/exit"
@@ -15,7 +15,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:background="@drawable/exit"
-        android:onClick="close" />
+/>
 <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -46,7 +46,6 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_weight="0.5"
-    android:onClick="searchLocation"
     android:src="@drawable/ic_search_black_24dp"
     android:layout_above="@id/selectLocation"
     android:layout_alignParentRight="true"
@@ -65,7 +64,6 @@
             android:layout_marginBottom="15dp"
             android:background="@drawable/choose_button"
             android:foreground="?attr/selectableItemBackground"
-            android:onClick="selectLocation"
             android:text="Select Location"
             android:textAllCaps="false"
             android:textColor="@color/white"

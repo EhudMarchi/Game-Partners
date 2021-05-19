@@ -11,6 +11,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -142,8 +143,9 @@ public class ExploreFragment extends Fragment {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        Intent intent = new Intent(getContext(), CreatePostActivity.class);
-                        startActivity(intent);
+                        //Intent intent = new Intent(getContext(), CreatePostActivity.class);
+                        //startActivity(intent);
+                        Navigation.findNavController(fab).navigate(R.id.action_homeFragment_to_createPostFragment);
                         fab.setClickable(true);
                     }
                 }, WAIT);
@@ -195,7 +197,7 @@ public class ExploreFragment extends Fragment {
         distanceFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!GamePartnerUtills.isLocationEnabled) {
+                if (GamePartnerUtills.longitude == 0 && GamePartnerUtills.latitude == 0) {
                     Toast.makeText(getContext(), "Unable to find location.", Toast.LENGTH_SHORT).show();
                 }
                 else {

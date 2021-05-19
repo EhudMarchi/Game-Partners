@@ -1,10 +1,14 @@
 package com.example.gamepartners.ui.Activities_Fragments;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -21,22 +25,39 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-public class AdminActivity extends AppCompatActivity {
+public class AdminFragment extends Fragment {
+
     private DatabaseReference myRef;
     public Chip reality, pc, playstation, xbox;
     public boolean realityCheck = false, pcCheck = false, playstationCheck = false, xboxCheck = false, isExist = false;
     EditText addGameName, gameImageURL, deleteGameName;
+    public AdminFragment() {
+        // Required empty public constructor
+    }
+
+    public static AdminFragment newInstance(String param1, String param2) {
+        AdminFragment fragment = new AdminFragment();
+        Bundle args = new Bundle();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_admin);
-        addGameName = findViewById(R.id.newGameName);
-        gameImageURL = findViewById(R.id.newGameImageURL);
-        deleteGameName = findViewById(R.id.deleteGameName);
-        reality = findViewById(R.id.reality);
-        pc = findViewById(R.id.pc);
-        playstation = findViewById(R.id.playstation);
-        xbox = findViewById(R.id.xbox);
+
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        addGameName = getActivity().findViewById(R.id.newGameName);
+        gameImageURL = getActivity().findViewById(R.id.newGameImageURL);
+        deleteGameName = getActivity().findViewById(R.id.deleteGameName);
+        reality = getActivity().findViewById(R.id.reality);
+        pc = getActivity().findViewById(R.id.pc);
+        playstation = getActivity().findViewById(R.id.playstation);
+        xbox = getActivity().findViewById(R.id.xbox);
         setPlatformsManagement();
     }
     private void setPlatformsManagement() {
@@ -122,7 +143,7 @@ public class AdminActivity extends AppCompatActivity {
             myRef.setValue(newGame).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
-                    Toast.makeText(getBaseContext(), addGameName.getText().toString() + " Added Successfully!",
+                    Toast.makeText(getActivity().getBaseContext(), addGameName.getText().toString() + " Added Successfully!",
                             Toast.LENGTH_LONG).show();
                     addGameName.setText("");
                     gameImageURL.setText("");
@@ -131,7 +152,7 @@ public class AdminActivity extends AppCompatActivity {
         }
         else
         {
-            Toast.makeText(getBaseContext(), "Please Enter Game Name!",
+            Toast.makeText(getActivity().getBaseContext(), "Please Enter Game Name!",
                     Toast.LENGTH_LONG).show();
         }
     }
@@ -170,7 +191,7 @@ public class AdminActivity extends AppCompatActivity {
             myRef.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
-                    Toast.makeText(getBaseContext(), deleteGameName.getText().toString() + " Removed Successfully!",
+                    Toast.makeText(getActivity().getBaseContext(), deleteGameName.getText().toString() + " Removed Successfully!",
                             Toast.LENGTH_LONG).show();
                     deleteGameName.setText("");
                 }
@@ -178,8 +199,14 @@ public class AdminActivity extends AppCompatActivity {
         }
         else
         {
-            Toast.makeText(getBaseContext(), deleteGameName.getText().toString() + " Do Not Exist!",
+            Toast.makeText(getActivity().getBaseContext(), deleteGameName.getText().toString() + " Do Not Exist!",
                     Toast.LENGTH_LONG).show();
         }
+    }
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_admin, container, false);
     }
 }

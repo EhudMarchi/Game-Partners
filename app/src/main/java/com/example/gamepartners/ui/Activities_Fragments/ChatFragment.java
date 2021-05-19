@@ -1,11 +1,5 @@
 package com.example.gamepartners.ui.Activities_Fragments;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -16,13 +10,22 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,11 +33,11 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.gamepartners.R;
 import com.example.gamepartners.controller.Adapters.MessageAdapter;
-import com.example.gamepartners.controller.GamePartnerUtills;
-import com.example.gamepartners.data.model.Game;
-import com.example.gamepartners.data.model.Group;
-import com.example.gamepartners.data.model.User;
 import com.example.gamepartners.controller.Adapters.UserAdapter;
+import com.example.gamepartners.controller.GamePartnerUtills;
+import com.example.gamepartners.data.model.Group;
+import com.example.gamepartners.data.model.Message;
+import com.example.gamepartners.data.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -46,7 +49,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.example.gamepartners.data.model.Message;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -56,11 +58,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 
-import de.hdodenhof.circleimageview.CircleImageView;
-
-public class ChatActivity extends AppCompatActivity {
+public class ChatFragment extends Fragment {
     FirebaseUser user;
     DatabaseReference reference;
     RecyclerView messagesRecyclerView;
@@ -84,50 +83,55 @@ public class ChatActivity extends AppCompatActivity {
     Context context;
     private FirebaseStorage mStorage;
     private StorageReference mStorageRef;
+    public ChatFragment() {
+        // Required empty public constructor
+    }
+
+    public static ChatFragment newInstance(String param1, String param2) {
+        ChatFragment fragment = new ChatFragment();
+        Bundle args = new Bundle();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_chat);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         mStorage = FirebaseStorage.getInstance();
         mStorageRef= mStorage.getReference();
         user = FirebaseAuth.getInstance().getCurrentUser();
-        groupNameView = findViewById(R.id.chat_groupname);
-        inputMessage = findViewById(R.id.chat_text_input);
-        groupImage = findViewById(R.id.group_img);
-        send = findViewById(R.id.chat_btn_send);
-        messagesRecyclerView = findViewById(R.id.chat_recycler_view);
+        groupNameView = getActivity().findViewById(R.id.chat_groupname);
+        inputMessage = getActivity().findViewById(R.id.chat_text_input);
+        groupImage = getActivity().findViewById(R.id.group_img);
+        send = getActivity().findViewById(R.id.chat_btn_send);
+        messagesRecyclerView = getActivity().findViewById(R.id.chat_recycler_view);
         messagesRecyclerView.setHasFixedSize(true);
-        messagesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        messagesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         m_ChatMessages= new ArrayList<>();
         selectedUsers = new ArrayList<>();
-        context = this;
-        messagesAdapter = new MessageAdapter(getBaseContext(), m_ChatMessages);
+        context = getContext();
+        messagesAdapter = new MessageAdapter(getContext(), m_ChatMessages);
         messagesRecyclerView.setAdapter(messagesAdapter);
-        Intent intent= getIntent();
+        Intent intent= getActivity().getIntent();
         Bundle b = intent.getExtras();
-
-        if(b!=null)
-        {
-            groupName = (String) b.get("GroupName");
-            adminUID = (String) b.get("AdminUID");
-            groupID = (String) b.get("GroupID");
-            groupImageURL = (String) b.get("GroupImageURL");
-            group = new Group(adminUID, groupName, groupID, groupImageURL);
-        }
+        groupName = GamePartnerUtills.currentGroup.getGroupName();
+        adminUID =  GamePartnerUtills.currentGroup.getAdminUID();
+        groupID =  GamePartnerUtills.currentGroup.getGroupID();
+        groupImageURL =  GamePartnerUtills.currentGroup.getGroupImageURL();
+        group = new Group(adminUID, groupName, groupID, groupImageURL);
         Glide.with(this).load(groupImageURL).into(groupImage);
         fetchParticipants();
         fillFriends();
-        groupName= getIntent().getExtras().getString("GroupName");
         groupNameView.setText(groupName);
-        backButton = findViewById(R.id.back_chat);
+        backButton = getActivity().findViewById(R.id.back_chat);
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
-
+                //Navigation.findNavController(v).navigate(R.id.action_chatFragment_to_homeFragment);
+                getActivity().onBackPressed();
             }
         });
-        addParticipants = findViewById(R.id.add);
+        addParticipants = getActivity().findViewById(R.id.add);
         addParticipants.setAlpha(0.5f);
         addParticipants.setEnabled(false);
         if(GamePartnerUtills.connectedUser.getUid().equals(adminUID)) {
@@ -140,7 +144,7 @@ public class ChatActivity extends AppCompatActivity {
                 }
             });
         }
-        viewParticipants = findViewById(R.id.participants);
+        viewParticipants = getView().findViewById(R.id.participants);
         viewParticipants.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -210,6 +214,19 @@ public class ChatActivity extends AppCompatActivity {
         });
     }
 
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_chat, container, false);
+    }
     private void choosePicture() {
         Intent intent = new Intent();
         intent.setType("image/*");
@@ -227,75 +244,43 @@ public class ChatActivity extends AppCompatActivity {
             uploadGroupPic();
         }
     }
-        private void uploadGroupPic() {
-            final ProgressDialog uploadProgress = new ProgressDialog(this);
-            uploadProgress.setTitle("Uploading Image...");
-            uploadProgress.show();
+    private void uploadGroupPic() {
+        final ProgressDialog uploadProgress = new ProgressDialog(context);
+        uploadProgress.setTitle("Uploading Image...");
+        uploadProgress.show();
 
-            final StorageReference profilePicRef = mStorageRef.child("images/" + groupID);
-            profilePicRef.putFile(imageUri)
-                    .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                            if (task.isSuccessful()) {
-                                uploadProgress.dismiss();
-                                Toast.makeText(getApplicationContext(), "Image Uploaded!", Toast.LENGTH_LONG).show();
-                                profilePicRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                    @Override
-                                    public void onSuccess(Uri uri) {
-                                        FirebaseDatabase database = FirebaseDatabase.getInstance();
-                                        final DatabaseReference myRef = database.getReference("groups").child(groupID).child("groupImageURL");
-                                        myRef.setValue(uri.toString());
-                                    }
-                                });
+        final StorageReference profilePicRef = mStorageRef.child("images/" + groupID);
+        profilePicRef.putFile(imageUri)
+                .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            uploadProgress.dismiss();
+                            Toast.makeText(getActivity().getApplicationContext(), "Image Uploaded!", Toast.LENGTH_LONG).show();
+                            profilePicRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                                    final DatabaseReference myRef = database.getReference("groups").child(groupID).child("groupImageURL");
+                                    myRef.setValue(uri.toString());
+                                }
+                            });
 
-                            } else {
-                                uploadProgress.dismiss();
-                                Toast.makeText(getApplicationContext(), "Image Upload Failed", Toast.LENGTH_LONG).show();
-                            }
+                        } else {
+                            uploadProgress.dismiss();
+                            Toast.makeText(getActivity().getApplicationContext(), "Image Upload Failed", Toast.LENGTH_LONG).show();
                         }
-                    }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
-                    int progressPercent = (int) (100.0 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount());
-                    uploadProgress.setMessage(progressPercent + "%");
-                }
-            });
-        }
-
-//
-//    private void uploadGroupPic() {
-//        final ProgressDialog uploadProgress= new ProgressDialog(this);
-//        uploadProgress.setTitle("Uploading Image...");
-//        uploadProgress.show();
-//
-//        //final String randomKey = UUID.randomUUID().toString();
-//        StorageReference profilePicRef = mStorageRef.child("images/" + mAuth.getCurrentUser().getEmail());
-//
-//        profilePicRef.putFile(imageUri)
-//                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//                    @Override
-//                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                        uploadProgress.dismiss();
-//                        Snackbar.make(getView(), "Image Uploaded", Snackbar.LENGTH_LONG).show();
-//                    }
-//                })
-//                .addOnFailureListener(new OnFailureListener() {
-//                    @Override
-//                    public void onFailure(@NonNull Exception exception) {
-//                        uploadProgress.dismiss();
-//                        Toast.makeText(getContext(), "Image Upload Failed", Toast.LENGTH_LONG).show();
-//                    }
-//                }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-//            @Override
-//            public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
-//                int progressPercent = (int)(100.0 * snapshot.getBytesTransferred()/ snapshot.getTotalByteCount());
-//                uploadProgress.setMessage(progressPercent + "%");
-//            }
-//        });
-//    }
+                    }
+                }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
+                int progressPercent = (int) (100.0 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount());
+                uploadProgress.setMessage(progressPercent + "%");
+            }
+        });
+    }
     private void viewParticipants() {
-        final Dialog dialog = new Dialog(this);
+        final Dialog dialog = new Dialog(context);
         dialog.setContentView(R.layout.group_friends);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         fetchParticipants();
@@ -321,8 +306,8 @@ public class ChatActivity extends AppCompatActivity {
                     User user = ds.getValue(User.class);
                     assert user !=null;
                     groupFriends.add(user);
-                    }
                 }
+            }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
@@ -332,7 +317,7 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void addParticipants() {
-        final Dialog dialog = new Dialog(this);
+        final Dialog dialog = new Dialog(context);
         dialog.setContentView(R.layout.dialog_choose_friends);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         fillFriends();
@@ -374,16 +359,16 @@ public class ChatActivity extends AppCompatActivity {
     private void setUpGroupFriendsRecyclerView(Dialog dialog) {
         groupFriendsRecyclerView = dialog.findViewById(R.id.groupFriendsRecyclerView);
         groupFriendsRecyclerView.setHasFixedSize(true);
-        groupFriendsRecyclerViewLayoutManager = new LinearLayoutManager(this);
-        recyclerViewAdapter = new UserAdapter(this, groupFriends, false);
+        groupFriendsRecyclerViewLayoutManager = new LinearLayoutManager(context);
+        recyclerViewAdapter = new UserAdapter(context, groupFriends, false);
         groupFriendsRecyclerView.setLayoutManager(groupFriendsRecyclerViewLayoutManager);
         groupFriendsRecyclerView.setAdapter(recyclerViewAdapter);
     }
     private void setUpFriendsRecyclerView(Dialog dialog,SearchView searchView) {
         usersRecyclerView = dialog.findViewById(R.id.friendsSelectionRecyclerView);
         usersRecyclerView.setHasFixedSize(true);
-        recyclerViewLayoutManager = new LinearLayoutManager(this);
-        recyclerViewAdapter = new UserAdapter(this, users, true);
+        recyclerViewLayoutManager = new LinearLayoutManager(context);
+        recyclerViewAdapter = new UserAdapter(context, users, true);
         usersRecyclerView.setLayoutManager(recyclerViewLayoutManager);
         usersRecyclerView.setAdapter(recyclerViewAdapter);
         setSearchFilter(searchView, recyclerViewAdapter);

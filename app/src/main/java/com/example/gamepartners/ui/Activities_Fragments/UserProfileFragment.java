@@ -13,6 +13,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -134,14 +135,13 @@ public class UserProfileFragment extends Fragment {
             Toast.makeText(getContext(), "Something went wrong..", Toast.LENGTH_LONG).show();
         }
         settingsAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.settings_in);
-        FloatingActionButton adminFab = getView().findViewById(R.id.fabAdmin);
-        if (mAuth.getCurrentUser().getEmail().equals("loyalpiratemusic@gmail.com")) {
+        final FloatingActionButton adminFab = getView().findViewById(R.id.fabAdmin);
+        if (mAuth.getCurrentUser().getEmail().equals("tester1@gmail.com")) {
             adminFab.setVisibility(View.VISIBLE);
             adminFab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(getContext(), AdminActivity.class);
-                    startActivity(intent);
+                    Navigation.findNavController(adminFab).navigate(R.id.action_homeFragment_to_adminFragment);
                 }
             });
         }
@@ -346,10 +346,12 @@ public class UserProfileFragment extends Fragment {
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent =new Intent(getContext(), LoginActivity.class);
-                intent.putExtra("Mode","LoggedOut");
-                startActivity(intent);
-                getActivity().finish();
+                GamePartnerUtills.state = "LoggedOut";
+                Navigation.findNavController(logout).navigate(R.id.action_homeFragment_to_loginFragment);
+//                Intent intent =new Intent(getContext(), LoginActivity.class);
+//                intent.putExtra("Mode","LoggedOut");
+//                startActivity(intent);
+//                getActivity().finish();
             }
         });
         imgViewProfilePic.setOnClickListener(new View.OnClickListener() {

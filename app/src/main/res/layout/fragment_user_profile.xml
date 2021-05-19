@@ -177,6 +177,14 @@
                 android:textAllCaps="false" />
         </RelativeLayout>
     </RelativeLayout>
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@drawable/gradient"
+        android:backgroundTint="@color/darkPurple"
+        android:layout_below="@id/base_relative_layout"
+        android:rotation="180"
+        android:translationZ="20dp"/>
     <ProgressBar
         android:id="@+id/loading_panel"
         android:layout_width="150dp"

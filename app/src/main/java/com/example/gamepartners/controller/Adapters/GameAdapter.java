@@ -11,15 +11,13 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.gamepartners.R;
 import com.example.gamepartners.data.model.Game;
-import com.example.gamepartners.data.model.User;
-import com.example.gamepartners.ui.Activities_Fragments.CreatePostActivity;
+import com.example.gamepartners.ui.Activities_Fragments.CreatePostFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +29,7 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
     Game m_SelectedGame = new Game();
     Context m_Context;
     int m_SelectedItemIndex = 0;
-    public CreatePostActivity m_Activity;
+    public CreatePostFragment createPostFragment;
     boolean isDialog = false;
 
     public class GameViewHolder extends RecyclerView.ViewHolder {
@@ -56,11 +54,11 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
         this.m_Context = context;
         this.isDialog = isDialog;
     }
-    public GameAdapter(Context context, ArrayList<Game> gamesList) {
+    public GameAdapter(Context context, ArrayList<Game> gamesList, CreatePostFragment fragment) {
         m_Games = gamesList;
         m_AllGames = new ArrayList<>(gamesList);
         this.m_Context = context;
-        m_Activity = (CreatePostActivity) context;
+        createPostFragment = fragment;
     }
 
     public ArrayList<Game> getSelectedGames() {
@@ -119,10 +117,10 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
                     m_SelectedItemIndex = position;
                     m_SelectedGame = m_Games.get(m_SelectedItemIndex);
                     if(!isDialog)
-                    { m_Activity.selectedGame = m_SelectedGame;
-                    if (m_Activity.selectedGame != null) {
-                        m_Activity.selectedGameName.setText(m_SelectedGame.getGameName());
-                        Glide.with(m_Activity).load(m_SelectedGame.getGamePictureURL()).into(m_Activity.selectedGameImage);
+                    { createPostFragment.selectedGame = m_SelectedGame;
+                    if (createPostFragment.selectedGame != null) {
+                        createPostFragment.selectedGameName.setText(m_SelectedGame.getGameName());
+                        Glide.with(m_Context).load(m_SelectedGame.getGamePictureURL()).into(createPostFragment.selectedGameImage);
                         }
                     Log.e("game", "game: " + m_Games.get(m_SelectedItemIndex).getGameName());
                     }
@@ -185,10 +183,10 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
                 filteredList.addAll(m_AllGames);
             } else {
                 for (Game game : m_AllGames) {
-                    if ((game.getPlatforms().contains(Game.ePlatform.REALITY) && m_Activity.realityCheck) ||
-                            (game.getPlatforms().contains(Game.ePlatform.PC) && m_Activity.pcCheck) ||
-                            (game.getPlatforms().contains(Game.ePlatform.PLAYSTATION) && m_Activity.playstationCheck) ||
-                            (game.getPlatforms().contains(Game.ePlatform.XBOX) && m_Activity.xboxCheck)) {
+                    if ((game.getPlatforms().contains(Game.ePlatform.REALITY) && createPostFragment.realityCheck) ||
+                            (game.getPlatforms().contains(Game.ePlatform.PC) && createPostFragment.pcCheck) ||
+                            (game.getPlatforms().contains(Game.ePlatform.PLAYSTATION) && createPostFragment.playstationCheck) ||
+                            (game.getPlatforms().contains(Game.ePlatform.XBOX) && createPostFragment.xboxCheck)) {
                         filteredList.add(game);
                     }
                 }

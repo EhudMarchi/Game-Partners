@@ -3,11 +3,9 @@ package com.example.gamepartners.controller.Adapters;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,13 +41,11 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> implements Filterable {
     Context context;
@@ -107,7 +103,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         holder.city.setText(post.getCity());
         holder.address.setText(post.getLocation());
         try {
-            holder.distance.setText(new DecimalFormat("#.##").format(GamePartnerUtills.getKmFromLatLong(Float.parseFloat(activity.latitude), Float.parseFloat(activity.longitude), (float) post.getLatitude(), (float) post.getLongitude()) )+ " km");
+            holder.distance.setText(new DecimalFormat("#.##").format(GamePartnerUtills.getKmFromLatLong(Float.parseFloat(String.valueOf(GamePartnerUtills.latitude)), Float.parseFloat(String.valueOf(GamePartnerUtills.longitude)), (float) post.getLatitude(), (float) post.getLongitude()) )+ " km");
         }
         catch (Exception e) {
             holder.distance.setVisibility(View.GONE);
@@ -395,7 +391,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         protected FilterResults performFiltering(CharSequence constraint) {
             ArrayList<Post> filteredList = new ArrayList<>();
                 for (Post post : allPostsArrayList) {
-                    if (GamePartnerUtills.getKmFromLatLong(Float.parseFloat(activity.latitude), Float.parseFloat(activity.longitude), (float) post.getLatitude(), (float) post.getLongitude())<= Integer.parseInt((String) constraint))
+                    if (GamePartnerUtills.getKmFromLatLong(Float.parseFloat(String.valueOf(GamePartnerUtills.latitude)), Float.parseFloat(String.valueOf(GamePartnerUtills.longitude)), (float) post.getLatitude(), (float) post.getLongitude())<= Integer.parseInt((String) constraint))
                     {
                         filteredList.add(post);
                     }

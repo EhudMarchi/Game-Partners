@@ -1,5 +1,7 @@
 package com.example.gamepartners.controller.Adapters;
 
+import android.view.PointerIcon;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -10,11 +12,12 @@ import com.example.gamepartners.ui.Activities_Fragments.ExploreFragment;
 import com.example.gamepartners.ui.Activities_Fragments.FriendsFragment;
 import com.example.gamepartners.ui.Activities_Fragments.ChatsFragment;
 import com.example.gamepartners.ui.Activities_Fragments.UserProfileFragment;
+import com.google.android.material.tabs.TabItem;
 
 public class TabAccessorAdapter extends FragmentPagerAdapter {
 
     public TabAccessorAdapter(@NonNull FragmentManager fm) {
-        super(fm);
+        super(fm,FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
     }
 
     @NonNull
@@ -51,13 +54,13 @@ public class TabAccessorAdapter extends FragmentPagerAdapter {
         switch (position)
         {
             case  0:
-                return  "Explore";
+                return  " Explore";
             case  1:
-                return  "Chats";
+                return  " Chats";
             case  2:
-                return  "Friends";
+                return  " Friends";
             case  3:
-                return  "Profile";
+                return  " Profile";
 
             default:
                 return null;

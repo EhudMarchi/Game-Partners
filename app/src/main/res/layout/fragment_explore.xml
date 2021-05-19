@@ -6,6 +6,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.Activities_Fragments.ExploreFragment"
     android:background="@color/darkPurple">
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@drawable/gradient"
+        android:backgroundTint="@color/darkPurple"
+        android:layout_below="@id/search"
+        android:rotation="180"
+        android:translationZ="20dp"/>
     <SearchView
         android:id="@+id/search"
         android:layout_width="match_parent"
@@ -80,4 +88,5 @@
             app:backgroundTint="@color/glowCyan"
             app:srcCompat="@drawable/create" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
 </RelativeLayout>

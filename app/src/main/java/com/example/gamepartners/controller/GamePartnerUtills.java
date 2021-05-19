@@ -1,8 +1,8 @@
 package com.example.gamepartners.controller;
 
+import android.location.Address;
 import android.location.Location;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -12,7 +12,6 @@ import com.example.gamepartners.data.model.Message;
 import com.example.gamepartners.data.model.Post;
 import com.example.gamepartners.data.model.Request;
 import com.example.gamepartners.data.model.User;
-import com.example.gamepartners.ui.Activities_Fragments.AdminActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -25,10 +24,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class GamePartnerUtills {
     private static GamePartnerUtills mSingleInstance = null;
@@ -42,8 +39,12 @@ public class GamePartnerUtills {
     public static ArrayList<Group> groups;
     private static ArrayList<User> users;
     public static ArrayList<Game> games;
-    public static boolean isLocationEnabled = false;
+    public static String state = "";
+    public static Group currentGroup = new Group();
     public static HashMap<String, String> userGroups;
+    public static double latitude = 0, longitude = 0;
+    public static Location location;
+    public static Address selectedAddress = null;
 
     private GamePartnerUtills() {
         users = new ArrayList<>();
@@ -240,7 +241,7 @@ public class GamePartnerUtills {
     public static boolean UpdateUserData(String i_FirstName, String i_LastName, String i_Password)
     {
         boolean isSuccessful = false;
-        if((!i_FirstName.equals(""))&&(!i_LastName.equals(""))&&(i_Password.length()>5))
+        if((!i_FirstName.equals(""))&&(i_FirstName.matches( "[A-Z][a-z]*" ))&&(!i_LastName.equals(""))&&(i_LastName.matches( "[A-Z][a-z]*" ))&&(i_Password.length()>5))
         {
             FirebaseDatabase database = FirebaseDatabase.getInstance();
             DatabaseReference myRef = database.getReference("users").child(connectedUser.getUid()).child("firstName");

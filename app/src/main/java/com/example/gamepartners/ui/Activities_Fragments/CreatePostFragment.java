@@ -1,10 +1,5 @@
 package com.example.gamepartners.ui.Activities_Fragments;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -15,7 +10,17 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -29,9 +34,9 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.gamepartners.R;
+import com.example.gamepartners.controller.Adapters.GameAdapter;
 import com.example.gamepartners.controller.GamePartnerUtills;
 import com.example.gamepartners.data.model.Game;
-import com.example.gamepartners.controller.Adapters.GameAdapter;
 import com.example.gamepartners.data.model.Post;
 import com.example.gamepartners.data.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -47,7 +52,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-public class CreatePostActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+
+public class CreatePostFragment extends Fragment implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener , MapsFragment.OnLocationPickedListener{
+
     static final int PICK_MAP_POINT_REQUEST = 999;
     private ArrayList<Game> games;
     private RecyclerView gamesRecyclerView;
@@ -58,7 +65,6 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
     public TextView selectedGameName;
     SearchView searchView;
     public Post post;
-    Address selectedAddress;
     Button chooseDate, chooseTime, chooseLocation;
     public Chip reality, pc, playstation, xbox;
     int year, months,day,hour,minute;
@@ -67,34 +73,44 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
     CheckBox privatePost;
     String subject="", description="";
     Dialog dialog;
+    public CreatePostFragment() {
+        // Required empty public constructor
+    }
+
+    public static CreatePostFragment newInstance(String param1, String param2) {
+        CreatePostFragment fragment = new CreatePostFragment();
+        Bundle args = new Bundle();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_post);
+    public void onStart() {
+        super.onStart();
         post= new Post();
-        chooseDate = findViewById(R.id.chooseDate);
-        chooseTime = findViewById(R.id.chooseTime);
-        chooseLocation = findViewById(R.id.chooseLocation);
-        selectedGameImage = findViewById(R.id.game_pic);
-        selectedGameName = findViewById(R.id.selectedGameName);
-        reality = findViewById(R.id.reality);
-        pc = findViewById(R.id.pc);
-        playstation = findViewById(R.id.playstation);
-        xbox = findViewById(R.id.xbox);
-        uploadProgress= new ProgressDialog(this);
+        chooseDate = getActivity().findViewById(R.id.chooseDate);
+        chooseTime = getActivity().findViewById(R.id.chooseTime);
+        chooseLocation = getActivity().findViewById(R.id.chooseLocation);
+        selectedGameImage = getActivity().findViewById(R.id.game_pic);
+        selectedGameName = getActivity().findViewById(R.id.selectedGameName);
+        reality = getActivity().findViewById(R.id.reality);
+        pc = getActivity().findViewById(R.id.pc);
+        playstation = getActivity().findViewById(R.id.playstation);
+        xbox = getActivity().findViewById(R.id.xbox);
+        uploadProgress= new ProgressDialog(getContext());
         uploadProgress.setTitle("Uploading Post...");
-        try {
+       // try {
             setFilters();
             fillGames();
             setUpGamesRecyclerView();
             setSearchFilter();
-        }
-        catch (Exception e)
-        {
-            Toast.makeText(getBaseContext(), "Something went wrong..",
-                    Toast.LENGTH_LONG).show();
-            finish();
-        }
+       // }
+//        catch (Exception e)
+//        {
+//            Toast.makeText(getActivity().getBaseContext(), "Something went wrong..",
+//                    Toast.LENGTH_LONG).show();
+//            getActivity().finish();
+//        }
         chooseDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -113,32 +129,39 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
                 showLocationPicker();
             }
         });
-        final FloatingActionButton fab = findViewById(R.id.fabContinue);
-        dialog = new Dialog(this);
+        final FloatingActionButton fab = getActivity().findViewById(R.id.fabContinue);
+        dialog = new Dialog(getContext());
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(selectedGame!=null) {
                     if (chooseTime.getText().equals("Choose Time") || chooseDate.getText().equals("Choose Date")) {
-                        Toast.makeText(getBaseContext(), "Please choose date and time!",
+                        Toast.makeText(getActivity().getBaseContext(), "Please choose date and time!",
                                 Toast.LENGTH_LONG).show();
                     } else {
                         if (!chooseLocation.getText().equals("Choose Location")) {
                             fab.setClickable(false);
                             dialog.setContentView(R.layout.dialog_post);
                             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                            Button post = dialog.findViewById(R.id.post);
+                            post.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    createPost();
+                                }
+                            });
                             dialog.show();
                             fab.setClickable(true);
                         }
                         else {
-                            Toast.makeText(getBaseContext(), "Please select location!",
+                            Toast.makeText(getActivity().getBaseContext(), "Please select location!",
                                     Toast.LENGTH_LONG).show();
                         }
                     }
                 }
                 else
                 {
-                    Toast.makeText(getBaseContext(), "Please select game!",
+                    Toast.makeText(getActivity().getBaseContext(), "Please select game!",
                             Toast.LENGTH_LONG).show();
                 }
             }
@@ -150,7 +173,7 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
                 refreshSelectedGame();
             }
         });
-        final Dialog imageView = new Dialog(this);
+        final Dialog imageView = new Dialog(getContext());
         imageView.setContentView(R.layout.game_image_view);
         imageView.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         selectedGameImage.setOnClickListener(new View.OnClickListener() {
@@ -192,6 +215,11 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
         });
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+    }
     private void setFilters() {
         reality.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -259,8 +287,9 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
 
     private void showLocationPicker() {
         MapUtility.apiKey = getResources().getString(R.string.api_key);
-        Intent intent = new Intent(this, MapsActivity.class);
-        startActivityForResult(intent, PICK_MAP_POINT_REQUEST);
+        MapsFragment chooseLocationFragment = new MapsFragment(this);
+        chooseLocationFragment.show(getActivity().getSupportFragmentManager(),"");
+        //Navigation.findNavController(chooseLocation).navigate(R.id.action_createPostFragment_to_mapsFragment);
     }
 
     private void setSearchFilter() {
@@ -279,7 +308,7 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
     }
     public void showTimePickerDialog(){
         TimePickerDialog timePickerDialog = new TimePickerDialog(
-                this,
+                getContext(),
                 this,
                 Calendar.getInstance().get(Calendar.HOUR_OF_DAY),
                 Calendar.getInstance().get(Calendar.MINUTE),
@@ -289,7 +318,7 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
     }
     public void showDatePickerDialog(){
         DatePickerDialog datePickerDialog = new DatePickerDialog(
-                this,
+                getContext(),
                 this,
                 Calendar.getInstance().get(Calendar.YEAR),
                 Calendar.getInstance().get(Calendar.MONTH),
@@ -297,11 +326,11 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
         datePickerDialog.show();
     }
     private void setUpGamesRecyclerView() {
-        searchView = (SearchView)findViewById(R.id.search);
-        gamesRecyclerView = findViewById(R.id.gamesRecyclerView);
+        searchView = (SearchView)getActivity().findViewById(R.id.search);
+        gamesRecyclerView = getActivity().findViewById(R.id.gamesRecyclerView);
         gamesRecyclerView.setHasFixedSize(true);
-        recyclerViewLayoutManager = new LinearLayoutManager(this);
-        recyclerViewAdapter = new GameAdapter(this,games);
+        recyclerViewLayoutManager = new LinearLayoutManager(getContext());
+        recyclerViewAdapter = new GameAdapter(getContext(),games, CreatePostFragment.this);
         gamesRecyclerView.setLayoutManager(recyclerViewLayoutManager);
         gamesRecyclerView.setAdapter(recyclerViewAdapter);
     }
@@ -310,7 +339,7 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
         games = GamePartnerUtills.games;
     }
 
-    public void createPost(final View view) throws ParseException {
+    public void createPost(){
         subject = ((EditText) dialog.findViewById(R.id.subject)).getText().toString();
         description = ((EditText) dialog.findViewById(R.id.description)).getText().toString();
         privatePost = (CheckBox) dialog.findViewById(R.id.privatePostCheckBox);
@@ -319,18 +348,19 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
         String postID = reference.push().getKey();
 
         final User user = GamePartnerUtills.connectedUser;
-        Post post = new Post(postID, user, selectedGame, new Date(), subject, description, selectedAddress, new Date(year, months, day, hour, minute), privatePost.isChecked());
+        Post post = new Post(postID, user, selectedGame, new Date(), subject, description, GamePartnerUtills.selectedAddress, new Date(year, months, day, hour, minute), privatePost.isChecked());
         user.getUserPosts().add(postID);
         reference.child(postID).setValue(post).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
                     dialog.dismiss();
-                    finish();
-                    Toast.makeText(getBaseContext(), "Post Uploaded Successfully!",
+                    Toast.makeText(getActivity().getBaseContext(), "Post Uploaded Successfully!",
                             Toast.LENGTH_LONG).show();
                     DatabaseReference updateMyPostsRef = FirebaseDatabase.getInstance().getReference("users").child(user.getUid()).child("postsID");
                     updateMyPostsRef.setValue(user.getUserPosts());
+                    //Navigation.findNavController(selectedGameName).navigate(R.id.action_createPostFragment_to_homeFragment);
+                    getActivity().onBackPressed();
                 }
             }
         });
@@ -366,15 +396,16 @@ public class CreatePostActivity extends AppCompatActivity implements DatePickerD
         this.hour = hourOfDay;
         this.minute = minute;
     }
+
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_MAP_POINT_REQUEST) {
-            // Make sure the request was successful
-            if (resultCode == RESULT_OK) {
-                selectedAddress = (Address) data.getParcelableExtra("picked_location");
-                chooseLocation.setText(selectedAddress.getAddressLine(0));
-            }
-        }
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_create_post, container, false);
+    }
+
+    @Override
+    public void onLocationPicked(Address selectedAddress) {
+        chooseLocation.setText(selectedAddress.getAddressLine(0).split(",")[0]);
     }
 }

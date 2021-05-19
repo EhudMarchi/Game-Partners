@@ -34,11 +34,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ChatsFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class ChatsFragment extends Fragment {
     private static final int WAIT = 1100;
     RecyclerView chatsRecyclerView;
@@ -48,13 +43,6 @@ public class ChatsFragment extends Fragment {
 
     public ChatsFragment() {
         // Required empty public constructor
-    }
-
-    public static ChatsFragment newInstance(String param1, String param2) {
-        ChatsFragment fragment = new ChatsFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @Override

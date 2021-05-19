@@ -1,7 +1,5 @@
 package com.example.gamepartners.ui.Activities_Fragments;
 
-import androidx.annotation.NonNull;
-
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -10,18 +8,25 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import android.os.Handler;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.gamepartners.R;
+import com.example.gamepartners.controller.GamePartnerUtills;
 import com.example.gamepartners.data.model.User;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -30,10 +35,10 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -42,8 +47,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.concurrent.Executor;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginFragment extends Fragment {
     private static final int RC_SIGN_IN = 100 ;
     private static int SPLASH_SCREEN = 3250;
     private FirebaseAuth mAuth;
@@ -51,60 +57,106 @@ public class LoginActivity extends AppCompatActivity {
     EditText email;
     EditText password;
     ImageView logoImage;
+    TextView signUpTextView;
     Animation fadeOutAnimation;
     Animation logoAnimation;
     Animation iconsAnimation;
     ArrayList<View> icons;
+    Button signInButton , googleButton, facebookButton;
     private GoogleSignInClient mGoogleSignInClient;
     private DatabaseReference myRef;
     SharedPreferences sharedPreferences;
     boolean isExist = false;
     private ProgressDialog signInProgress;
+
+    public LoginFragment() {
+        // Required empty public constructor
+    }
+
+    public static LoginFragment newInstance(String param1, String param2) {
+        LoginFragment fragment = new LoginFragment();
+        Bundle args = new Bundle();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+    public void onStart() {
+        super.onStart();
         mAuth = FirebaseAuth.getInstance();
-        sharedPreferences = getPreferences(MODE_PRIVATE);
-        email =findViewById(R.id.editTextEmail);
-        password =findViewById(R.id.editTextPassword);
-        logoImage = findViewById(R.id.imageViewLogo);
-        signInProgress = new ProgressDialog(this);
+        sharedPreferences = getActivity().getPreferences(getActivity().MODE_PRIVATE);
+        email =((TextInputLayout)getActivity().findViewById(R.id.editTextEmail)).getEditText();
+        password =((TextInputLayout)getActivity().findViewById(R.id.editTextPassword)).getEditText();
+        signInButton = getView().findViewById(R.id.buttonSignIn);
+        googleButton = getView().findViewById(R.id.buttonGoogle);
+        facebookButton = getView().findViewById(R.id.buttonFacebook);
+        logoImage = getActivity().findViewById(R.id.imageViewLogo);
+        signInProgress = new ProgressDialog(getContext());
         signInProgress.setTitle("Signing in...");
         initializeIconsList();
-        Bundle extras = getIntent().getExtras();
+        if(GamePartnerUtills.state.equals("LoggedOut"))
+        {
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.clear();
+            editor.apply();
+        }
+        Bundle extras = getActivity().getIntent().getExtras();
         if (extras != null) {
             email.setText(extras.getString("emailKey"));
             password.setText(extras.getString("passwordKey"));
-            String mode = extras.getString("Mode");
-            if(mode.equals("LoggedOut"))
-            {
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.clear();
-                editor.apply();
-            }
+
         }
         if (sharedPreferences.getString("KeyEmail", null) != null) {
             email.setText(sharedPreferences.getString("KeyEmail", null));
             password.setText(sharedPreferences.getString("KeyPassword", null));
             if(sharedPreferences.getString("KeyType", null).equals("Google")) {
-                signUpWithGoogle(findViewById(R.id.buttonGoogle));
+                signUpWithGoogle();
             }
             else {
-                signIn(findViewById(R.id.buttonSignIn));
+                signIn();
             }
         }
+        signUpTextView = getActivity().findViewById(R.id.textViewRegister);
+        signUpTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                signUp(v);
+            }
+        });
+        signInButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                signIn();
+            }
+        });
+        googleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                signUpWithGoogle();
+            }
+        });
+        facebookButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                signUpWithFacebook();
+            }
+        });
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
     }
     private void initializeIconsList() {
         icons = new ArrayList<View>();
-        icons.add(findViewById(R.id.controller));
-        icons.add(findViewById(R.id.controller2));
-        icons.add(findViewById(R.id.baseball));
-        icons.add(findViewById(R.id.basketball));
-        icons.add(findViewById(R.id.table_tennis));
-        icons.add(findViewById(R.id.soccer_field));
-        icons.add(findViewById(R.id.chess));
-        iconsAnimation = AnimationUtils.loadAnimation(this,R.anim.icons_start);
+        icons.add(getActivity().findViewById(R.id.controller));
+        icons.add(getActivity().findViewById(R.id.controller2));
+        icons.add(getActivity().findViewById(R.id.baseball));
+        icons.add(getActivity().findViewById(R.id.basketball));
+        icons.add(getActivity().findViewById(R.id.table_tennis));
+        icons.add(getActivity().findViewById(R.id.soccer_field));
+        icons.add(getActivity().findViewById(R.id.chess));
+        iconsAnimation = AnimationUtils.loadAnimation(getContext(),R.anim.icons_start);
     }
     private void autoLogin(String type)
     {
@@ -121,83 +173,75 @@ public class LoginActivity extends AppCompatActivity {
                 .requestEmail()
                 .build();
 
-        mGoogleSignInClient = GoogleSignIn.getClient(this,gso);
+        mGoogleSignInClient = GoogleSignIn.getClient(getContext(),gso);
     }
     @Override
-    public void onStart() {
-        super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_login, container, false);
     }
     private void transitionScreen()
     {
         signInProgress.dismiss();
-        fadeOutAnimation = AnimationUtils.loadAnimation(this, R.anim.fadeout_animation);
-        logoAnimation = AnimationUtils.loadAnimation(this, R.anim.logo_animation);
-        findViewById(R.id.buttonSignIn).startAnimation(fadeOutAnimation);
-        findViewById(R.id.buttonGoogle).startAnimation(fadeOutAnimation);
-        findViewById(R.id.buttonFacebook).startAnimation(fadeOutAnimation);
-        findViewById(R.id.textViewRegisterQuestion).startAnimation(fadeOutAnimation);
-        findViewById(R.id.textViewRegister).startAnimation(fadeOutAnimation);
-        email.startAnimation(fadeOutAnimation);
-        password.startAnimation(fadeOutAnimation);
+        fadeOutAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.fadeout_animation);
+        logoAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.logo_animation);
+        getActivity().findViewById(R.id.buttonSignIn).startAnimation(fadeOutAnimation);
+        getActivity().findViewById(R.id.buttonGoogle).startAnimation(fadeOutAnimation);
+        getActivity().findViewById(R.id.buttonFacebook).startAnimation(fadeOutAnimation);
+        getActivity(). findViewById(R.id.textViewRegisterQuestion).startAnimation(fadeOutAnimation);
+        getActivity().findViewById(R.id.textViewRegister).startAnimation(fadeOutAnimation);
+        ((TextInputLayout)getActivity().findViewById(R.id.editTextEmail)).startAnimation(fadeOutAnimation);;
+        ((TextInputLayout)getActivity().findViewById(R.id.editTextPassword)).startAnimation(fadeOutAnimation);;
         logoImage.startAnimation(logoAnimation);
         for (View icon:icons) {
             icon.startAnimation(iconsAnimation);
         }
-
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                sendUserToMainActivity();
-                finish();
+                GamePartnerUtills.state = "SignedIn";
+                Navigation.findNavController(signInButton).navigate(R.id.action_loginFragment_to_homeFragment);
             }
         },SPLASH_SCREEN);
     }
 
-    public void signIn(View view) {
+    public void signIn() {
 
         if(!(email.getText().toString().equals(""))&&!(password.getText().toString().equals("")))
         {
             signInProgress.show();
             mAuth.signInWithEmailAndPassword(email.getText().toString(), password.getText().toString())
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
 
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            autoLogin("Normal");
-                            // Sign in success, update UI with the signed-in user's information
-                            transitionScreen();
-                            //sendUserToMainActivity();
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Toast.makeText(LoginActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-                            signInProgress.dismiss();
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                autoLogin("Normal");
+                                // Sign in success, update UI with the signed-in user's information
+                                transitionScreen();
+                            } else {
+                                // If sign in fails, display a message to the user.
+                                Toast.makeText(getContext(), "Authentication failed.",
+                                        Toast.LENGTH_SHORT).show();
+                                signInProgress.dismiss();
+                            }
                         }
-                    }
-                });
+                    });
         }
         else
         {
-            Toast.makeText(LoginActivity.this, "Please enter valid email and password",
+            Toast.makeText(getContext(), "Please enter valid email and password",
                     Toast.LENGTH_SHORT).show();
         }
     }
 
-    public void signUp(View view) {
-        Animation zoominAnimation = AnimationUtils.loadAnimation(this,R.anim.zoom_in);
-        view.startAnimation(zoominAnimation);
-        Intent intent =new Intent(LoginActivity.this,SignUpActivity.class);
-        startActivity(intent);
-    }
-    public void signUpWithFacebook(View view)
+    public void signUpWithFacebook()
     {
-        Toast.makeText(LoginActivity.this, "Coming soon...",
+        Toast.makeText(getContext(), "Coming soon...",
                 Toast.LENGTH_SHORT).show();
     }
-    public void signUpWithGoogle(View view)
+    public void signUpWithGoogle()
     {
         createGoogleRequest();
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
@@ -207,7 +251,7 @@ public class LoginActivity extends AppCompatActivity {
     public void checkIfGoogleAccountExist()
     {
         if(!isExist) {
-            enterAccountPassword(this, googleAccount);
+            enterAccountPassword(getContext(), googleAccount);
         }
         else
         {
@@ -217,10 +261,12 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            if(task.isSuccessful())
+            {
+                Toast.makeText(getContext(), "SUCCESS!", Toast.LENGTH_SHORT).show();
             try {
                 // Google Sign In was successful, authenticate with Firebase
                 final GoogleSignInAccount account = task.getResult(ApiException.class);
@@ -229,23 +275,22 @@ public class LoginActivity extends AppCompatActivity {
                 myRef.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                            int i =0;
-                            for (DataSnapshot user :dataSnapshot.getChildren()) {
-                                Log.d("result", "iteration "+String.valueOf(i++));
-                                //Log.d("result", user.getValue(User.class).getEmail());
-                                Log.d("result", googleAccount.getEmail());
-                                if(user.getValue(User.class).getEmail().equals(googleAccount.getEmail()))
-                                {
-                                    email.setText(googleAccount.getEmail());
-                                    password.setText(user.getValue(User.class).getPassword());
-                                    isExist = true;
-                                    break;
-                                }
+                        int i =0;
+                        for (DataSnapshot user :dataSnapshot.getChildren()) {
+                            Log.d("result", "iteration "+String.valueOf(i++));
+                            Log.d("result", googleAccount.getEmail());
+                            if(user.getValue(User.class).getEmail().equals(googleAccount.getEmail()))
+                            {
+                                email.setText(googleAccount.getEmail());
+                                password.setText(user.getValue(User.class).getPassword());
+                                isExist = true;
+                                break;
                             }
+                        }
                         checkIfGoogleAccountExist();
 
 
-                            Log.d("result", "is exist: "+String.valueOf(isExist));
+                        Log.d("result", "is exist: "+String.valueOf(isExist));
                     }
                     @Override
                     public void onCancelled(DatabaseError error) {
@@ -255,12 +300,18 @@ public class LoginActivity extends AppCompatActivity {
                 firebaseAuthWithGoogle(account.getIdToken());
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
-                Toast.makeText(this, e.getMessage(),Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), e.getMessage(),Toast.LENGTH_LONG).show();
                 // ...
             }
+            }
+            else Toast.makeText(getContext(), "FAIL!", Toast.LENGTH_SHORT).show();
         }
     }
-
+    public void signUp(View view) {
+        Animation zoominAnimation = AnimationUtils.loadAnimation(getContext(),R.anim.zoom_in);
+        view.startAnimation(zoominAnimation);
+        Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_registerFragment);
+    }
     private void enterAccountPassword(Context context, final GoogleSignInAccount account) {
         final EditText taskEditText = new EditText(context);
         AlertDialog dialog = new AlertDialog.Builder(context)
@@ -270,8 +321,8 @@ public class LoginActivity extends AppCompatActivity {
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                     writeNewGoogleUserToDB(mAuth.getCurrentUser().getUid(),account.getGivenName(),account.getFamilyName(),account.getEmail(),String.valueOf(taskEditText.getText()),account.getPhotoUrl().toString());
-                     password.setText(String.valueOf(taskEditText.getText()));
+                        writeNewGoogleUserToDB(mAuth.getCurrentUser().getUid(),account.getGivenName(),account.getFamilyName(),account.getEmail(),String.valueOf(taskEditText.getText()),account.getPhotoUrl().toString());
+                        password.setText(String.valueOf(taskEditText.getText()));
                         transitionScreen();
                     }
                 })
@@ -284,7 +335,7 @@ public class LoginActivity extends AppCompatActivity {
         signInProgress.show();
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
         mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
@@ -307,10 +358,4 @@ public class LoginActivity extends AppCompatActivity {
         newUser.setUid(userId);
         myRef.setValue(newUser);
     }
-    private  void sendUserToMainActivity()
-    {
-        Intent intent =new Intent(LoginActivity.this,MainActivity.class);
-        startActivity(intent);
-    }
-
 }

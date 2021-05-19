@@ -2,22 +2,19 @@ package com.example.gamepartners.controller.Adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.example.gamepartners.R;
+import com.example.gamepartners.controller.GamePartnerUtills;
 import com.example.gamepartners.data.model.Group;
-import com.example.gamepartners.data.model.User;
-import com.example.gamepartners.ui.Activities_Fragments.ChatActivity;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
@@ -56,14 +53,9 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                notifyItemChanged(position);
-                Intent intent =new Intent(mContext, ChatActivity.class);
-                intent.putExtra("GroupName",group.getGroupName());
-                intent.putExtra("AdminUID",group.getAdminUID());
-                intent.putExtra("GroupID",group.getGroupID());
-                intent.putExtra("GroupImageURL",group.getGroupImageURL());
-                mContext.startActivity(intent);
+                //notifyItemChanged(position);
+                GamePartnerUtills.currentGroup = new Group(group.getAdminUID(), group.getGroupName(), group.getGroupID() , group.getGroupImageURL());
+                Navigation.findNavController(v).navigate(R.id.action_homeFragment_to_chatFragment);
             }
         });
     }
