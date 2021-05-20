@@ -161,20 +161,17 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     private Filter userFilter = new Filter() {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
-            ArrayList<User> filteredList = new ArrayList<>();
-            if(constraint == null || constraint.length() == 0)
+            if(allUsers.size()<users.size())
             {
-                filteredList.addAll(allUsers);
+                allUsers = new ArrayList<>(users);
             }
-            else
-            {
-                String filterPattern = constraint.toString().toLowerCase().trim();
+            ArrayList<User> filteredList = new ArrayList<>();
+            String filterPattern = constraint.toString().toLowerCase().trim();
                 for (User user: allUsers) {
-                    if((user.getFirstName()+" "+user.getLastName()).toLowerCase().contains(filterPattern))
+                    if(((user.getFirstName()+" "+user.getLastName()).toLowerCase()).contains(filterPattern))
                     {
                         filteredList.add(user);
                     }
-                }
             }
             FilterResults results = new FilterResults();
             results.values = filteredList;

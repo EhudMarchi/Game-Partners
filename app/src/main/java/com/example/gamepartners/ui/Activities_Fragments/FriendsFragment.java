@@ -98,6 +98,19 @@ public class FriendsFragment extends Fragment {
                 allUsersRecyclerView.setAdapter(allUsersAdapter);
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 Button addSelected = dialog.findViewById(R.id.addSelected);
+                SearchView searchUsersView = dialog.findViewById(R.id.searchUsers);
+                searchUsersView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                    @Override
+                    public boolean onQueryTextSubmit(String query) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onQueryTextChange(String newText) {
+                        allUsersAdapter.getFilter().filter(newText);
+                        return false;
+                    }
+                });
                 addSelected.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

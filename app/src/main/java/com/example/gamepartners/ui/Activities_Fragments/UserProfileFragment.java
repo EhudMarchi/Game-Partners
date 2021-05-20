@@ -269,6 +269,19 @@ public class UserProfileFragment extends Fragment {
                         allGamesRecyclerView.setLayoutManager(requestsLayoutManager);
                         allGamesAdapter = new GameAdapter(getContext(), games, true);
                         allGamesRecyclerView.setAdapter(allGamesAdapter);
+                        SearchView searchGamesForFav = chooseGamesDialog.findViewById(R.id.searchGamesForFav);
+                        searchGamesForFav.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                            @Override
+                            public boolean onQueryTextSubmit(String query) {
+                                return false;
+                            }
+
+                            @Override
+                            public boolean onQueryTextChange(String newText) {
+                                allGamesAdapter.getFilter().filter(newText);
+                                return false;
+                            }
+                        });
                         chooseGamesDialog.show();
                         addSelectedButton.setOnClickListener(new View.OnClickListener() {
                             @Override

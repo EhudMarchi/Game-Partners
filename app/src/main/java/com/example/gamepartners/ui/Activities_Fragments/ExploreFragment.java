@@ -80,18 +80,8 @@ public class ExploreFragment extends Fragment {
                     Post post = ds.getValue(Post.class);
                     assert post != null;
                         if ((post.getPublisher().getUid().equals(GamePartnerUtills.connectedUser.getUid())) || (!post.isPrivate()) || (GamePartnerUtills.connectedUser.getUserFriends().containsKey(post.getPublisher().getUid()))) {
-                            if(!favouriteFilterOn)
                             {
                                 postsArrayList.add(post);
-                            }
-                            else
-                            {
-                                for (Game favGame:GamePartnerUtills.connectedUser.getFavouriteGames()) {
-                                    if(favGame.getGameName().equals(post.getGame().getGameName()))
-                                    {
-                                        postsArrayList.add(post);
-                                    }
-                                }
                             }
                         }
                 }
@@ -127,10 +117,28 @@ public class ExploreFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        searchView = (SearchView)getView().findViewById(R.id.search);
+        searchView = (SearchView)getView().findViewById(R.id.searchPost);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                postAdapter.setSerachFilter(newText);
+                return false;
+            }
+        });
         commentsDialog = new Dialog(getContext());
         commentsDialog.setContentView(R.layout.dialog_comments);
         commentsDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        Thread postsFetchThread = new Thread(new Runnable() {
+            public void run() {
+                fetchPosts();
+            }
+        });
+        postsFetchThread.start();
         setRecycleView();
         setDistanceDialog();
         final FloatingActionButton fab = getView().findViewById(R.id.fab);
@@ -151,18 +159,13 @@ public class ExploreFragment extends Fragment {
                 }, WAIT);
             }
         });
-        Thread postsFetchThread = new Thread(new Runnable() {
-            public void run() {
-                fetchPosts();
-                }
-        });
-        postsFetchThread.start();
         setCommentsRecycleView();
         final FloatingActionButton favouriteFilter = getView().findViewById(R.id.fabFavouriteFilter);
         favouriteFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 favouriteFilterOn = !favouriteFilterOn;
+                postAdapter.setFavFilter(favouriteFilterOn);
                 if(favouriteFilterOn) {
                     Toast.makeText(getContext(), "Favourite Games Filter On",
                             Toast.LENGTH_LONG).show();
@@ -174,12 +177,6 @@ public class ExploreFragment extends Fragment {
                             Toast.LENGTH_LONG).show();
                     favouriteFilter.setAlpha(0.4f);
                 }
-                Thread postsFetchThread = new Thread(new Runnable() {
-                    public void run() {
-                        fetchPosts();
-                    }
-                });
-                postsFetchThread.start();
             }
         });
     }
@@ -211,6 +208,7 @@ public class ExploreFragment extends Fragment {
                             postMaxDistance = progress;
                             distanceTextView.setText(postMaxDistance + " km");
                             if (progress == distanceSeekbar.getMax()) {
+
                                 distanceTextView.setText("Any distance");
                             }
                         }
@@ -229,20 +227,25 @@ public class ExploreFragment extends Fragment {
                     filter.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Thread postsFetchThread = new Thread(new Runnable() {
-                                public void run() {
-                                    fetchPosts();
+//                            Thread postsFetchThread = new Thread(new Runnable() {
+//                                public void run() {
+//                                    fetchPosts();
+//                                }
+//                            });
+//                            postsFetchThread.start();
+//                            try {
+//                                postsFetchThread.join();
+//                            } catch (InterruptedException e) {
+//                                e.printStackTrace();
+//                            }
+                            if (!distanceTextView.getText().toString().equals("Any distance"))
+                                {
+                                    postAdapter.setDistanceFilter(postMaxDistance);
                                 }
-                            });
-                            postsFetchThread.start();
-                            try {
-                                postsFetchThread.join();
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                            if (!distanceTextView.getText().toString().equals("Any distance")) {
-                                postAdapter.getFilter().filter(String.valueOf(postMaxDistance));
-                            }
+                                else
+                                {
+                                    postAdapter.setDistanceFilter(-1);
+                                }
                             if (postAdapter.getItemCount() == 0) {
                                 getView().findViewById(R.id.no_posts).setVisibility(View.VISIBLE);
                             } else {
@@ -270,5 +273,15 @@ public class ExploreFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         postsArrayList.clear();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        new Thread(new Runnable() {
+            public void run() {
+                fetchPosts();
+            }
+        }).run();
     }
 }

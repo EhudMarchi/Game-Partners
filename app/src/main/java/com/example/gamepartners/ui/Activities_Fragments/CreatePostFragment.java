@@ -225,7 +225,7 @@ public class CreatePostFragment extends Fragment implements DatePickerDialog.OnD
             @Override
             public void onClick(View v) {
                 realityCheck = !realityCheck;
-                recyclerViewAdapter.getFilter("platform").filter("reality");
+                recyclerViewAdapter.getFilter().filter(searchView.getQuery().toString());
                 if(realityCheck == true) {
                     reality.setAlpha(1f);
                 }
@@ -239,7 +239,7 @@ public class CreatePostFragment extends Fragment implements DatePickerDialog.OnD
             @Override
             public void onClick(View v) {
                 pcCheck = !pcCheck;
-                recyclerViewAdapter.getFilter().filter("pc");
+                recyclerViewAdapter.getFilter().filter(searchView.getQuery().toString());
                 if(pcCheck == true) {
                     pc.setAlpha(1f);
                 }
@@ -253,7 +253,7 @@ public class CreatePostFragment extends Fragment implements DatePickerDialog.OnD
             @Override
             public void onClick(View v) {
                 playstationCheck = !playstationCheck;
-                recyclerViewAdapter.getFilter().filter("playstation");
+                recyclerViewAdapter.getFilter().filter(searchView.getQuery().toString());
                 if(playstationCheck == true) {
                     playstation.setAlpha(1f);
                 }
@@ -267,7 +267,7 @@ public class CreatePostFragment extends Fragment implements DatePickerDialog.OnD
             @Override
             public void onClick(View v) {
                 xboxCheck = !xboxCheck;
-                recyclerViewAdapter.getFilter().filter("xbox");
+                recyclerViewAdapter.getFilter().filter(searchView.getQuery().toString());
                 if(xboxCheck == true) {
                     xbox.setAlpha(1f);
                 }
@@ -293,6 +293,7 @@ public class CreatePostFragment extends Fragment implements DatePickerDialog.OnD
     }
 
     private void setSearchFilter() {
+        searchView = (SearchView)getView().findViewById(R.id.search);
         searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -301,7 +302,7 @@ public class CreatePostFragment extends Fragment implements DatePickerDialog.OnD
             }
             @Override
             public boolean onQueryTextChange(String newText) {
-                recyclerViewAdapter.getFilter("name").filter(newText);
+                recyclerViewAdapter.getFilter().filter(newText);
                 return false;
             }
         });
@@ -326,7 +327,6 @@ public class CreatePostFragment extends Fragment implements DatePickerDialog.OnD
         datePickerDialog.show();
     }
     private void setUpGamesRecyclerView() {
-        searchView = (SearchView)getActivity().findViewById(R.id.search);
         gamesRecyclerView = getActivity().findViewById(R.id.gamesRecyclerView);
         gamesRecyclerView.setHasFixedSize(true);
         recyclerViewLayoutManager = new LinearLayoutManager(getContext());

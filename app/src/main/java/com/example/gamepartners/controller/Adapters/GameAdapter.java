@@ -29,6 +29,7 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
     Game m_SelectedGame = new Game();
     Context m_Context;
     int m_SelectedItemIndex = 0;
+    ArrayList<Game> filteredList;
     public CreatePostFragment createPostFragment;
     boolean isDialog = false;
 
@@ -53,12 +54,14 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
         selectedGames = new ArrayList<>();
         this.m_Context = context;
         this.isDialog = isDialog;
+        filteredList = new ArrayList<>(gamesList);
     }
     public GameAdapter(Context context, ArrayList<Game> gamesList, CreatePostFragment fragment) {
         m_Games = gamesList;
         m_AllGames = new ArrayList<>(gamesList);
         this.m_Context = context;
         createPostFragment = fragment;
+        filteredList = new ArrayList<>(gamesList);
     }
 
     public ArrayList<Game> getSelectedGames() {
@@ -78,66 +81,66 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
     @SuppressLint("ResourceAsColor")
     @Override
     public void onBindViewHolder(final GameViewHolder holder, final int position) {
-            Game currentGame = m_Games.get(position);
-            Glide.with(m_Context).load(currentGame.getGamePictureURL()).into(holder.gameImage);
-            holder.gameName.setText(currentGame.getGameName());
-            if(isDialog)
+        Game currentGame = m_Games.get(position);
+        Glide.with(m_Context).load(currentGame.getGamePictureURL()).into(holder.gameImage);
+        holder.gameName.setText(currentGame.getGameName());
+        if(isDialog)
+        {
+            holder.gameName.setTextSize(13f);
+        }
+        if (currentGame.getPlatforms().contains(Game.ePlatform.REALITY)) {
+            holder.realityIcon.setVisibility(View.VISIBLE);
+        } else {
+            if (currentGame.getPlatforms().contains(Game.ePlatform.PC)) {
+                holder.pcIcon.setVisibility(View.VISIBLE);
+            }
+            else
             {
-                holder.gameName.setTextSize(13f);
+                holder.pcIcon.setVisibility(View.GONE);
             }
-            if (currentGame.getPlatforms().contains(Game.ePlatform.REALITY)) {
-                holder.realityIcon.setVisibility(View.VISIBLE);
-            } else {
-                if (currentGame.getPlatforms().contains(Game.ePlatform.PC)) {
-                    holder.pcIcon.setVisibility(View.VISIBLE);
-                }
-                else
-                {
-                    holder.pcIcon.setVisibility(View.GONE);
-                }
-                if (currentGame.getPlatforms().contains(Game.ePlatform.PLAYSTATION)) {
-                    holder.playstationIcon.setVisibility(View.VISIBLE);
-                }
-                else
-                {
-                    holder.playstationIcon.setVisibility(View.GONE);
-                }
-                if (currentGame.getPlatforms().contains(Game.ePlatform.XBOX)) {
-                    holder.xboxIcon.setVisibility(View.VISIBLE);
-                }
-                else
-                {
-                    holder.xboxIcon.setVisibility(View.GONE);
-                }
-                holder.realityIcon.setVisibility(View.GONE);
+            if (currentGame.getPlatforms().contains(Game.ePlatform.PLAYSTATION)) {
+                holder.playstationIcon.setVisibility(View.VISIBLE);
             }
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    m_SelectedItemIndex = position;
-                    m_SelectedGame = m_Games.get(m_SelectedItemIndex);
-                    if(!isDialog)
-                    { createPostFragment.selectedGame = m_SelectedGame;
+            else
+            {
+                holder.playstationIcon.setVisibility(View.GONE);
+            }
+            if (currentGame.getPlatforms().contains(Game.ePlatform.XBOX)) {
+                holder.xboxIcon.setVisibility(View.VISIBLE);
+            }
+            else
+            {
+                holder.xboxIcon.setVisibility(View.GONE);
+            }
+            holder.realityIcon.setVisibility(View.GONE);
+        }
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                m_SelectedItemIndex = position;
+                m_SelectedGame = m_Games.get(m_SelectedItemIndex);
+                if(!isDialog)
+                { createPostFragment.selectedGame = m_SelectedGame;
                     if (createPostFragment.selectedGame != null) {
                         createPostFragment.selectedGameName.setText(m_SelectedGame.getGameName());
                         Glide.with(m_Context).load(m_SelectedGame.getGamePictureURL()).into(createPostFragment.selectedGameImage);
-                        }
+                    }
                     Log.e("game", "game: " + m_Games.get(m_SelectedItemIndex).getGameName());
+                }
+                else
+                {
+                    holder.itemView.setBackgroundColor(R.color.glowCyan);
+                    if(!selectedGames.contains(m_Games.get(position))) {
+                        selectedGames.add(m_Games.get(position));
                     }
                     else
                     {
-                            holder.itemView.setBackgroundColor(R.color.glowCyan);
-                            if(!selectedGames.contains(m_Games.get(position))) {
-                                selectedGames.add(m_Games.get(position));
-                            }
-                            else
-                            {
-                                holder.itemView.setBackgroundColor(Color.TRANSPARENT);
-                                selectedGames.remove(m_Games.get(position));
-                            }
+                        holder.itemView.setBackgroundColor(Color.TRANSPARENT);
+                        selectedGames.remove(m_Games.get(position));
                     }
                 }
-            });
+            }
+        });
     }
 
     public Game getSelectedGame() {
@@ -162,63 +165,23 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
     public Filter getFilter() {
         return platformFilter;
     }
-    public Filter getFilter(String type) {
-        Filter filter = null;
-        if(type.equals("name"))
-        {
-            filter = gameFilter;
-        }
-        else
-        {
-            filter = platformFilter;
-        }
-        return filter;
-    }
-
     private Filter platformFilter = new Filter() {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
-            ArrayList<Game> filteredList = new ArrayList<>();
-            if (constraint == null || constraint.length() == 0) {
-                filteredList.addAll(m_AllGames);
-            } else {
-                for (Game game : m_AllGames) {
-                    if ((game.getPlatforms().contains(Game.ePlatform.REALITY) && createPostFragment.realityCheck) ||
+            filteredList.clear();
+            String filterPattern = constraint.toString().toLowerCase().trim();
+            for (Game game : m_AllGames) {
+                if(!isDialog) {
+                    if (((game.getPlatforms().contains(Game.ePlatform.REALITY) && createPostFragment.realityCheck) ||
                             (game.getPlatforms().contains(Game.ePlatform.PC) && createPostFragment.pcCheck) ||
                             (game.getPlatforms().contains(Game.ePlatform.PLAYSTATION) && createPostFragment.playstationCheck) ||
-                            (game.getPlatforms().contains(Game.ePlatform.XBOX) && createPostFragment.xboxCheck)) {
+                            (game.getPlatforms().contains(Game.ePlatform.XBOX) && createPostFragment.xboxCheck)) &&
+                            game.getGameName().toLowerCase().contains(filterPattern)) {
                         filteredList.add(game);
                     }
                 }
-            }
-            FilterResults results = new FilterResults();
-            results.values = filteredList;
-
-            return results;
-        }
-
-        @Override
-        protected void publishResults(CharSequence constraint, FilterResults results) {
-            m_Games.clear();
-            m_Games.addAll((List) results.values);
-            notifyDataSetChanged();
-        }
-    };
-    private Filter gameFilter = new Filter() {
-        @Override
-        protected FilterResults performFiltering(CharSequence constraint) {
-            ArrayList<Game> filteredList = new ArrayList<>();
-            if(constraint == null || constraint.length() == 0)
-            {
-                filteredList.addAll(m_AllGames);
-            }
-            else
-            {
-                String filterPattern = constraint.toString().toLowerCase().trim();
-                for (Game game: m_AllGames) {
-                            if (game.getGameName().toLowerCase().contains(filterPattern)) {
-                                filteredList.add(game);
-                            }
+                else if(game.getGameName().toLowerCase().contains(filterPattern)) {
+                        filteredList.add(game);
                 }
             }
             FilterResults results = new FilterResults();

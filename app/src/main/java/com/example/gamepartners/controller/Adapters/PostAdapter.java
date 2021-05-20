@@ -57,10 +57,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
     Dialog commentsDialog;
     int selectedPostIndex;
     public MainActivity activity;
+    boolean favouriteFilterOn = false;
+    int filterDistance =-1;
+    String searchString ="";
 
     public PostAdapter(Context context, ArrayList<Post> postArrayList, Dialog comments) {
         this.context = context;
-        this.allPostsArrayList = postArrayList;
+        this.allPostsArrayList = new ArrayList<>(postArrayList);
         this.postArrayList = postArrayList;
         this.commentsDialog = comments;
         activity = (MainActivity) context;
@@ -380,20 +383,61 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         }
 
     }
+    public void setDistanceFilter(int distance)
+    {
+        this.filterDistance = distance;
+        getFilter().filter("distance");
+    }
+    public void setFavFilter(boolean isFavouriteFilterOn)
+    {
+        this.favouriteFilterOn = isFavouriteFilterOn;
+        getFilter().filter("favourite");
+    }
+    public void setSerachFilter(String search)
+    {
+        this.searchString= search.toLowerCase().trim();
+        getFilter().filter(searchString);
+    }
+    private boolean isPostContainsString(Post post, String string)
+    {
+        boolean isContains = false;
+        if (((post.getPublisher().getFirstName()+" "+post.getPublisher().getLastName()+" "+
+                post.getGame().getGameName()+" "+post.getSubject()).toLowerCase()).contains(string))
+        {
+            isContains = true;
+        }
 
+        return  isContains;
+    }
     @Override
     public Filter getFilter() {
-        return distanceFilter;
+        return postsFilter;
     }
 
-    private Filter distanceFilter = new Filter() {
+    private Filter postsFilter = new Filter() {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
+            if(allPostsArrayList.size()<postArrayList.size())
+            {
+                allPostsArrayList = new ArrayList<>(postArrayList);
+            }
             ArrayList<Post> filteredList = new ArrayList<>();
                 for (Post post : allPostsArrayList) {
-                    if (GamePartnerUtills.getKmFromLatLong(Float.parseFloat(String.valueOf(GamePartnerUtills.latitude)), Float.parseFloat(String.valueOf(GamePartnerUtills.longitude)), (float) post.getLatitude(), (float) post.getLongitude())<= Integer.parseInt((String) constraint))
+                    if (isPostContainsString(post,searchString)&&(
+                            (GamePartnerUtills.getKmFromLatLong(Float.parseFloat(String.valueOf(GamePartnerUtills.latitude)), Float.parseFloat(String.valueOf(GamePartnerUtills.longitude)), (float) post.getLatitude(), (float) post.getLongitude())<= filterDistance)
+                            || filterDistance == -1))
                     {
-                        filteredList.add(post);
+                        if(favouriteFilterOn) {
+                            for (Game favGame : GamePartnerUtills.connectedUser.getFavouriteGames()) {
+                                if (favGame.getGameName().equals(post.getGame().getGameName())) {
+                                    filteredList.add(post);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            filteredList.add(post);
+                        }
                     }
             }
             FilterResults results = new FilterResults();

@@ -13,7 +13,7 @@
         >
         <SearchView
             android:elevation="10dp"
-            android:id="@+id/search"
+            android:id="@+id/searchGamesForFav"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:background="@color/purple"
@@ -31,7 +31,7 @@
             android:layout_height="match_parent"
             android:layout_alignParentBottom="true"
             android:background="@color/darkPurple"
-            android:layout_below="@+id/search"
+            android:layout_below="@+id/searchGamesForFav"
             android:paddingBottom="60dp"/>
 
         <Button
