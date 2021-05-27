@@ -40,6 +40,7 @@ import com.example.gamepartners.controller.Adapters.CommentAdapter;
 import com.example.gamepartners.controller.Adapters.GameAdapter;
 import com.example.gamepartners.controller.Adapters.RequestAdapter;
 import com.example.gamepartners.controller.GamePartnerUtills;
+import com.example.gamepartners.controller.MyFirebaseMessagingService;
 import com.example.gamepartners.data.model.Game;
 import com.example.gamepartners.data.model.Post;
 import com.example.gamepartners.controller.Adapters.PostAdapter;
@@ -67,14 +68,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 
-public class UserProfileFragment extends Fragment {
+public class UserProfileFragment extends Fragment implements GameAdapter.OnSelectedGamesChangeListener {
     TextView username, email, requests, favGames;
     ImageView imgViewProfilePic , profileSettingsPic;
     RelativeLayout settingsLayout;
     Button editProfile,logout;
     RecyclerView postsRecyclerView;
     ArrayList<Post> postsArrayList = new ArrayList<>();
-    ArrayList<Game> gamesToAdd;
     PostAdapter postAdapter;
     ArrayList<Game> games;
     Dialog requestsDialog, commentsDialog, editProfileDialog, favGamesDialog;
@@ -83,6 +83,7 @@ public class UserProfileFragment extends Fragment {
     private FirebaseStorage mStorage;
     private StorageReference mStorageRef;
     Animation settingsAnimation;
+    ImageButton removeButton;
 
     public UserProfileFragment() {
         // Required empty public constructor
@@ -243,10 +244,22 @@ public class UserProfileFragment extends Fragment {
                     favGamesRecyclerView = favGamesDialog.findViewById(R.id.favGamesRecyclerView);
                     ImageButton exitButton = favGamesDialog.findViewById(R.id.exit);
                     final ImageButton addButton = favGamesDialog.findViewById(R.id.add);
+
                     RecyclerView.LayoutManager requestsLayoutManager = new LinearLayoutManager(getContext());
                     favGamesRecyclerView.setLayoutManager(requestsLayoutManager);
                     favGamesAdapter = new GameAdapter(getContext(), GamePartnerUtills.connectedUser.getFavouriteGames(), true);
                     favGamesRecyclerView.setAdapter(favGamesAdapter);
+                    favGamesAdapter.SetOnSelectedGamesChangeListener(UserProfileFragment.this);
+                    removeButton = favGamesDialog.findViewById(R.id.removeFav);
+                    removeButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            removeFavGames(favGamesAdapter);
+                            favGamesAdapter.notifyDataSetChanged();
+                            setGamesToShow();
+                            removeButton.setVisibility(View.INVISIBLE);
+                        }
+                    });
                     favGamesDialog.show();
                     exitButton.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -359,12 +372,9 @@ public class UserProfileFragment extends Fragment {
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                MyFirebaseMessagingService.unsubscribeUserToMessaging(mAuth.getUid());
                 GamePartnerUtills.state = "LoggedOut";
                 Navigation.findNavController(logout).navigate(R.id.action_homeFragment_to_loginFragment);
-//                Intent intent =new Intent(getContext(), LoginActivity.class);
-//                intent.putExtra("Mode","LoggedOut");
-//                startActivity(intent);
-//                getActivity().finish();
             }
         });
         imgViewProfilePic.setOnClickListener(new View.OnClickListener() {
@@ -407,9 +417,8 @@ public class UserProfileFragment extends Fragment {
         }
     }
     private void addFavGames(GameAdapter adapter) {
-                gamesToAdd = adapter.getSelectedGames();
                 ArrayList<Game> favouriteGames = GamePartnerUtills.connectedUser.getFavouriteGames();
-                for (Game selectedGame:gamesToAdd) {
+                for (Game selectedGame:adapter.getSelectedGames()) {
                     if(!favouriteGames.contains(selectedGame))
                     {
                         favouriteGames.add(selectedGame);
@@ -418,6 +427,17 @@ public class UserProfileFragment extends Fragment {
                 DatabaseReference favGamesRef = FirebaseDatabase.getInstance().getReference().child("users").child(GamePartnerUtills.connectedUser.getUid()).child("favouriteGames");
                 favGamesRef.setValue(favouriteGames);
             }
+    private void removeFavGames(GameAdapter adapter) {
+        ArrayList<Game> favouriteGames = GamePartnerUtills.connectedUser.getFavouriteGames();
+        for (Game selectedGame:adapter.getSelectedGames()) {
+            if(favouriteGames.contains(selectedGame))
+            {
+                favouriteGames.remove(selectedGame);
+            }
+        }
+        DatabaseReference favGamesRef = FirebaseDatabase.getInstance().getReference().child("users").child(GamePartnerUtills.connectedUser.getUid()).child("favouriteGames");
+        favGamesRef.setValue(favouriteGames);
+    }
     private void loadProfileImage(){
         mStorageRef = mStorage.getReference();
         mStorageRef.child("images/" + GamePartnerUtills.connectedUser.getEmail()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
@@ -521,4 +541,16 @@ public class UserProfileFragment extends Fragment {
         postsArrayList.clear();
     }
 
+    @Override
+    public void OnSelectedGamesChanged(int selectedGamesAmount) {
+        if(selectedGamesAmount>0)
+        {
+            removeButton.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            removeButton.setVisibility(View.INVISIBLE);
+
+        }
+    }
 }

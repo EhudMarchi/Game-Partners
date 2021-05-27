@@ -6,7 +6,7 @@
         android:id="@+id/base_relative_layout"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:background="@drawable/gradient"
+        android:background="@color/purple"
         android:paddingBottom="20dp">
         <LinearLayout
             android:id="@+id/back_layout"

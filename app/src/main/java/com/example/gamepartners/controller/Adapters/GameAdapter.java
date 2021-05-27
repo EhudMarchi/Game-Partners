@@ -32,11 +32,11 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
     ArrayList<Game> filteredList;
     public CreatePostFragment createPostFragment;
     boolean isDialog = false;
+    OnSelectedGamesChangeListener onSelectedGamesChangeListener;
 
     public class GameViewHolder extends RecyclerView.ViewHolder {
         public ImageView gameImage, realityIcon, pcIcon, playstationIcon, xboxIcon;
         public TextView gameName;
-
         public GameViewHolder(View itemView) {
             super(itemView);
             itemView.setClickable(true);
@@ -138,11 +138,21 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
                         holder.itemView.setBackgroundColor(Color.TRANSPARENT);
                         selectedGames.remove(m_Games.get(position));
                     }
+                    if(onSelectedGamesChangeListener!=null) {
+                        onSelectedGamesChangeListener.OnSelectedGamesChanged(selectedGames.size());
+                    }
                 }
             }
         });
     }
-
+    public void SetOnSelectedGamesChangeListener(OnSelectedGamesChangeListener listener)
+    {
+        this.onSelectedGamesChangeListener = listener;
+    }
+    public interface OnSelectedGamesChangeListener
+    {
+        public void OnSelectedGamesChanged(int selectedGamesAmount);
+    }
     public Game getSelectedGame() {
         Log.e("game", "game: " + m_Games.get(m_SelectedItemIndex).getGameName());
         return m_SelectedGame;

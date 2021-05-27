@@ -407,5 +407,6 @@ public class CreatePostFragment extends Fragment implements DatePickerDialog.OnD
     @Override
     public void onLocationPicked(Address selectedAddress) {
         chooseLocation.setText(selectedAddress.getAddressLine(0).split(",")[0]);
+        GamePartnerUtills.selectedAddress = selectedAddress;
     }
 }

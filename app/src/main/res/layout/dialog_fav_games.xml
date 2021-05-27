@@ -60,4 +60,15 @@
         android:backgroundTint="@color/glowCyan"
         android:foreground="?attr/selectableItemBackgroundBorderless"
         android:layout_centerHorizontal="true"/>
+    <ImageButton
+        android:visibility="invisible"
+        android:id="@+id/removeFav"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        android:layout_margin="10dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:background="@android:drawable/ic_menu_delete"
+        android:backgroundTint="@color/glowCyan"
+        android:foreground="?attr/selectableItemBackgroundBorderless" />
 </RelativeLayout>

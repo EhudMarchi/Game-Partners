@@ -1,5 +1,7 @@
 package com.example.gamepartners.data.model;
 
+import androidx.lifecycle.ViewModel;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

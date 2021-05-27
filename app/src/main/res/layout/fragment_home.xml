@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay"
-        android:background="@color/lightPurple">
+        android:background="@drawable/tabs_color">
 
 
         <com.google.android.material.tabs.TabLayout

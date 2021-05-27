@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.example.gamepartners.R;
 import com.example.gamepartners.controller.GamePartnerUtills;
+import com.example.gamepartners.controller.MyFirebaseMessagingService;
 import com.example.gamepartners.data.model.User;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -47,7 +48,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.concurrent.Executor;
 
 public class LoginFragment extends Fragment {
     private static final int RC_SIGN_IN = 100 ;
@@ -83,7 +83,6 @@ public class LoginFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        mAuth = FirebaseAuth.getInstance();
         sharedPreferences = getActivity().getPreferences(getActivity().MODE_PRIVATE);
         email =((TextInputLayout)getActivity().findViewById(R.id.editTextEmail)).getEditText();
         password =((TextInputLayout)getActivity().findViewById(R.id.editTextPassword)).getEditText();
@@ -113,7 +112,8 @@ public class LoginFragment extends Fragment {
                 signUpWithGoogle();
             }
             else {
-                signIn();
+                GamePartnerUtills.state = "SignedIn";
+                Navigation.findNavController(signInButton).navigate(R.id.action_loginFragment_to_homeFragment);
             }
         }
         signUpTextView = getActivity().findViewById(R.id.textViewRegister);
@@ -146,6 +146,7 @@ public class LoginFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mAuth = FirebaseAuth.getInstance();
     }
     private void initializeIconsList() {
         icons = new ArrayList<View>();
@@ -166,6 +167,7 @@ public class LoginFragment extends Fragment {
         editor.putString("KeyType",type);
         editor.apply();
     }
+
     private void createGoogleRequest() {
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -244,9 +246,8 @@ public class LoginFragment extends Fragment {
     public void signUpWithGoogle()
     {
         createGoogleRequest();
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         autoLogin("Google");
-        startActivityForResult(signInIntent, RC_SIGN_IN);
+        startActivityForResult(mGoogleSignInClient.getSignInIntent(), RC_SIGN_IN);
     }
     public void checkIfGoogleAccountExist()
     {
@@ -308,6 +309,7 @@ public class LoginFragment extends Fragment {
         }
     }
     public void signUp(View view) {
+        MyFirebaseMessagingService.subscribeUserToMessaging(mAuth.getUid());
         Animation zoominAnimation = AnimationUtils.loadAnimation(getContext(),R.anim.zoom_in);
         view.startAnimation(zoominAnimation);
         Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_registerFragment);
@@ -357,5 +359,6 @@ public class LoginFragment extends Fragment {
         User newUser = new User(firstName, lastName, email, password , proflieImageURL);
         newUser.setUid(userId);
         myRef.setValue(newUser);
+        MyFirebaseMessagingService.subscribeUserToMessaging(userId);
     }
 }

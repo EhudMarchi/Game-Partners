@@ -33,15 +33,11 @@ public class GamePartnerUtills {
     private static FirebaseUser mUser;
     public static DatabaseReference myRef;
     public static User connectedUser;
-    public static FirebaseStorage mStorage;
-    public static StorageReference mStorageRef;
-    public static String currentGameImage;
     public static ArrayList<Group> groups;
     private static ArrayList<User> users;
     public static ArrayList<Game> games;
     public static String state = "";
     public static Group currentGroup = new Group();
-    public static HashMap<String, String> userGroups;
     public static double latitude = 0, longitude = 0;
     public static Location location;
     public static Address selectedAddress = null;
@@ -193,11 +189,6 @@ public class GamePartnerUtills {
         return mAuth;
     }
 
-    public static FirebaseUser GetCurrentUser() {
-        mUser = FirebaseAuth.getInstance().getCurrentUser();
-
-        return mUser;
-    }
     public void FetchAllUsers()
     {
         users.clear();

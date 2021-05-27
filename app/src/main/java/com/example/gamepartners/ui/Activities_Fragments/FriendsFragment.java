@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.example.gamepartners.R;
 import com.example.gamepartners.controller.GamePartnerUtills;
+import com.example.gamepartners.controller.MyFirebaseMessagingService;
 import com.example.gamepartners.data.model.Request;
 import com.example.gamepartners.data.model.User;
 import com.example.gamepartners.controller.Adapters.UserAdapter;
@@ -126,6 +127,7 @@ public class FriendsFragment extends Fragment {
                                 @Override
                                 public void onSuccess(Void aVoid) {
                                     Toast.makeText(getContext(), "Request sent", Toast.LENGTH_SHORT).show();
+                                    MyFirebaseMessagingService.sendMessage(friendRequest, getContext());
                                 }
                             });
                         }

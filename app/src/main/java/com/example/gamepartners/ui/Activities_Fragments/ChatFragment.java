@@ -35,6 +35,7 @@ import com.example.gamepartners.R;
 import com.example.gamepartners.controller.Adapters.MessageAdapter;
 import com.example.gamepartners.controller.Adapters.UserAdapter;
 import com.example.gamepartners.controller.GamePartnerUtills;
+import com.example.gamepartners.controller.MyFirebaseMessagingService;
 import com.example.gamepartners.data.model.Group;
 import com.example.gamepartners.data.model.Message;
 import com.example.gamepartners.data.model.User;

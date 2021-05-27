@@ -4,7 +4,10 @@ apply plugin: 'com.google.gms.google-services'
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.2"
-
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
     defaultConfig {
         applicationId "com.example.gamepartners"
         minSdkVersion 16
@@ -25,6 +28,7 @@ android {
 }
 
 dependencies {
+    implementation 'com.google.firebase:firebase-messaging:22.0.0'
     def nav_version = "2.3.5"
 
     // Java language implementation
@@ -34,10 +38,11 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.google.android.material:material:1.2.1'
     implementation 'androidx.annotation:annotation:1.1.0'
+    implementation 'com.android.volley:volley:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'com.firebaseui:firebase-ui-auth:4.3.1'
-    implementation 'com.google.firebase:firebase-auth:20.0.1'
+    implementation 'com.google.firebase:firebase-auth:21.0.1'
     implementation 'com.google.firebase:firebase-firestore:22.0.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.google.firebase:firebase-database:19.6.0'
@@ -58,6 +63,8 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
+    implementation 'com.google.firebase:firebase-messaging:22.0.0'
     implementation 'com.google.android.gms:play-services-location:17.1.0'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
+
 }

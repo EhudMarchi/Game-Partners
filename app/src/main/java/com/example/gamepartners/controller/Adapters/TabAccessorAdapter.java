@@ -1,5 +1,6 @@
 package com.example.gamepartners.controller.Adapters;
 
+import android.os.Parcelable;
 import android.view.PointerIcon;
 
 import androidx.annotation.NonNull;
@@ -19,6 +20,7 @@ public class TabAccessorAdapter extends FragmentPagerAdapter {
     public TabAccessorAdapter(@NonNull FragmentManager fm) {
         super(fm,FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
     }
+
 
     @NonNull
     @Override

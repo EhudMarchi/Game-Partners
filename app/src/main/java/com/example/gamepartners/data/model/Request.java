@@ -1,6 +1,6 @@
 package com.example.gamepartners.data.model;
 
-import com.google.firebase.database.annotations.Nullable;
+import javax.annotation.Nullable;
 
 public class Request {
     eRequestType type;
@@ -15,12 +15,19 @@ public class Request {
         this.senderID = senderID;
         this.senderDisplayName = senderDisplayName;
         this.targetID = targetID;
-        requestText = senderDisplayName+" wants to join \""+groupName+"\"!";
+        if(type == eRequestType.JOIN_GROUP) {
+            requestText = senderDisplayName + " wants to join \"" + groupName + "\"!";
+        }
+        else if(type == eRequestType.MESSAGE)
+        {
+            requestText = senderDisplayName + " sent a new massage in \"" + groupName + "\"!";
+        }
     }
 
     public enum eRequestType {
         FRIEND,
         JOIN_GROUP,
+        MESSAGE
     }
 
     public Request() {

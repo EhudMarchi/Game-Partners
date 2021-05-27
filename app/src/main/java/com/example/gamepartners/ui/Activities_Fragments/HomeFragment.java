@@ -47,7 +47,7 @@ public class HomeFragment extends Fragment {
         viewPager = (ViewPager) getActivity().findViewById(R.id.view_pager);
         tabLayout = (TabLayout) getActivity().findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
-        tabAccessorAdapter = new TabAccessorAdapter(getActivity().getSupportFragmentManager());
+        tabAccessorAdapter = new TabAccessorAdapter(getChildFragmentManager());
         viewPager.setAdapter(tabAccessorAdapter);
         FirebaseAuth mAuth =FirebaseAuth.getInstance();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users").child(mAuth.getUid());

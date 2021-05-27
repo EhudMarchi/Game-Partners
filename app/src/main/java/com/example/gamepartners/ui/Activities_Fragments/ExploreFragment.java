@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -44,7 +45,7 @@ import java.util.Comparator;
 
 import static java.util.Arrays.stream;
 
-public class ExploreFragment extends Fragment {
+public class ExploreFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
     private static final int WAIT = 1100;
     public RecyclerView postsRecyclerView;
     ArrayList<Post> postsArrayList = new ArrayList<>();
@@ -54,6 +55,7 @@ public class ExploreFragment extends Fragment {
     private TextView distanceTextView;
     Dialog commentsDialog;
     boolean favouriteFilterOn = false;
+    SwipeRefreshLayout mSwipeRefreshLayout;
     public ExploreFragment() {
         // Required empty public constructor
     }
@@ -72,7 +74,7 @@ public class ExploreFragment extends Fragment {
 
     private void fetchPosts() {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("posts");
-        reference.addValueEventListener(new ValueEventListener() {
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 postsArrayList.clear();
@@ -179,6 +181,19 @@ public class ExploreFragment extends Fragment {
                 }
             }
         });
+        mSwipeRefreshLayout = (SwipeRefreshLayout) getView().findViewById(R.id.swipe_container);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
+        mSwipeRefreshLayout.post(new Runnable() {
+
+            @Override
+            public void run() {
+                mSwipeRefreshLayout.setRefreshing(true);
+                // Fetching posts from database
+                fetchPosts();
+                postAdapter.notifyDataSetChanged();
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+        });
     }
 
     private void setCommentsRecycleView() {
@@ -283,5 +298,14 @@ public class ExploreFragment extends Fragment {
                 fetchPosts();
             }
         }).run();
+    }
+
+    @Override
+    public void onRefresh() {
+        mSwipeRefreshLayout.setRefreshing(true);
+        // Fetching posts from database
+        fetchPosts();
+        postAdapter.notifyDataSetChanged();
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 }
