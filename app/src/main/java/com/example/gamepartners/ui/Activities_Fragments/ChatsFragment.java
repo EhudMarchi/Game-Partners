@@ -7,6 +7,9 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -29,6 +32,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.CollectionReference;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,9 +41,8 @@ import java.util.UUID;
 public class ChatsFragment extends Fragment {
     private static final int WAIT = 1100;
     RecyclerView chatsRecyclerView;
-    ArrayList<Group> chatsArrayList = new ArrayList<>();
     GroupsAdapter chatsAdapter;
-    HashMap<String, String> userGroups;
+    ChatsFragmentViewModel viewModel;
 
     public ChatsFragment() {
         // Required empty public constructor
@@ -64,7 +67,6 @@ public class ChatsFragment extends Fragment {
         chatsRecyclerView.setHasFixedSize(true);
         chatsRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
         final FloatingActionButton fab = getView().findViewById(R.id.fab);
-        fetchChats();
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -87,6 +89,7 @@ public class ChatsFragment extends Fragment {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         GamePartnerUtills.createGroup(UUID.randomUUID().toString(),taskEditText.getText().toString(), "");
+                                        fetchChats();
                                     }
                                 })
                                 .create();
@@ -97,11 +100,27 @@ public class ChatsFragment extends Fragment {
 
             }
         });
+        viewModel = new ViewModelProvider(this).get(ChatsFragmentViewModel.class);
+        Observer<ArrayList<Group>> chatsListObserver = new Observer<ArrayList<Group>>() {
+            @Override
+            public void onChanged(ArrayList<Group> groups) {
+                chatsAdapter = new GroupsAdapter(getContext(), groups);
+                chatsRecyclerView.setAdapter(chatsAdapter);
+                chatsAdapter.notifyDataSetChanged();
+            }
+        };
+        viewModel.getChats().observe(getViewLifecycleOwner(),chatsListObserver);
+        chatsAdapter = new GroupsAdapter(getContext(), new ArrayList<>());
+        chatsRecyclerView.setAdapter(chatsAdapter);
     }
+
 
     @Override
     public void onResume() {
         super.onResume();
+        if(viewModel.getChats().getValue() == null) {
+            fetchChats();
+        }
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -114,25 +133,19 @@ public class ChatsFragment extends Fragment {
     }
 
     private void fetchChats() {
-        FirebaseAuth mAuth =FirebaseAuth.getInstance();
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users").child(mAuth.getUid()).child("userGroups");
-        reference.addValueEventListener(new ValueEventListener() {
+        ArrayList<Group> chatsArrayList = new ArrayList<>();
+        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference().child("groups");
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                chatsArrayList.clear();
-                for (DataSnapshot ds:snapshot.getChildren()) {
-                    Group group =GamePartnerUtills.GetGroupByID(ds.getValue(String.class));
-                    assert group !=null;
-                    chatsArrayList.add(group);
+                Group tempGroup;
+                for (String group :GamePartnerUtills.connectedUser.getUserGroups()) {
+                    tempGroup = snapshot.child(group).getValue(Group.class);
+                    assert tempGroup !=null;
+                    chatsArrayList.add(tempGroup);
                 }
                 if(getContext()!= null) {
-                    try {
-                        chatsAdapter = new GroupsAdapter(getContext(), chatsArrayList);
-                        chatsRecyclerView.setAdapter(chatsAdapter);
-                    }
-                    catch (Exception e)
-                    {
-                    }
+                            viewModel.setChats(chatsArrayList);
                 }
             }
 
@@ -146,6 +159,5 @@ public class ChatsFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        chatsArrayList.clear();
     }
 }

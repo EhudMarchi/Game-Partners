@@ -109,7 +109,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
                 DatabaseReference mRef;
                     if (currentRequest.getType() == Request.eRequestType.JOIN_GROUP) {
                         User addingUser = GamePartnerUtills.GetUser(currentRequest.getSenderID());
-                        GamePartnerUtills.AddUserToGroup(addingUser, GamePartnerUtills.GetGroupByID(currentRequest.getTargetID()));
+                        GamePartnerUtills.AddUserToGroup(addingUser, currentRequest.getTargetID());
                     }
                     else {
                         mRef = FirebaseDatabase.getInstance().getReference("users").child(currentRequest.getTargetID()).child("userFriends");

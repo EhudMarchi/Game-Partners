@@ -22,11 +22,16 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
     Context mContext;
     private ArrayList<Group> mGroups;
     RequestManager glide;
+    private static Group currentGroup;
     public GroupsAdapter(Context mContext, ArrayList<Group> mGroups)
     {
         this.mContext = mContext;
         this.mGroups = mGroups;
         glide = Glide.with(mContext);
+    }
+    public static Group getCurrentGroup()
+    {
+        return currentGroup;
     }
     @NonNull
     @Override
@@ -42,7 +47,7 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull GroupsAdapter.MyViewHolder holder, final int position) {
-        final Group group = mGroups.get(position);
+        Group group = mGroups.get(position);
         holder.groupName.setText(group.getGroupName());
         if(group.getGroupFriends()!= null) {
             holder.participantsAmount.setText(group.getGroupFriends().size() + " Members");
@@ -53,8 +58,7 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //notifyItemChanged(position);
-                GamePartnerUtills.currentGroup = new Group(group.getAdminUID(), group.getGroupName(), group.getGroupID() , group.getGroupImageURL());
+                currentGroup = group;
                 Navigation.findNavController(v).navigate(R.id.action_homeFragment_to_chatFragment);
             }
         });

@@ -99,18 +99,10 @@ public class CreatePostFragment extends Fragment implements DatePickerDialog.OnD
         xbox = getActivity().findViewById(R.id.xbox);
         uploadProgress= new ProgressDialog(getContext());
         uploadProgress.setTitle("Uploading Post...");
-       // try {
-            setFilters();
-            fillGames();
-            setUpGamesRecyclerView();
-            setSearchFilter();
-       // }
-//        catch (Exception e)
-//        {
-//            Toast.makeText(getActivity().getBaseContext(), "Something went wrong..",
-//                    Toast.LENGTH_LONG).show();
-//            getActivity().finish();
-//        }
+        setFilters();
+        fillGames();
+        setUpGamesRecyclerView();
+        setSearchFilter();
         chooseDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

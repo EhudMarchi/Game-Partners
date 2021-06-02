@@ -14,6 +14,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -32,6 +33,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.gamepartners.R;
+import com.example.gamepartners.controller.Adapters.GroupsAdapter;
 import com.example.gamepartners.controller.Adapters.MessageAdapter;
 import com.example.gamepartners.controller.Adapters.UserAdapter;
 import com.example.gamepartners.controller.GamePartnerUtills;
@@ -65,7 +67,7 @@ public class ChatFragment extends Fragment {
     DatabaseReference reference;
     RecyclerView messagesRecyclerView;
     MessageAdapter messagesAdapter;
-    String groupName, groupID, adminUID, groupImageURL;
+    String  groupID, adminUID, groupImageURL;
     TextView groupNameView;
     EditText inputMessage;
     Group group;
@@ -115,15 +117,14 @@ public class ChatFragment extends Fragment {
         messagesRecyclerView.setAdapter(messagesAdapter);
         Intent intent= getActivity().getIntent();
         Bundle b = intent.getExtras();
-        groupName = GamePartnerUtills.currentGroup.getGroupName();
-        adminUID =  GamePartnerUtills.currentGroup.getAdminUID();
-        groupID =  GamePartnerUtills.currentGroup.getGroupID();
-        groupImageURL =  GamePartnerUtills.currentGroup.getGroupImageURL();
-        group = new Group(adminUID, groupName, groupID, groupImageURL);
+        group = GroupsAdapter.getCurrentGroup();;
+        adminUID =  group.getAdminUID();
+        groupID =  group.getGroupID();
+        groupImageURL =  group.getGroupImageURL();
         Glide.with(this).load(groupImageURL).into(groupImage);
         fetchParticipants();
         fillFriends();
-        groupNameView.setText(groupName);
+        groupNameView.setText(group.getGroupName());
         backButton = getActivity().findViewById(R.id.back_chat);
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -158,7 +159,7 @@ public class ChatFragment extends Fragment {
             public void onClick(View v) {
                 //add message
                 reference = FirebaseDatabase.getInstance().getReference("groups").child(groupID).child("chat");
-                final Message message = new Message(user.getUid(), user.getDisplayName(), inputMessage.getText().toString(), Message.eMessageType.USER_MESSAGE);
+                final Message message = new Message(user.getUid(), GamePartnerUtills.getUserDisplayName(user.getUid()), inputMessage.getText().toString(), Message.eMessageType.USER_MESSAGE);
                 if (!message.getText().equals("")) {
                     Calendar cal = Calendar.getInstance();
                     cal.setTime(message.getTimeSent());
@@ -176,7 +177,7 @@ public class ChatFragment extends Fragment {
                     {
                         final SimpleDateFormat format = new SimpleDateFormat("dd/MM/20yy");
                         String dateString = format.format(new Date());
-                        GamePartnerUtills.AddGroupMessage(GamePartnerUtills.connectedUser, group, dateString,m_ChatMessages);
+                        GamePartnerUtills.AddGroupMessage(GamePartnerUtills.connectedUser, group.getGroupID() , dateString, m_ChatMessages);
 
                     }
                     m_ChatMessages.add(message);
@@ -240,7 +241,6 @@ public class ChatFragment extends Fragment {
         if (requestCode == 2 && data != null && data.getData() != null) {
             imageUri = data.getData();
             Glide.with(this).load(imageUri.toString()).into(groupImage);
-            Group group = GamePartnerUtills.GetGroupByID(groupID);
             group.setGroupImageURL(imageUri.toString());
             uploadGroupPic();
         }
@@ -329,13 +329,13 @@ public class ChatFragment extends Fragment {
                 Snackbar.make(v, "Add Selected", Snackbar.LENGTH_LONG).show();
                 selectedUsers = recyclerViewAdapter.getSelectedUsers();
                 for (User selectedUser:selectedUsers) {
-                    GamePartnerUtills.AddUserToGroup(selectedUser,GamePartnerUtills.GetGroupByID(group.getGroupID()));
-                    GamePartnerUtills.AddGroupMessage(selectedUser, GamePartnerUtills.GetGroupByID(group.getGroupID()), selectedUser.getFirstName()+" "+selectedUser.getLastName()+" joined",m_ChatMessages);
+                    GamePartnerUtills.AddUserToGroup(selectedUser,group.getGroupID());
+                    GamePartnerUtills.AddGroupMessage(selectedUser, group.getGroupID(), selectedUser.getFirstName()+" "+selectedUser.getLastName()+" joined",m_ChatMessages);
                 }
                 dialog.dismiss();
             }
         });
-        SearchView searchView = (SearchView)dialog.findViewById(R.id.search);
+        SearchView searchView = (SearchView)dialog.findViewById(R.id.searchUsers);
         setUpFriendsRecyclerView(dialog, searchView);
         dialog.show();
 

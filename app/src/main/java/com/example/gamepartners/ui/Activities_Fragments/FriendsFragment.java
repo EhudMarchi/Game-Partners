@@ -40,6 +40,7 @@ import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 
 public class FriendsFragment extends Fragment {
@@ -75,6 +76,7 @@ public class FriendsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         selectedUserName = getView().findViewById(R.id.selectedGameName);
         friends = new ArrayList<>();
+        fetchFriends();
         invite = getView().findViewById(R.id.invite);
         setUpFriendsRecyclerView();
         setSearchFilter();
@@ -91,7 +93,7 @@ public class FriendsFragment extends Fragment {
                 fab.setClickable(false);
                 final Dialog dialog = new Dialog(getContext());
                 dialog.setContentView(R.layout.dialog_choose_friends);
-                fetchAllUsers();
+                fetchNonFriendUsers();
                 RecyclerView allUsersRecyclerView = dialog.findViewById(R.id.friendsSelectionRecyclerView);
                 final UserAdapter allUsersAdapter = new UserAdapter(dialog.getContext(), users, true);
                 RecyclerView.LayoutManager allUsersRecyclerViewLayoutManager= new LinearLayoutManager(dialog.getContext());;
@@ -149,10 +151,17 @@ public class FriendsFragment extends Fragment {
                 startActivity(Intent.createChooser(shareIntent, "Share Game Partners via"));
             }
         });
-        fetchFriends();
         if(friends.size() == 0)
         {
             getView().findViewById(R.id.no_friends).setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void fetchNonFriendUsers() {
+        users = new ArrayList<>(GamePartnerUtills.getAllUsers().values());
+        users.remove(GamePartnerUtills.connectedUser);
+        for (User friend:friends) {
+            users.remove(friend);
         }
     }
 
@@ -188,88 +197,70 @@ public class FriendsFragment extends Fragment {
         usersRecyclerView.setAdapter(recyclerViewAdapter);
     }
 
+//    private void fetchFriends() {
+//        final FirebaseAuth mAuth =FirebaseAuth.getInstance();
+//        final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users").child(mAuth.getCurrentUser().getUid());
+//        reference.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                for (DataSnapshot ds:snapshot.getChildren()) {
+//                    if(ds.getKey().equals("userFriends"))
+//                    {
+//                        reference.child("userFriends").addValueEventListener(new ValueEventListener() {
+//                            @Override
+//                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                                GenericTypeIndicator<HashMap<String, String>> genericTypeIndicator = new GenericTypeIndicator<HashMap<String, String>>() {};
+//                                HashMap<String,String> uids = snapshot.getValue(genericTypeIndicator);
+//                                Log.d("friends",String.valueOf(uids.size()));
+//                                //friends.clear();
+//                                for (final String uid:uids.keySet()) {
+//                                    //Log.d("friends",uid);
+//                                    assert uid !=null;
+//                                    DatabaseReference myRef = FirebaseDatabase.getInstance().getReference().child("users");
+//                                    myRef.addValueEventListener(new ValueEventListener() {
+//                                        @Override
+//                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                                            friends.clear();
+//                                            User tempUser;
+//                                            for (DataSnapshot user :snapshot.getChildren()) {
+//                                                tempUser= user.getValue(User.class);
+//                                                assert tempUser !=null;
+//                                                if(tempUser.getUid().equals(uid) && !friends.contains(tempUser))
+//                                                {
+//                                                    Log.d("friends",tempUser.getUid());
+//                                                    friends.add(tempUser);
+//                                                    if(getView()!=null) {
+//                                                        getView().findViewById(R.id.no_friends).setVisibility(View.GONE);
+//                                                    }
+//                                                }
+//                                            }
+//                                            recyclerViewAdapter.notifyDataSetChanged();
+//                                        }
+//                                        @Override
+//                                        public void onCancelled(@NonNull DatabaseError error) {
+//                                        }
+//                                    });
+//                                }
+//                            }
+//                            @Override
+//                            public void onCancelled(@NonNull DatabaseError error) {
+//                            }
+//                        });
+//                        break;
+//                    }
+//                }
+//                Log.d("friends",String.valueOf(friends.size()));
+//            }
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//            }
+//        });
+//    }
     private void fetchFriends() {
-        final FirebaseAuth mAuth =FirebaseAuth.getInstance();
-        final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users").child(mAuth.getCurrentUser().getUid());
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot ds:snapshot.getChildren()) {
-                    if(ds.getKey().equals("userFriends"))
-                    {
-                        reference.child("userFriends").addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                GenericTypeIndicator<HashMap<String, String>> genericTypeIndicator = new GenericTypeIndicator<HashMap<String, String>>() {};
-                                HashMap<String,String> uids = snapshot.getValue(genericTypeIndicator);
-                                Log.d("friends",String.valueOf(uids.size()));
-                                //friends.clear();
-                                for (final String uid:uids.keySet()) {
-                                    //Log.d("friends",uid);
-                                    assert uid !=null;
-                                    DatabaseReference myRef = FirebaseDatabase.getInstance().getReference().child("users");
-                                    myRef.addValueEventListener(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                            friends.clear();
-                                            User tempUser;
-                                            for (DataSnapshot user :snapshot.getChildren()) {
-                                                tempUser= user.getValue(User.class);
-                                                assert tempUser !=null;
-                                                if(tempUser.getUid().equals(uid) && !friends.contains(tempUser))
-                                                {
-                                                    Log.d("friends",tempUser.getUid());
-                                                    friends.add(tempUser);
-                                                    if(getView()!=null) {
-                                                        getView().findViewById(R.id.no_friends).setVisibility(View.GONE);
-                                                    }
-                                                }
-                                            }
-                                            recyclerViewAdapter.notifyDataSetChanged();
-                                        }
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError error) {
-                                        }
-                                    });
-                                }
-                            }
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-                            }
-                        });
-                        break;
-                    }
-                }
-                Log.d("friends",String.valueOf(friends.size()));
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
-    }
-    private void fetchAllUsers() {
-        users = new ArrayList<>();
-        final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users");
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                users.clear();
-                for (DataSnapshot ds:snapshot.getChildren())
-                {
-                    User user = ds.getValue(User.class);
-                    assert user !=null;
-                    if(!user.getUid().equals(mAuth.getUid())&&(!isFriend(user.getUid())))
-                    {
-                        users.add(user);
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+        friends = new ArrayList<>();
+        for (String uid :GamePartnerUtills.connectedUser.getUserFriends().keySet()) {
+            friends.add(GamePartnerUtills.GetUser(uid));
+        }
     }
     private boolean isFriend(String uid)
     {

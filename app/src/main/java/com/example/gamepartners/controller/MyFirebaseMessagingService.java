@@ -5,6 +5,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
@@ -19,6 +20,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.gamepartners.R;
+import com.example.gamepartners.data.model.Message;
 import com.example.gamepartners.data.model.Request;
 import com.example.gamepartners.data.model.User;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -51,7 +53,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             rootObject.put("to", "/topics/"+request.getTargetID());
             rootObject.put("data",new JSONObject().put("message",request.getRequestText()).put("type",request.getType().toString()));
             String url = "https://fcm.googleapis.com/fcm/send";
-
             RequestQueue queue = Volley.newRequestQueue(context);
             StringRequest queueRequest = new StringRequest(com.android.volley.Request.Method.POST, url, new Response.Listener<String>() {
                 @Override
@@ -97,7 +98,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 //            intent.putExtra("message",remoteMessage.getData().get("message"));
 //            LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 
-            //if the application is not in forground post notification
+            //if the application is not in foreground post notification
             NotificationManager manager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
             Notification.Builder builder = new Notification.Builder(this);
 
@@ -106,7 +107,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 manager.createNotificationChannel(channel);
                 builder.setChannelId("id_1");
             }
-            builder.setContentTitle("new message from topic").setContentText(remoteMessage.getData().get("message")).setSmallIcon(android.R.drawable.star_on);
+            builder.setContentTitle(remoteMessage.getData().get("message")).setContentText(remoteMessage.getData().get("message")).setSmallIcon(android.R.drawable.star_on);
 
             manager.notify(1,builder.build());
         //}

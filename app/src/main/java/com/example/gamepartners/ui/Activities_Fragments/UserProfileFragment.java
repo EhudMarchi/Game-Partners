@@ -518,11 +518,7 @@ public class UserProfileFragment extends Fragment implements GameAdapter.OnSelec
                 User user = dataSnapshot.child(mAuth.getCurrentUser().getUid()).getValue(User.class);
                 email.setText(user.getEmail());
                 username.setText(user.getFirstName()+" "+user.getLastName());
-                if(GamePartnerUtills.connectedUser.getProflieImageURL().equals("")) {
-                    loadProfileImage();
-                }
-                else
-                {
+                if(!GamePartnerUtills.connectedUser.getProflieImageURL().equals("")) {
                     if(getContext()!=null) {
                         Glide.with(getContext()).load(GamePartnerUtills.connectedUser.getProflieImageURL()).into(imgViewProfilePic);
                     }

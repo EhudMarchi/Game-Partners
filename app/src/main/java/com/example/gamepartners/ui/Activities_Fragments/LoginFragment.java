@@ -203,6 +203,7 @@ public class LoginFragment extends Fragment {
             @Override
             public void run() {
                 GamePartnerUtills.state = "SignedIn";
+                MyFirebaseMessagingService.subscribeUserToMessaging(mAuth.getUid());
                 Navigation.findNavController(signInButton).navigate(R.id.action_loginFragment_to_homeFragment);
             }
         },SPLASH_SCREEN);
@@ -213,7 +214,7 @@ public class LoginFragment extends Fragment {
         if(!(email.getText().toString().equals(""))&&!(password.getText().toString().equals("")))
         {
             signInProgress.show();
-            mAuth.signInWithEmailAndPassword(email.getText().toString(), password.getText().toString())
+            mAuth.signInWithEmailAndPassword(email.getText().toString().trim(), password.getText().toString().trim())
                     .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
 
                         @Override
@@ -309,7 +310,6 @@ public class LoginFragment extends Fragment {
         }
     }
     public void signUp(View view) {
-        MyFirebaseMessagingService.subscribeUserToMessaging(mAuth.getUid());
         Animation zoominAnimation = AnimationUtils.loadAnimation(getContext(),R.anim.zoom_in);
         view.startAnimation(zoominAnimation);
         Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_registerFragment);
