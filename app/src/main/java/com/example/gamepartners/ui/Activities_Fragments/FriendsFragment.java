@@ -196,66 +196,6 @@ public class FriendsFragment extends Fragment {
         usersRecyclerView.setLayoutManager(recyclerViewLayoutManager);
         usersRecyclerView.setAdapter(recyclerViewAdapter);
     }
-
-//    private void fetchFriends() {
-//        final FirebaseAuth mAuth =FirebaseAuth.getInstance();
-//        final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users").child(mAuth.getCurrentUser().getUid());
-//        reference.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                for (DataSnapshot ds:snapshot.getChildren()) {
-//                    if(ds.getKey().equals("userFriends"))
-//                    {
-//                        reference.child("userFriends").addValueEventListener(new ValueEventListener() {
-//                            @Override
-//                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                                GenericTypeIndicator<HashMap<String, String>> genericTypeIndicator = new GenericTypeIndicator<HashMap<String, String>>() {};
-//                                HashMap<String,String> uids = snapshot.getValue(genericTypeIndicator);
-//                                Log.d("friends",String.valueOf(uids.size()));
-//                                //friends.clear();
-//                                for (final String uid:uids.keySet()) {
-//                                    //Log.d("friends",uid);
-//                                    assert uid !=null;
-//                                    DatabaseReference myRef = FirebaseDatabase.getInstance().getReference().child("users");
-//                                    myRef.addValueEventListener(new ValueEventListener() {
-//                                        @Override
-//                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                                            friends.clear();
-//                                            User tempUser;
-//                                            for (DataSnapshot user :snapshot.getChildren()) {
-//                                                tempUser= user.getValue(User.class);
-//                                                assert tempUser !=null;
-//                                                if(tempUser.getUid().equals(uid) && !friends.contains(tempUser))
-//                                                {
-//                                                    Log.d("friends",tempUser.getUid());
-//                                                    friends.add(tempUser);
-//                                                    if(getView()!=null) {
-//                                                        getView().findViewById(R.id.no_friends).setVisibility(View.GONE);
-//                                                    }
-//                                                }
-//                                            }
-//                                            recyclerViewAdapter.notifyDataSetChanged();
-//                                        }
-//                                        @Override
-//                                        public void onCancelled(@NonNull DatabaseError error) {
-//                                        }
-//                                    });
-//                                }
-//                            }
-//                            @Override
-//                            public void onCancelled(@NonNull DatabaseError error) {
-//                            }
-//                        });
-//                        break;
-//                    }
-//                }
-//                Log.d("friends",String.valueOf(friends.size()));
-//            }
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//            }
-//        });
-//    }
     private void fetchFriends() {
         friends = new ArrayList<>();
         for (String uid :GamePartnerUtills.connectedUser.getUserFriends().keySet()) {

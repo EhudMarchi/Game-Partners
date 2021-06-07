@@ -133,14 +133,7 @@ public class GamePartnerUtills {
                 }
             }
         });
-//        userGroups = new HashMap<>();
-//        userGroups.put("adminUID", mAuth.getUid());
-//        userGroups.put("groupName", i_GroupName);
-//        userGroups.put("chat", i_GroupID + mAuth.getUid());
-//        userGroups.put("groupImageURL", groupImageURL);
-//        userGroups.put("groupFriends", newGroup.getGroupFriends());
-//        userGroups.put("groupID", i_GroupID);
-//        reference.setValue(userGroups);
+
     }
     public static void AddGroupMessage(User sender, String groupID, String i_Message , ArrayList<Message> i_ChatMessages)
     {

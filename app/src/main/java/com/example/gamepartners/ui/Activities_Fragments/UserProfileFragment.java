@@ -137,7 +137,7 @@ public class UserProfileFragment extends Fragment implements GameAdapter.OnSelec
         }
         settingsAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.settings_in);
         final FloatingActionButton adminFab = getView().findViewById(R.id.fabAdmin);
-        if (mAuth.getCurrentUser().getEmail().equals("tester1@gmail.com")) {
+        if (mAuth.getCurrentUser().getUid().equals("63AGeVdeGcZDJpfwCh3Gs1UOhTH2")) {
             adminFab.setVisibility(View.VISIBLE);
             adminFab.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -166,7 +166,7 @@ public class UserProfileFragment extends Fragment implements GameAdapter.OnSelec
                 for (DataSnapshot ds:snapshot.getChildren()) {
                     Post post =ds.getValue(Post.class);
                     assert post !=null;
-                    if(post.getPublisher().getEmail().equals(GamePartnerUtills.connectedUser.getEmail())) {
+                    if(post.getPublisher().getUid().equals(GamePartnerUtills.connectedUser.getUid())) {
                         postsArrayList.add(post);
                     }
                 }

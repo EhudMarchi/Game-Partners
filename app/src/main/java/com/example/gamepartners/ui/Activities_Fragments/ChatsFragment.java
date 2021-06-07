@@ -139,7 +139,7 @@ public class ChatsFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Group tempGroup;
-                for (String group :GamePartnerUtills.connectedUser.getUserGroups()) {
+                for (String group : GamePartnerUtills.connectedUser.getUserGroups()) {
                     tempGroup = snapshot.child(group).getValue(Group.class);
                     assert tempGroup !=null;
                     chatsArrayList.add(tempGroup);

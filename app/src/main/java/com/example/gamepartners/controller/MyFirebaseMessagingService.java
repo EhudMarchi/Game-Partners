@@ -23,6 +23,8 @@ import com.example.gamepartners.R;
 import com.example.gamepartners.data.model.Message;
 import com.example.gamepartners.data.model.Request;
 import com.example.gamepartners.data.model.User;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -80,7 +82,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 }
             };
             queue.add(queueRequest);
-            queue.start();
+            //queue.start();
 
         }catch (JSONException ex) {
             ex.printStackTrace();

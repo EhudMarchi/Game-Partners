@@ -159,30 +159,33 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Reality"
+                    android:textSize="15dp"
                     app:chipBackgroundColor="@color/gradEnd"
                     android:textColor="@color/white"
                     app:chipIcon="@drawable/reality"
-                    app:chipIconSize="15dp"
+                    app:chipIconSize="19dp"
                     android:theme="@style/CustomChipStyle"/>
                 <com.google.android.material.chip.Chip
                     android:id="@+id/pc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="PC"
+                    android:textSize="15dp"
                     app:chipBackgroundColor="@color/gradEnd"
                     android:textColor="@color/white"
                     app:chipIcon="@drawable/pc"
-                    app:chipIconSize="15dp"
+                    app:chipIconSize="19dp"
                     android:theme="@style/CustomChipStyle" />
                 <com.google.android.material.chip.Chip
                     android:id="@+id/playstation"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="PlayStation"
+                    android:textSize="15dp"
                     app:chipBackgroundColor="@color/gradEnd"
                     android:textColor="@color/white"
                     app:chipIcon="@drawable/playstation"
-                    app:chipIconSize="15dp"
+                    app:chipIconSize="19dp"
                     android:theme="@style/CustomChipStyle" />
 
                 <com.google.android.material.chip.Chip
@@ -190,10 +193,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Xbox"
+                    android:textSize="15dp"
                     app:chipBackgroundColor="@color/gradEnd"
                     android:textColor="@color/white"
                     app:chipIcon="@drawable/xbox"
-                    app:chipIconSize="15dp"
+                    app:chipIconSize="19dp"
                     android:theme="@style/CustomChipStyle" />
 
             </com.google.android.material.chip.ChipGroup>
@@ -227,10 +231,10 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|end"
                 android:layout_margin="@dimen/fab_margin"
+                android:foreground="@drawable/ic_action_name"
                 android:foregroundGravity="center"
                 android:foregroundTint="@color/darkPurple"
-                app:backgroundTint="@color/glowCyan"
-                android:foreground="@drawable/ic_action_name" />
+                app:backgroundTint="@color/glowCyan" />
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     </RelativeLayout>

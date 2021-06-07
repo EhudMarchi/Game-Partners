@@ -116,7 +116,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot user : snapshot.getChildren()) {
-                    if (user.getValue(User.class).getEmail().equals(post.getPublisher().getEmail())) {
+                    if (user.getValue(User.class).getUid().equals(post.getPublisher().getUid())) {
                         User publisher = user.getValue(User.class);
                         assert publisher != null;
                         glide.load(publisher.getProflieImageURL()).into(holder.imgViewProfilePic);
@@ -167,7 +167,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
             holder.likeText.setText("Liked");
             holder.like.setAlpha(0.6f);
         }
-        if(post.getPublisher().getEmail().equals(GamePartnerUtills.connectedUser.getEmail()))
+        if(post.getPublisher().getUid().equals(GamePartnerUtills.connectedUser.getUid()))
         {
             holder.like.setEnabled(false);
         }

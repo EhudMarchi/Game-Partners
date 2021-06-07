@@ -29,6 +29,16 @@ import com.example.gamepartners.R;
 import com.example.gamepartners.controller.GamePartnerUtills;
 import com.example.gamepartners.controller.MyFirebaseMessagingService;
 import com.example.gamepartners.data.model.User;
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookActivity;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -39,21 +49,27 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FacebookAuthCredential;
+import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class LoginFragment extends Fragment {
     private static final int RC_SIGN_IN = 100 ;
     private static int SPLASH_SCREEN = 3250;
     private FirebaseAuth mAuth;
     GoogleSignInAccount googleAccount;
+    FirebaseUser fbUser;
     EditText email;
     EditText password;
     ImageView logoImage;
@@ -62,12 +78,14 @@ public class LoginFragment extends Fragment {
     Animation logoAnimation;
     Animation iconsAnimation;
     ArrayList<View> icons;
-    Button signInButton , googleButton, facebookButton;
+    Button signInButton , googleButton;
+    LoginButton facebookButton;
     private GoogleSignInClient mGoogleSignInClient;
     private DatabaseReference myRef;
     SharedPreferences sharedPreferences;
     boolean isExist = false;
     private ProgressDialog signInProgress;
+    CallbackManager callbackManager;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -95,6 +113,7 @@ public class LoginFragment extends Fragment {
         initializeIconsList();
         if(GamePartnerUtills.state.equals("LoggedOut"))
         {
+            LoginManager.getInstance().logOut();
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.clear();
             editor.apply();
@@ -111,8 +130,15 @@ public class LoginFragment extends Fragment {
             if(sharedPreferences.getString("KeyType", null).equals("Google")) {
                 signUpWithGoogle();
             }
+            else if(sharedPreferences.getString("KeyType", null).equals("Facebook")) {
+                fbUser = FirebaseAuth.getInstance().getCurrentUser();
+                GamePartnerUtills.state = "SignedIn";
+                MyFirebaseMessagingService.subscribeUserToMessaging(mAuth.getUid());
+                Navigation.findNavController(signInButton).navigate(R.id.action_loginFragment_to_homeFragment);
+            }
             else {
                 GamePartnerUtills.state = "SignedIn";
+                MyFirebaseMessagingService.subscribeUserToMessaging(mAuth.getUid());
                 Navigation.findNavController(signInButton).navigate(R.id.action_loginFragment_to_homeFragment);
             }
         }
@@ -135,10 +161,49 @@ public class LoginFragment extends Fragment {
                 signUpWithGoogle();
             }
         });
-        facebookButton.setOnClickListener(new View.OnClickListener() {
+        callbackManager = CallbackManager.Factory.create();
+        facebookButton.setPermissions(Arrays.asList("public_profile","email"));
+        facebookButton.setFragment(this);
+        if(facebookButton.getText().equals("Log out"))
+        {
+            autoLogin("Facebook");
+        }
+        facebookButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
-            public void onClick(View v) {
-                signUpWithFacebook();
+            public void onSuccess(LoginResult loginResult) {
+                handleFacebookToken(loginResult.getAccessToken());
+            }
+
+            @Override
+            public void onCancel() {
+
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+
+            }
+        });
+    }
+    public void checkIfFacebookAccountExist()
+    {
+        if(!isExist) {
+            enterFBAccountPassword(getContext(), fbUser);
+        }
+        else
+        {
+            transitionScreen();
+        }
+    }
+    private void handleFacebookToken(AccessToken accessToken) {
+        AuthCredential credential = FacebookAuthProvider.getCredential(accessToken.getToken());
+        mAuth.signInWithCredential(credential).addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                Toast.makeText(getContext(), "CONNECTED TO FACEBOOK", Toast.LENGTH_SHORT).show();
+                fbUser = FirebaseAuth.getInstance().getCurrentUser();
+                isExist = !task.getResult().getAdditionalUserInfo().isNewUser();
+                checkIfFacebookAccountExist();
             }
         });
     }
@@ -147,6 +212,7 @@ public class LoginFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAuth = FirebaseAuth.getInstance();
+        FacebookSdk.sdkInitialize(FacebookSdk.getApplicationContext());
     }
     private void initializeIconsList() {
         icons = new ArrayList<View>();
@@ -238,12 +304,6 @@ public class LoginFragment extends Fragment {
                     Toast.LENGTH_SHORT).show();
         }
     }
-
-    public void signUpWithFacebook()
-    {
-        Toast.makeText(getContext(), "Coming soon...",
-                Toast.LENGTH_SHORT).show();
-    }
     public void signUpWithGoogle()
     {
         createGoogleRequest();
@@ -263,50 +323,47 @@ public class LoginFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+//        myRef = FirebaseDatabase.getInstance().getReference().child("users");
+//        myRef.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                int i =0;
+//                for (DataSnapshot user :dataSnapshot.getChildren()) {
+//                    if(user.getValue(User.class).getUid().equals(mAuth.getUid()))
+//                    {
+//                        email.setText(mAuth.getCurrentUser().getEmail());
+//                        password.setText(user.getValue(User.class).getPassword());
+//                        isExist = true;
+//                        break;
+//                    }
+//                }
+//            }
+//            @Override
+//            public void onCancelled(DatabaseError error) {
+//                // Failed to read value
+//            }
+//        });
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            if(task.isSuccessful())
-            {
-                Toast.makeText(getContext(), "SUCCESS!", Toast.LENGTH_SHORT).show();
-            try {
-                // Google Sign In was successful, authenticate with Firebase
-                final GoogleSignInAccount account = task.getResult(ApiException.class);
-                googleAccount = account;
-                myRef = FirebaseDatabase.getInstance().getReference().child("users");
-                myRef.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        int i =0;
-                        for (DataSnapshot user :dataSnapshot.getChildren()) {
-                            Log.d("result", "iteration "+String.valueOf(i++));
-                            Log.d("result", googleAccount.getEmail());
-                            if(user.getValue(User.class).getEmail().equals(googleAccount.getEmail()))
-                            {
-                                email.setText(googleAccount.getEmail());
-                                password.setText(user.getValue(User.class).getPassword());
-                                isExist = true;
-                                break;
-                            }
-                        }
-                        checkIfGoogleAccountExist();
+                Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+                if (task.isSuccessful()) {
+                    Toast.makeText(getContext(), "SUCCESS!", Toast.LENGTH_SHORT).show();
+                    try {
+                        // Google Sign In was successful, authenticate with Firebase
+                        final GoogleSignInAccount account = task.getResult(ApiException.class);
+                        googleAccount = account;
+                        firebaseAuthWithGoogle(account.getIdToken());
 
-
-                        Log.d("result", "is exist: "+String.valueOf(isExist));
+                    } catch (ApiException e) {
+                        // Google Sign In failed, update UI appropriately
+                        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                        // ...
                     }
-                    @Override
-                    public void onCancelled(DatabaseError error) {
-                        // Failed to read value
-                    }
-                });
-                firebaseAuthWithGoogle(account.getIdToken());
-            } catch (ApiException e) {
-                // Google Sign In failed, update UI appropriately
-                Toast.makeText(getContext(), e.getMessage(),Toast.LENGTH_LONG).show();
-                // ...
+                } else Toast.makeText(getContext(), "FAIL!", Toast.LENGTH_SHORT).show();
             }
-            }
-            else Toast.makeText(getContext(), "FAIL!", Toast.LENGTH_SHORT).show();
+        else
+        {
+            callbackManager.onActivityResult(requestCode, resultCode, data);
         }
     }
     public void signUp(View view) {
@@ -323,8 +380,28 @@ public class LoginFragment extends Fragment {
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        writeNewGoogleUserToDB(mAuth.getCurrentUser().getUid(),account.getGivenName(),account.getFamilyName(),account.getEmail(),String.valueOf(taskEditText.getText()),account.getPhotoUrl().toString());
+                        writeNewUserToDB(mAuth.getCurrentUser().getUid(),account.getGivenName(),account.getFamilyName(),account.getEmail(),String.valueOf(taskEditText.getText()),account.getPhotoUrl().toString());
                         password.setText(String.valueOf(taskEditText.getText()));
+                        email.setText(account.getEmail());
+                        transitionScreen();
+                    }
+                })
+                .create();
+        dialog.show();
+
+    }
+    private void enterFBAccountPassword(Context context, final FirebaseUser fbUser) {
+        final EditText taskEditText = new EditText(context);
+        AlertDialog dialog = new AlertDialog.Builder(context)
+                .setTitle("Create Game Partners Account!")
+                .setMessage("Enter Password:")
+                .setView(taskEditText)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        writeNewUserToDB(mAuth.getCurrentUser().getUid(),fbUser.getDisplayName().split(" ")[0],fbUser.getDisplayName().split(" ")[1],fbUser.getEmail(),String.valueOf(taskEditText.getText()),fbUser.getPhotoUrl().toString()+"?type=large");
+                        password.setText(String.valueOf(taskEditText.getText()));
+                        email.setText(mAuth.getCurrentUser().getEmail());
                         transitionScreen();
                     }
                 })
@@ -341,7 +418,8 @@ public class LoginFragment extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            Log.d("result", "signInWithCredential:success");
+                            isExist = !task.getResult().getAdditionalUserInfo().isNewUser();
+                            checkIfGoogleAccountExist();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w("result", "signInWithCredential:failure", task.getException());
@@ -352,8 +430,8 @@ public class LoginFragment extends Fragment {
                 });
     }
 
-    private void writeNewGoogleUserToDB(String userId, String firstName, String lastName,String email, String password , String proflieImageURL) {
-        // Write a Google user to the database
+    private void writeNewUserToDB(String userId, String firstName, String lastName,String email, String password , String proflieImageURL) {
+        // Write a Google/Facebook user to the database
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         myRef = database.getReference("users").child(userId);
         User newUser = new User(firstName, lastName, email, password , proflieImageURL);
@@ -361,4 +439,5 @@ public class LoginFragment extends Fragment {
         myRef.setValue(newUser);
         MyFirebaseMessagingService.subscribeUserToMessaging(userId);
     }
+
 }
