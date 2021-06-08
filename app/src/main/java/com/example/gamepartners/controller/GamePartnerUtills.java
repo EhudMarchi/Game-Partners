@@ -1,17 +1,25 @@
 package com.example.gamepartners.controller;
 
+import android.content.Context;
 import android.location.Address;
 import android.location.Location;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.gamepartners.data.model.Game;
 import com.example.gamepartners.data.model.Group;
 import com.example.gamepartners.data.model.Message;
 import com.example.gamepartners.data.model.Post;
-import com.example.gamepartners.data.model.Request;
+import com.example.gamepartners.data.model.Update;
 import com.example.gamepartners.data.model.User;
+import com.example.gamepartners.ui.Activities_Fragments.ChatsFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -21,8 +29,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class GamePartnerUtills {
     private static GamePartnerUtills mSingleInstance = null;
@@ -36,6 +48,45 @@ public class GamePartnerUtills {
     public static Location location;
     public static Address selectedAddress = null;
 
+    public static void sendMessage(Update update, Context context)
+    {
+        final JSONObject rootObject  = new JSONObject();
+        try {
+            rootObject.put("to", "/topics/"+ update.getTargetID());
+            rootObject.put("data",new JSONObject().put("message", update.getRequestText()).put("type", update.getType().toString()));
+            String url = "https://fcm.googleapis.com/fcm/send";
+            RequestQueue queue = Volley.newRequestQueue(context);
+            StringRequest queueRequest = new StringRequest(com.android.volley.Request.Method.POST, url, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                }
+            }) {
+
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String,String> headers = new HashMap<>();
+                    headers.put("Content-Type","application/json");
+                    headers.put("Authorization","key=AAAAghqGT8o:APA91bHxNLhRjiqml53fgs1zFnzZYNkjULsq9aEDNmo-CLV-S-elFaHhy7dkb4bK3gsOd9I3r1oPzK8OB3VC3wwWQtpEInX0Vn8rcvQUyP8ZDA5ziouuR5wjoeyxLMcztKE5EkCf1Bo1");
+                    return headers;
+                }
+
+                @Override
+                public byte[] getBody() throws AuthFailureError {
+                    return rootObject.toString().getBytes();
+                }
+            };
+            queue.add(queueRequest);
+
+        }catch (JSONException ex) {
+            ex.printStackTrace();
+        }
+    }
     private GamePartnerUtills() {
         users = new HashMap<>();
         FetchAllData();
@@ -47,9 +98,9 @@ public class GamePartnerUtills {
     {
         return users;
     }
-    public static void ChangeUserRequests(String i_Uid, ArrayList<Request> i_Requests)
+    public static void ChangeUserRequests(String i_Uid, ArrayList<Update> i_Updates)
     {
-        users.get(i_Uid).setRequests(i_Requests);
+        users.get(i_Uid).setRequests(i_Updates);
     }
     public static void AddUserToGroup(User selectedUser, String groupID) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -62,12 +113,13 @@ public class GamePartnerUtills {
                 DatabaseReference reference;
                 reference = FirebaseDatabase.getInstance().getReference("users").child(selectedUser.getUid()).child("userGroups");
                 ArrayList<String> userGroups = selectedUser.getUserGroups();
-                userGroups.add(group.getGroupID());
+                userGroups.add(groupID);
                 reference.setValue(userGroups);
-                reference = FirebaseDatabase.getInstance().getReference("groups").child(group.getGroupID()).child("groupFriends");
-                ArrayList<User> groupFriends = (ArrayList<User>) group.getGroupFriends();
-                groupFriends.add(selectedUser);
+                reference = FirebaseDatabase.getInstance().getReference("groups").child(groupID).child("groupFriends");
+                ArrayList<String> groupFriends = (ArrayList<String>) group.getGroupFriends();
+                groupFriends.add(selectedUser.getUid());
                 reference.setValue(groupFriends);
+                ChatsFragment.notifyChatsChanged();
             }
 
             @Override
@@ -113,7 +165,7 @@ public class GamePartnerUtills {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("groups").child(i_GroupID);
         Group newGroup = new Group(connectedUser.getUid(), i_GroupName, i_GroupID, groupImageURL);
-        newGroup.getGroupFriends().add(connectedUser);
+        newGroup.getGroupFriends().add(connectedUser.getUid());
         reference.setValue(newGroup).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {

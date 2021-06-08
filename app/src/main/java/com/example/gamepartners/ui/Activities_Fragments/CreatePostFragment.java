@@ -351,8 +351,8 @@ public class CreatePostFragment extends Fragment implements DatePickerDialog.OnD
                             Toast.LENGTH_LONG).show();
                     DatabaseReference updateMyPostsRef = FirebaseDatabase.getInstance().getReference("users").child(user.getUid()).child("postsID");
                     updateMyPostsRef.setValue(user.getUserPosts());
-                    //Navigation.findNavController(selectedGameName).navigate(R.id.action_createPostFragment_to_homeFragment);
                     getActivity().onBackPressed();
+                    ChatsFragment.notifyChatsChanged();
                 }
             }
         });

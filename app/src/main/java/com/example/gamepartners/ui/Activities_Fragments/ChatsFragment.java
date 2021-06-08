@@ -43,6 +43,7 @@ public class ChatsFragment extends Fragment {
     RecyclerView chatsRecyclerView;
     GroupsAdapter chatsAdapter;
     ChatsFragmentViewModel viewModel;
+    private static  boolean isChanged = false;
 
     public ChatsFragment() {
         // Required empty public constructor
@@ -114,12 +115,16 @@ public class ChatsFragment extends Fragment {
         chatsRecyclerView.setAdapter(chatsAdapter);
     }
 
-
+    public static void notifyChatsChanged()
+        {
+         isChanged = true;
+        }
     @Override
     public void onResume() {
         super.onResume();
-        if(viewModel.getChats().getValue() == null) {
+        if(viewModel.getChats().getValue() == null || isChanged) {
             fetchChats();
+            isChanged = false;
         }
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {

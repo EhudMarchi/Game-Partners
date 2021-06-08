@@ -1,7 +1,5 @@
 package com.example.gamepartners.data.model;
 
-import androidx.lifecycle.ViewModel;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,7 +10,7 @@ public class User {
     private String lastName;
     private String email;
     private String password;
-    private ArrayList<Request> requests = new ArrayList<>();
+    private ArrayList<Update> requests = new ArrayList<>();
     private String facebookUsername = "";
     private ArrayList<String> userGroups = new ArrayList<>();
     private ArrayList<Game> favouriteGames = new ArrayList<>();
@@ -111,11 +109,11 @@ public class User {
         this.userFriends = userFriends;
     }
 
-    public ArrayList<Request> getRequests() {
+    public ArrayList<Update> getRequests() {
         return requests;
     }
 
-    public void setRequests(ArrayList<Request> requests) {
+    public void setRequests(ArrayList<Update> requests) {
         this.requests = requests;
     }
 

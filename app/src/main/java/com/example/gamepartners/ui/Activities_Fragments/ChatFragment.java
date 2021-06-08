@@ -14,8 +14,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -37,9 +35,9 @@ import com.example.gamepartners.controller.Adapters.GroupsAdapter;
 import com.example.gamepartners.controller.Adapters.MessageAdapter;
 import com.example.gamepartners.controller.Adapters.UserAdapter;
 import com.example.gamepartners.controller.GamePartnerUtills;
-import com.example.gamepartners.controller.MyFirebaseMessagingService;
 import com.example.gamepartners.data.model.Group;
 import com.example.gamepartners.data.model.Message;
+import com.example.gamepartners.data.model.Update;
 import com.example.gamepartners.data.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -76,8 +74,6 @@ public class ChatFragment extends Fragment {
     ArrayList<User> selectedUsers;
     ImageButton send, backButton, addParticipants, viewParticipants;
     ArrayList<Message> m_ChatMessages;
-    ArrayList<User> selectedFriends = new ArrayList();
-    ArrayList<User> userFriends = new ArrayList();
     RecyclerView usersRecyclerView ,groupFriendsRecyclerView;
     LinearLayoutManager recyclerViewLayoutManager,groupFriendsRecyclerViewLayoutManager;
     UserAdapter recyclerViewAdapter;
@@ -181,6 +177,12 @@ public class ChatFragment extends Fragment {
 
                     }
                     m_ChatMessages.add(message);
+                    for (User user:groupFriends) {
+                        if(user.getUid() != GamePartnerUtills.connectedUser.getUid()) {
+                            Update messageUpdate = new Update(Update.eUpdateType.MESSAGE, GamePartnerUtills.connectedUser.getUid(), GamePartnerUtills.getUserDisplayName(GamePartnerUtills.connectedUser.getUid()), user.getUid(), group.getGroupName(),groupID);
+                            GamePartnerUtills.sendMessage(messageUpdate, context);
+                        }
+                    }
                     reference.push().setValue(message).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
@@ -297,24 +299,10 @@ public class ChatFragment extends Fragment {
     }
 
     private void fetchParticipants() {
-        users = new ArrayList<>();
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("groups").child(groupID).child("groupFriends");
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                groupFriends.clear();
-                for (DataSnapshot ds:snapshot.getChildren()) {
-                    User user = ds.getValue(User.class);
-                    assert user !=null;
-                    groupFriends.add(user);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+        groupFriends.clear();
+        for (String uid:group.getGroupFriends()) {
+            groupFriends.add(GamePartnerUtills.GetUser(uid));
+        }
     }
 
     private void addParticipants() {
@@ -340,8 +328,6 @@ public class ChatFragment extends Fragment {
         dialog.show();
 
     }
-
-
 
     private void setSearchFilter(SearchView searchView, final UserAdapter recyclerViewAdapter) {
         searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
@@ -376,40 +362,9 @@ public class ChatFragment extends Fragment {
     }
     private void fillFriends() {
         users = new ArrayList<>();
-        final FirebaseAuth mAuth =FirebaseAuth.getInstance();
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users");
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                users.clear();
-                for (DataSnapshot ds:snapshot.getChildren()) {
-                    User user = ds.getValue(User.class);
-                    assert user !=null;
-                    if(isNotInGroup(user.getUid())) {
-                        //CHECK IF FRIENDS
-                        if(GamePartnerUtills.connectedUser.getUserFriends().containsKey(user.getUid())) {
-                            users.add(user);
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
-
-    private boolean isNotInGroup(String uid) {
-        boolean isNotInGroup = true;
-        for (User user:groupFriends) {
-            if(user.getUid().equals(uid))
-            {
-                isNotInGroup = false;
-            }
+        for (String uid:GamePartnerUtills.connectedUser.getUserFriends().keySet()) {
+            users.add(GamePartnerUtills.GetUser(uid));
         }
-        return isNotInGroup;
     }
 
     private void fetchMessages() {

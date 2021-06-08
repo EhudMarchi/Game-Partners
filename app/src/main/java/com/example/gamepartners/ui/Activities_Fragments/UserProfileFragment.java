@@ -28,7 +28,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -36,7 +35,6 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.gamepartners.R;
-import com.example.gamepartners.controller.Adapters.CommentAdapter;
 import com.example.gamepartners.controller.Adapters.GameAdapter;
 import com.example.gamepartners.controller.Adapters.RequestAdapter;
 import com.example.gamepartners.controller.GamePartnerUtills;
@@ -44,10 +42,8 @@ import com.example.gamepartners.controller.MyFirebaseMessagingService;
 import com.example.gamepartners.data.model.Game;
 import com.example.gamepartners.data.model.Post;
 import com.example.gamepartners.controller.Adapters.PostAdapter;
-import com.example.gamepartners.data.model.Request;
 import com.example.gamepartners.data.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -66,7 +62,6 @@ import com.google.firebase.storage.UploadTask;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 
 public class UserProfileFragment extends Fragment implements GameAdapter.OnSelectedGamesChangeListener {
     TextView username, email, requests, favGames;

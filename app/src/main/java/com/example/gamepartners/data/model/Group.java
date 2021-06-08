@@ -9,7 +9,7 @@ public class Group implements IJoinable {
     private String groupName;
     private String groupID;
     private String adminUID;
-    private ArrayList<User> groupFriends;
+    private ArrayList<String> groupFriends;
     private Chat chat;
     private String groupImageURL = "";
 
@@ -65,11 +65,11 @@ public class Group implements IJoinable {
     }
 
 
-    public List<User> getGroupFriends() {
+    public List<String> getGroupFriends() {
         return groupFriends;
     }
 
-    public void setGroupFriends(ArrayList<User> groupFriends) {
+    public void setGroupFriends(ArrayList<String> groupFriends) {
         this.groupFriends = groupFriends;
     }
 }

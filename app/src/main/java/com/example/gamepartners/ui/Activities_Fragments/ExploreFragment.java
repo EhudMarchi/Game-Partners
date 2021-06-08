@@ -1,18 +1,13 @@
 package com.example.gamepartners.ui.Activities_Fragments;
 
 import android.app.Dialog;
-import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.location.LocationManager;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,11 +25,8 @@ import android.widget.Toast;
 
 import com.example.gamepartners.R;
 import com.example.gamepartners.controller.GamePartnerUtills;
-import com.example.gamepartners.controller.MyFirebaseMessagingService;
-import com.example.gamepartners.data.model.Game;
 import com.example.gamepartners.data.model.Post;
 import com.example.gamepartners.controller.Adapters.PostAdapter;
-import com.example.gamepartners.data.model.Request;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DataSnapshot;
@@ -170,10 +162,6 @@ public class ExploreFragment extends Fragment implements SwipeRefreshLayout.OnRe
         favouriteFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Request friendRequest = new Request(Request.eRequestType.FRIEND, GamePartnerUtills.connectedUser.getUid(),
-                        GamePartnerUtills.connectedUser.getFirstName()+" "+GamePartnerUtills.connectedUser.getLastName(),
-                        GamePartnerUtills.connectedUser.getUid());
-                MyFirebaseMessagingService.sendMessage(friendRequest, getContext());
                 favouriteFilterOn = !favouriteFilterOn;
                 postAdapter.setFavFilter(favouriteFilterOn);
                 if(favouriteFilterOn) {

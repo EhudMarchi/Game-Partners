@@ -33,7 +33,7 @@ import com.example.gamepartners.data.model.Comment;
 import com.example.gamepartners.data.model.Game;
 import com.example.gamepartners.controller.GamePartnerUtills;
 import com.example.gamepartners.data.model.Post;
-import com.example.gamepartners.data.model.Request;
+import com.example.gamepartners.data.model.Update;
 import com.example.gamepartners.data.model.User;
 import com.example.gamepartners.ui.Activities_Fragments.MainActivity;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -179,6 +179,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
                     holder.likeText.setText("Liked");
                     holder.like.setAlpha(0.6f);
                     holder.isLiked = true;
+                    Update update = new Update(Update.eUpdateType.LIKE,GamePartnerUtills.connectedUser.getUid(),
+                            GamePartnerUtills.getUserDisplayName(GamePartnerUtills.connectedUser.getUid()),post.getPublisher().getUid());
+                    GamePartnerUtills.sendMessage(update,context);
                 } else {
                     post.Dislike();
                     holder.likeText.setText("Like");
@@ -207,6 +210,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
                         post.getComments().add(comment);
                         comment.Post(reference);
                         Toast.makeText(context, "Comment Added!", Toast.LENGTH_SHORT).show();
+                        Update update = new Update(Update.eUpdateType.COMMENT,GamePartnerUtills.connectedUser.getUid(),
+                                GamePartnerUtills.getUserDisplayName(GamePartnerUtills.connectedUser.getUid()),post.getPublisher().getUid());
+                        GamePartnerUtills.sendMessage(update,context);
                         }
                         catch (Exception e)
                         {
@@ -234,13 +240,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         holder.join.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Request joinRequest = new Request(Request.eRequestType.JOIN_GROUP, GamePartnerUtills.connectedUser.getUid(), GamePartnerUtills.connectedUser.getFirstName()+" "+GamePartnerUtills.connectedUser.getLastName(), post.getPostID(), post.getSubject());
+                Update joinUpdate = new Update(Update.eUpdateType.JOIN_GROUP, GamePartnerUtills.connectedUser.getUid(), GamePartnerUtills.getUserDisplayName(GamePartnerUtills.connectedUser.getUid()), post.getPublisher().getUid(), post.getSubject(),post.getPostID());
                 DatabaseReference mRef = FirebaseDatabase.getInstance().getReference().child("users").child(post.getPublisher().getUid()).child("requests").child(String.valueOf(GamePartnerUtills.GetUser(post.getPublisher().getUid()).getRequests().size()));
-                GamePartnerUtills.GetUser(post.getPublisher().getUid()).getRequests().add(joinRequest);
-                mRef.setValue(joinRequest).addOnSuccessListener(new OnSuccessListener<Void>() {
+                GamePartnerUtills.GetUser(post.getPublisher().getUid()).getRequests().add(joinUpdate);
+                mRef.setValue(joinUpdate).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Toast.makeText(context, "Request sent", Toast.LENGTH_SHORT).show();
+                        GamePartnerUtills.sendMessage(joinUpdate, context);
                     }
                 });
                 holder.join.setEnabled(false);
@@ -305,8 +312,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
     }
     private boolean isPending(String i_GroupID, User publisher) {
         boolean isPending = false;
-        for (Request request:publisher.getRequests()) {
-            if(request.getSenderID().equals(GamePartnerUtills.connectedUser.getUid()))
+        for (Update update :publisher.getRequests()) {
+            if(update.getSenderID().equals(GamePartnerUtills.connectedUser.getUid()))
             {
                 isPending = true;
                 break;

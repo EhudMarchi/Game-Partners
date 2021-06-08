@@ -20,7 +20,6 @@
     <string name="userName">User Name</string>
     <string name="last_message">Last Message</string>
     <string name="api_key">AIzaSyCeNMs1DFpjauHSAjih8wpf230GF4NZr58</string>
-    <string name="fcm_api_key">AAAAghqGT8o:APA91bFtuvSeI__QPUw94VjCeUWGlik8fDYI4Vyd9y2cNA-_RJ2slsm5XNRnzjMSmaQzdRRIH4NRusH1pAv0kWZKRfcc9CiVUr_QvGy2_2gdJJrn3Xq8ScOdy21_FGgB_nO_FLrtMkWA</string>
     <string name="title_activity_maps">Map</string>
     <string name="facebook_app_id">1134940117010646</string>
     <string name="fb_login_protocol_scheme">fb1134940117010646</string>

@@ -3,12 +3,9 @@ package com.example.gamepartners.controller.Adapters;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,8 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.gamepartners.R;
 import com.example.gamepartners.controller.GamePartnerUtills;
-import com.example.gamepartners.data.model.Comment;
-import com.example.gamepartners.data.model.Request;
+import com.example.gamepartners.data.model.Update;
 import com.example.gamepartners.data.model.User;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
@@ -31,8 +27,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestViewHolder>{
-    private ArrayList<Request> m_Requests;
-    Request m_SelectedRequest = new Request();
+    private ArrayList<Update> m_Updates;
+    Update m_SelectedUpdate = new Update();
     Context m_Context;
     int m_SelectedItemIndex = 0;
     private String groupName;
@@ -55,8 +51,8 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
         }
     }
 
-    public RequestAdapter(Context context, ArrayList<Request> requestsList , Dialog req, TextView requestsTextView) {
-        m_Requests = requestsList;
+    public RequestAdapter(Context context, ArrayList<Update> requestsList , Dialog req, TextView requestsTextView) {
+        m_Updates = requestsList;
         this.m_Context = context;
         requestDialog = req;
         this.requestsTextView = requestsTextView;
@@ -75,15 +71,15 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
     @SuppressLint("ResourceAsColor")
     @Override
     public void onBindViewHolder(final RequestViewHolder holder, final int position) {
-        final Request currentRequest = m_Requests.get(position);
-        holder.senderName.setText(currentRequest.getSenderDisplayName());
-        holder.requestText.setText(currentRequest.getRequestText());
+        final Update currentUpdate = m_Updates.get(position);
+        holder.senderName.setText(currentUpdate.getSenderDisplayName());
+        holder.requestText.setText(currentUpdate.getRequestText());
         DatabaseReference mRef = FirebaseDatabase.getInstance().getReference().child("users");
         mRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot user : snapshot.getChildren()) {
-                    if (user.getValue(User.class).getUid().equals(currentRequest.getSenderID())) {
+                    if (user.getValue(User.class).getUid().equals(currentUpdate.getSenderID())) {
                         User publisher = user.getValue(User.class);
                         assert publisher != null;
                         if(m_Context!=null) {
@@ -107,25 +103,28 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
             @Override
             public void onClick(View v) {
                 DatabaseReference mRef;
-                    if (currentRequest.getType() == Request.eRequestType.JOIN_GROUP) {
-                        User addingUser = GamePartnerUtills.GetUser(currentRequest.getSenderID());
-                        GamePartnerUtills.AddUserToGroup(addingUser, currentRequest.getTargetID());
+                    if (currentUpdate.getType() == Update.eUpdateType.JOIN_GROUP) {
+                        User addingUser = GamePartnerUtills.GetUser(currentUpdate.getSenderID());
+                        GamePartnerUtills.AddUserToGroup(addingUser, currentUpdate.getGroupID());
                     }
                     else {
-                        mRef = FirebaseDatabase.getInstance().getReference("users").child(currentRequest.getTargetID()).child("userFriends");
-                        mRef.child(currentRequest.getSenderID()).setValue(currentRequest.getSenderDisplayName());
-                        mRef = FirebaseDatabase.getInstance().getReference("users").child(currentRequest.getSenderID()).child("userFriends");
-                        mRef.child(currentRequest.getTargetID()).setValue(GamePartnerUtills.connectedUser.getFirstName()+" "+GamePartnerUtills.connectedUser.getLastName());
+                        mRef = FirebaseDatabase.getInstance().getReference("users").child(currentUpdate.getTargetID()).child("userFriends");
+                        mRef.child(currentUpdate.getSenderID()).setValue(currentUpdate.getSenderDisplayName());
+                        mRef = FirebaseDatabase.getInstance().getReference("users").child(currentUpdate.getSenderID()).child("userFriends");
+                        mRef.child(currentUpdate.getTargetID()).setValue(GamePartnerUtills.connectedUser.getFirstName()+" "+GamePartnerUtills.connectedUser.getLastName());
                     }
                 mRef = FirebaseDatabase.getInstance().getReference().child("users").child(GamePartnerUtills.connectedUser.getUid()).child("requests");
-                m_Requests.remove(currentRequest);
-                GamePartnerUtills.ChangeUserRequests(GamePartnerUtills.connectedUser.getUid(), m_Requests);
-                mRef.setValue(m_Requests).addOnSuccessListener(new OnSuccessListener<Void>() {
+                m_Updates.remove(currentUpdate);
+                GamePartnerUtills.ChangeUserRequests(GamePartnerUtills.connectedUser.getUid(), m_Updates);
+                mRef.setValue(m_Updates).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Toast.makeText(m_Context, "Request confirmed", Toast.LENGTH_SHORT).show();
                         notifyDataSetChanged();
-                        requestsTextView.setText(m_Requests.size() + " Requests");
+                        requestsTextView.setText(m_Updates.size() + " Requests");
+                        Update update = new Update(Update.eUpdateType.RESPONSE,GamePartnerUtills.connectedUser.getUid(),
+                                GamePartnerUtills.getUserDisplayName(GamePartnerUtills.connectedUser.getUid()),currentUpdate.getSenderID(),true);
+                        GamePartnerUtills.sendMessage(update,m_Context);
                     }
                 });
                 updateRequestsAmount();
@@ -135,14 +134,17 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
             @Override
             public void onClick(View v) {
                 DatabaseReference mRef = FirebaseDatabase.getInstance().getReference().child("users").child(GamePartnerUtills.connectedUser.getUid()).child("requests");
-                m_Requests.remove(currentRequest);
-                GamePartnerUtills.ChangeUserRequests(GamePartnerUtills.connectedUser.getUid(), m_Requests);
-                mRef.setValue(m_Requests).addOnSuccessListener(new OnSuccessListener<Void>() {
+                m_Updates.remove(currentUpdate);
+                GamePartnerUtills.ChangeUserRequests(GamePartnerUtills.connectedUser.getUid(), m_Updates);
+                mRef.setValue(m_Updates).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Toast.makeText(m_Context, "Request denied", Toast.LENGTH_SHORT).show();
                         notifyDataSetChanged();
-                        requestsTextView.setText(m_Requests.size() + " Requests");
+                        requestsTextView.setText(m_Updates.size() + " Requests");
+                        Update update = new Update(Update.eUpdateType.RESPONSE,GamePartnerUtills.connectedUser.getUid(),
+                                GamePartnerUtills.getUserDisplayName(GamePartnerUtills.connectedUser.getUid()),currentUpdate.getSenderID(),false);
+                        GamePartnerUtills.sendMessage(update,m_Context);
                     }
                 });
                 updateRequestsAmount();
@@ -152,13 +154,13 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
             @Override
             public void onClick(View view) {
                 m_SelectedItemIndex = position;
-                m_SelectedRequest = m_Requests.get(m_SelectedItemIndex);
+                m_SelectedUpdate = m_Updates.get(m_SelectedItemIndex);
             }
         });
     }
 
     private void updateRequestsAmount() {
-        if (m_Requests.size() == 0) {
+        if (m_Updates.size() == 0) {
             requestDialog.dismiss();
             requestsTextView.setEnabled(false);
             requestsTextView.setAlpha(0.4f);
@@ -168,8 +170,8 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
         }
     }
 
-    public Request getSelectedComment() {
-        return m_SelectedRequest;
+    public Update getSelectedComment() {
+        return m_SelectedUpdate;
     }
     @Override
     public long getItemId(int position) {
@@ -182,7 +184,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
     }
     @Override
     public int getItemCount() {
-        return m_Requests.size();
+        return m_Updates.size();
     }
 
 }

@@ -12,7 +12,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,24 +23,17 @@ import android.widget.Toast;
 
 import com.example.gamepartners.R;
 import com.example.gamepartners.controller.GamePartnerUtills;
-import com.example.gamepartners.controller.MyFirebaseMessagingService;
-import com.example.gamepartners.data.model.Request;
+import com.example.gamepartners.data.model.Update;
 import com.example.gamepartners.data.model.User;
 import com.example.gamepartners.controller.Adapters.UserAdapter;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.GenericTypeIndicator;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 
 public class FriendsFragment extends Fragment {
     DatabaseReference reference;
@@ -120,16 +112,16 @@ public class FriendsFragment extends Fragment {
                         Snackbar.make(v, "Add Selected", Snackbar.LENGTH_LONG).show();
                         selectedUsers = allUsersAdapter.getSelectedUsers();
                         for (User selectedUser:selectedUsers) {
-                            Request friendRequest = new Request(Request.eRequestType.FRIEND, GamePartnerUtills.connectedUser.getUid(),
+                            Update friendUpdate = new Update(Update.eUpdateType.FRIEND, GamePartnerUtills.connectedUser.getUid(),
                                     GamePartnerUtills.connectedUser.getFirstName()+" "+GamePartnerUtills.connectedUser.getLastName(),
                                     selectedUser.getUid());
                             DatabaseReference mRef = FirebaseDatabase.getInstance().getReference().child("users").child(selectedUser.getUid()).child("requests").child(String.valueOf(GamePartnerUtills.GetUser(selectedUser.getUid()).getRequests().size()));
-                            GamePartnerUtills.GetUser(selectedUser.getUid()).getRequests().add(friendRequest);
-                            mRef.setValue(friendRequest).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            GamePartnerUtills.GetUser(selectedUser.getUid()).getRequests().add(friendUpdate);
+                            mRef.setValue(friendUpdate).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
                                     Toast.makeText(getContext(), "Request sent", Toast.LENGTH_SHORT).show();
-                                    MyFirebaseMessagingService.sendMessage(friendRequest, getContext());
+                                    GamePartnerUtills.sendMessage(friendUpdate, getContext());
                                 }
                             });
                         }
