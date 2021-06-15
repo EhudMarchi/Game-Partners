@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.os.Handler;
 import android.util.Log;
@@ -38,13 +39,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class ChatsFragment extends Fragment {
+public class ChatsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     private static final int WAIT = 1100;
     RecyclerView chatsRecyclerView;
     GroupsAdapter chatsAdapter;
     ChatsFragmentViewModel viewModel;
     private static  boolean isChanged = false;
-
+    SwipeRefreshLayout mSwipeRefreshLayout;
     public ChatsFragment() {
         // Required empty public constructor
     }
@@ -90,7 +91,9 @@ public class ChatsFragment extends Fragment {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         GamePartnerUtills.createGroup(UUID.randomUUID().toString(),taskEditText.getText().toString(), "");
-                                        fetchChats();
+                                        if(GamePartnerUtills.connectedUser!=null) {
+                                            fetchChats();
+                                        }
                                     }
                                 })
                                 .create();
@@ -113,17 +116,35 @@ public class ChatsFragment extends Fragment {
         viewModel.getChats().observe(getViewLifecycleOwner(),chatsListObserver);
         chatsAdapter = new GroupsAdapter(getContext(), new ArrayList<>());
         chatsRecyclerView.setAdapter(chatsAdapter);
+
+        mSwipeRefreshLayout = (SwipeRefreshLayout) getView().findViewById(R.id.chats_swipe_container);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
+        mSwipeRefreshLayout.post(new Runnable() {
+
+            @Override
+            public void run() {
+                mSwipeRefreshLayout.setRefreshing(true);
+                // Fetching chats from database
+                if(GamePartnerUtills.connectedUser != null) {
+                    fetchChats();
+                    chatsAdapter.notifyDataSetChanged();
+                }
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+        });
     }
 
     public static void notifyChatsChanged()
-        {
-         isChanged = true;
-        }
+    {
+        isChanged = true;
+    }
     @Override
     public void onResume() {
         super.onResume();
         if(viewModel.getChats().getValue() == null || isChanged) {
-            fetchChats();
+            if(GamePartnerUtills.connectedUser!=null) {
+                fetchChats();
+            }
             isChanged = false;
         }
         Handler handler = new Handler();
@@ -150,7 +171,15 @@ public class ChatsFragment extends Fragment {
                     chatsArrayList.add(tempGroup);
                 }
                 if(getContext()!= null) {
-                            viewModel.setChats(chatsArrayList);
+                    viewModel.setChats(chatsArrayList);
+                    if(chatsArrayList.size() == 0)
+                    {
+                        getView().findViewById(R.id.no_chats).setVisibility(View.VISIBLE);
+                    }
+                    else
+                    {
+                        getView().findViewById(R.id.no_chats).setVisibility(View.GONE);
+                    }
                 }
             }
 
@@ -164,5 +193,16 @@ public class ChatsFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+    }
+
+    @Override
+    public void onRefresh() {
+        mSwipeRefreshLayout.setRefreshing(true);
+        // Fetching chats from database
+        if(GamePartnerUtills.connectedUser != null) {
+            fetchChats();
+            chatsAdapter.notifyDataSetChanged();
+        }
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 }

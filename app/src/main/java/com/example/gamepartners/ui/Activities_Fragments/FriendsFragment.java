@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,7 +36,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
-public class FriendsFragment extends Fragment {
+public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
     DatabaseReference reference;
     private ArrayList<User> friends;
     private ArrayList<User> users;
@@ -47,6 +48,7 @@ public class FriendsFragment extends Fragment {
     SearchView searchView;
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     Button invite;
+    SwipeRefreshLayout mSwipeRefreshLayout;
 
     public FriendsFragment() {
         // Required empty public constructor
@@ -68,9 +70,15 @@ public class FriendsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         selectedUserName = getView().findViewById(R.id.selectedGameName);
         friends = new ArrayList<>();
-        fetchFriends();
-        invite = getView().findViewById(R.id.invite);
         setUpFriendsRecyclerView();
+        new Thread(){
+            @Override
+            public void run() {
+                super.run();
+                fetchFriends();
+            }
+        }.start();
+        invite = getView().findViewById(R.id.invite);
         setSearchFilter();
         usersRecyclerView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -143,10 +151,20 @@ public class FriendsFragment extends Fragment {
                 startActivity(Intent.createChooser(shareIntent, "Share Game Partners via"));
             }
         });
-        if(friends.size() == 0)
-        {
-            getView().findViewById(R.id.no_friends).setVisibility(View.VISIBLE);
-        }
+        mSwipeRefreshLayout = (SwipeRefreshLayout) getView().findViewById(R.id.friends_swipe_container);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
+        mSwipeRefreshLayout.post(new Runnable() {
+
+            @Override
+            public void run() {
+                mSwipeRefreshLayout.setRefreshing(true);
+                // Fetching chats from database
+                if(GamePartnerUtills.connectedUser != null) {
+                    fetchFriends();
+                }
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+        });
     }
 
     private void fetchNonFriendUsers() {
@@ -189,25 +207,32 @@ public class FriendsFragment extends Fragment {
         usersRecyclerView.setAdapter(recyclerViewAdapter);
     }
     private void fetchFriends() {
-        friends = new ArrayList<>();
-        for (String uid :GamePartnerUtills.connectedUser.getUserFriends().keySet()) {
-            friends.add(GamePartnerUtills.GetUser(uid));
-        }
-    }
-    private boolean isFriend(String uid)
-    {
-        boolean isFriend = false;
-        for (User friend:friends) {
-            if(friend.getUid().equals(uid))
-            {
-                isFriend = true;
+
+        if(GamePartnerUtills.connectedUser!= null) {
+            friends.clear();
+            for (String uid : GamePartnerUtills.connectedUser.getUserFriends().keySet()) {
+                friends.add(GamePartnerUtills.GetUser(uid));
             }
+            recyclerViewAdapter.notifyDataSetChanged();
         }
-        return isFriend;
+        if(friends.size() == 0)
+        {
+            getView().findViewById(R.id.no_friends).setVisibility(View.VISIBLE);
+        }
     }
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         friends.clear();
+    }
+
+    @Override
+    public void onRefresh() {
+        mSwipeRefreshLayout.setRefreshing(true);
+        // Fetching chats from database
+        if(GamePartnerUtills.connectedUser != null) {
+            fetchFriends();
+        }
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 }

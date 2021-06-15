@@ -113,7 +113,7 @@ public class ChatFragment extends Fragment {
         messagesRecyclerView.setAdapter(messagesAdapter);
         Intent intent= getActivity().getIntent();
         Bundle b = intent.getExtras();
-        group = GroupsAdapter.getCurrentGroup();;
+        group = GroupsAdapter.getCurrentGroup();
         adminUID =  group.getAdminUID();
         groupID =  group.getGroupID();
         groupImageURL =  group.getGroupImageURL();

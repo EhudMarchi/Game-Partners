@@ -170,7 +170,7 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
     public int getItemCount() {
         return m_Games.size();
     }
-
+    //filtering games
     @Override
     public Filter getFilter() {
         return platformFilter;

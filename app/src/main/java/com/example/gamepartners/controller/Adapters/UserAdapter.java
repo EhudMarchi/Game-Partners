@@ -154,6 +154,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     public int getItemViewType(int position) {
         return position;
     }
+    //filtering users
     @Override
     public Filter getFilter() {
         return userFilter;

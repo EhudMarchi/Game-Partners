@@ -210,9 +210,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
                         post.getComments().add(comment);
                         comment.Post(reference);
                         Toast.makeText(context, "Comment Added!", Toast.LENGTH_SHORT).show();
-                        Update update = new Update(Update.eUpdateType.COMMENT,GamePartnerUtills.connectedUser.getUid(),
-                                GamePartnerUtills.getUserDisplayName(GamePartnerUtills.connectedUser.getUid()),post.getPublisher().getUid());
-                        GamePartnerUtills.sendMessage(update,context);
+                        if(!post.getPublisher().getUid().equals(GamePartnerUtills.connectedUser.getUid())) {
+                            Update update = new Update(Update.eUpdateType.COMMENT, GamePartnerUtills.connectedUser.getUid(),
+                                    GamePartnerUtills.getUserDisplayName(GamePartnerUtills.connectedUser.getUid()), post.getPublisher().getUid());
+                            GamePartnerUtills.sendMessage(update, context);
+                        }
                         }
                         catch (Exception e)
                         {
@@ -416,6 +418,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
 
         return  isContains;
     }
+    //filtering posts
     @Override
     public Filter getFilter() {
         return postsFilter;

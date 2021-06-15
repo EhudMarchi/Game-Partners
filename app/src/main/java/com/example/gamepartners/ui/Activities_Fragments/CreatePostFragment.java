@@ -281,7 +281,6 @@ public class CreatePostFragment extends Fragment implements DatePickerDialog.OnD
         MapUtility.apiKey = getResources().getString(R.string.api_key);
         MapsFragment chooseLocationFragment = new MapsFragment(this);
         chooseLocationFragment.show(getActivity().getSupportFragmentManager(),"");
-        //Navigation.findNavController(chooseLocation).navigate(R.id.action_createPostFragment_to_mapsFragment);
     }
 
     private void setSearchFilter() {

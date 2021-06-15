@@ -22,14 +22,19 @@
             android:queryHint="Search"
             app:actionViewClass="android.widget.SearchView"
             app:showAsAction="ifRoom|collapseActionView"/>
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/friends_swipe_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/search">
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/friendsRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/search"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="0dp"
             android:background="@color/darkPurple"/>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"

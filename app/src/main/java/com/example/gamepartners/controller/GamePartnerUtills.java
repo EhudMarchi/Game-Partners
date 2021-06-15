@@ -48,6 +48,7 @@ public class GamePartnerUtills {
     public static Location location;
     public static Address selectedAddress = null;
 
+    //send message via FCM as a JSON object
     public static void sendMessage(Update update, Context context)
     {
         final JSONObject rootObject  = new JSONObject();
@@ -87,6 +88,7 @@ public class GamePartnerUtills {
             ex.printStackTrace();
         }
     }
+    //private constructor
     private GamePartnerUtills() {
         users = new HashMap<>();
         FetchAllData();
@@ -98,10 +100,12 @@ public class GamePartnerUtills {
     {
         return users;
     }
+
     public static void ChangeUserRequests(String i_Uid, ArrayList<Update> i_Updates)
     {
         users.get(i_Uid).setRequests(i_Updates);
     }
+
     public static void AddUserToGroup(User selectedUser, String groupID) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("groups").child(groupID);
@@ -221,12 +225,6 @@ public class GamePartnerUtills {
         return mSingleInstance;
     }
 
-    public static void ChangeProfileImageUrl(String url) {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("users").child(connectedUser.getUid()).child("proflieImageURL");
-        myRef.setValue(url);
-    }
-
     public static FirebaseAuth AuthInitialization() {
         mAuth = FirebaseAuth.getInstance();
 
@@ -272,13 +270,8 @@ public class GamePartnerUtills {
 
         return isSuccessful;
     }
-
     public static User GetUser(final String i_UserID)
     {
         return users.get(i_UserID);
-    }
-    public void UpdatePostLikes(Post i_Post)
-    {
-
     }
 }

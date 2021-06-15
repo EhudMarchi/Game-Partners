@@ -1,6 +1,7 @@
 package com.example.gamepartners.ui.Activities_Fragments;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 
 import com.example.gamepartners.R;
+import com.example.gamepartners.controller.Adapters.GroupsAdapter;
 import com.example.gamepartners.controller.GamePartnerUtills;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -21,6 +23,7 @@ import androidx.annotation.NonNull;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.widget.Toast;
 
@@ -48,11 +51,18 @@ public class MainActivity extends AppCompatActivity{
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
+                NavHostFragment nav = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+                String type = intent.getStringExtra("type");
+                String fragmentName = nav.getChildFragmentManager().getFragments().get(0).getClass().getName();
+                if(!((fragmentName.contains("ChatFragment"))&&(type.equals("MESSAGE"))&&(intent.getStringExtra("message").contains(GroupsAdapter.getCurrentGroup().getGroupName()))))
+                    {
+                        Toast.makeText(context, intent.getStringExtra("message"), Toast.LENGTH_LONG).show();
+                    }
             }
         };
-
         IntentFilter filter = new IntentFilter("message_received");
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver,filter);
+
 
     }
     @Override
