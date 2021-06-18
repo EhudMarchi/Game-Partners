@@ -1,14 +1,17 @@
 package com.example.gamepartners.ui.Activities_Fragments;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
+import android.location.LocationManager;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -18,6 +21,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -118,7 +122,24 @@ public class CreatePostFragment extends Fragment implements DatePickerDialog.OnD
         chooseLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showLocationPicker();
+                LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+                boolean gps_enabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+                if(gps_enabled) {
+                        showLocationPicker();
+                }
+                else
+                {
+                    new AlertDialog.Builder(getContext())
+                            .setMessage("You must enable the GPS service on your device")
+                            .setPositiveButton("Enable", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                                    getContext().startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                                }
+                            })
+                            .setNegativeButton("Cancel",null)
+                            .show();
+                }
             }
         });
         final FloatingActionButton fab = getActivity().findViewById(R.id.fabContinue);

@@ -1,8 +1,13 @@
 package com.example.gamepartners.ui.Activities_Fragments;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.location.LocationManager;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.os.Handler;
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -149,8 +155,6 @@ public class ExploreFragment extends Fragment implements SwipeRefreshLayout.OnRe
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        //Intent intent = new Intent(getContext(), CreatePostActivity.class);
-                        //startActivity(intent);
                         Navigation.findNavController(fab).navigate(R.id.action_homeFragment_to_createPostFragment);
                         fab.setClickable(true);
                     }
@@ -166,13 +170,13 @@ public class ExploreFragment extends Fragment implements SwipeRefreshLayout.OnRe
                 postAdapter.setFavFilter(favouriteFilterOn);
                 if(favouriteFilterOn) {
                     Toast.makeText(getContext(), "Favourite Games Filter On",
-                            Toast.LENGTH_LONG).show();
+                            Toast.LENGTH_SHORT).show();
                     favouriteFilter.setAlpha(1f);
                 }
                 else
                 {
                     Toast.makeText(getContext(), "Favourite Games Filter Off",
-                            Toast.LENGTH_LONG).show();
+                            Toast.LENGTH_SHORT).show();
                     favouriteFilter.setAlpha(0.4f);
                 }
             }
@@ -205,8 +209,19 @@ public class ExploreFragment extends Fragment implements SwipeRefreshLayout.OnRe
         distanceFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (GamePartnerUtills.longitude == 0 && GamePartnerUtills.latitude == 0) {
-                    Toast.makeText(getContext(), "Unable to find location.", Toast.LENGTH_SHORT).show();
+                LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+                boolean gps_enabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+                if(!gps_enabled) {
+                    new AlertDialog.Builder(getContext())
+                            .setMessage("You must enable the GPS service on your device")
+                            .setPositiveButton("Enable", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                                    getContext().startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                                }
+                            })
+                            .setNegativeButton("Cancel",null)
+                            .show();
                 }
                 else {
                     distanceFilter.setClickable(false);

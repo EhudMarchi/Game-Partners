@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.location.LocationManager;
 import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -60,7 +61,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
     boolean favouriteFilterOn = false;
     int filterDistance =-1;
     String searchString ="";
-
+    boolean gpsEnabled;
     public PostAdapter(Context context, ArrayList<Post> postArrayList, Dialog comments) {
         this.context = context;
         this.allPostsArrayList = new ArrayList<>(postArrayList);
@@ -68,6 +69,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         this.commentsDialog = comments;
         activity = (MainActivity) context;
         glide = Glide.with(context);
+        LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
     }
     @NonNull
     @Override
@@ -105,10 +108,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         holder.comments.setText((post.getComments().size())+ " comments");
         holder.city.setText(post.getCity());
         holder.address.setText(post.getLocation());
-        try {
-            holder.distance.setText(new DecimalFormat("#.##").format(GamePartnerUtills.getKmFromLatLong(Float.parseFloat(String.valueOf(GamePartnerUtills.latitude)), Float.parseFloat(String.valueOf(GamePartnerUtills.longitude)), (float) post.getLatitude(), (float) post.getLongitude()) )+ " km");
+        if(gpsEnabled) {
+            holder.distance.setVisibility(View.VISIBLE);
+            holder.distance.setText(new DecimalFormat("#.##").format(GamePartnerUtills.getKmFromLatLong(Float.parseFloat(String.valueOf(GamePartnerUtills.latitude)), Float.parseFloat(String.valueOf(GamePartnerUtills.longitude)), (float) post.getLatitude(), (float) post.getLongitude())) + " km");
         }
-        catch (Exception e) {
+        else
+        {
             holder.distance.setVisibility(View.GONE);
         }
         DatabaseReference mRef = FirebaseDatabase.getInstance().getReference().child("users");
@@ -122,9 +127,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
                         glide.load(publisher.getProflieImageURL()).into(holder.imgViewProfilePic);
                         if(imageView.getContext()!=null) {
                             try {
-                            Glide.with(imageView.getContext()).load(publisher.getProflieImageURL()).into((ImageView) imageView.findViewById(R.id.user_pic));
-                            TextView userName = imageView.findViewById(R.id.userDisplayName);
-                            userName.setText(holder.username.getText().toString());
+                                Glide.with(imageView.getContext()).load(publisher.getProflieImageURL()).into((ImageView) imageView.findViewById(R.id.user_pic));
+                                TextView userName = imageView.findViewById(R.id.userDisplayName);
+                                userName.setText(holder.username.getText().toString());
                             }
                             catch (Exception e)
                             {
@@ -205,16 +210,16 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
                     @Override
                     public void onClick(View v) {
                         try {
-                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("posts").child(post.getPostID()).child("comments").child(String.valueOf(post.getComments().size()));
-                        Comment comment = new Comment(GamePartnerUtills.connectedUser, ((TextView)dialog.findViewById(R.id.commentText)).getText().toString());
-                        post.getComments().add(comment);
-                        comment.Post(reference);
-                        Toast.makeText(context, "Comment Added!", Toast.LENGTH_SHORT).show();
-                        if(!post.getPublisher().getUid().equals(GamePartnerUtills.connectedUser.getUid())) {
-                            Update update = new Update(Update.eUpdateType.COMMENT, GamePartnerUtills.connectedUser.getUid(),
-                                    GamePartnerUtills.getUserDisplayName(GamePartnerUtills.connectedUser.getUid()), post.getPublisher().getUid());
-                            GamePartnerUtills.sendMessage(update, context);
-                        }
+                            DatabaseReference reference = FirebaseDatabase.getInstance().getReference("posts").child(post.getPostID()).child("comments").child(String.valueOf(post.getComments().size()));
+                            Comment comment = new Comment(GamePartnerUtills.connectedUser, ((TextView)dialog.findViewById(R.id.commentText)).getText().toString());
+                            post.getComments().add(comment);
+                            comment.Post(reference);
+                            Toast.makeText(context, "Comment Added!", Toast.LENGTH_SHORT).show();
+                            if(!post.getPublisher().getUid().equals(GamePartnerUtills.connectedUser.getUid())) {
+                                Update update = new Update(Update.eUpdateType.COMMENT, GamePartnerUtills.connectedUser.getUid(),
+                                        GamePartnerUtills.getUserDisplayName(GamePartnerUtills.connectedUser.getUid()), post.getPublisher().getUid());
+                                GamePartnerUtills.sendMessage(update, context);
+                            }
                         }
                         catch (Exception e)
                         {
@@ -347,7 +352,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
     }
     private boolean checkIfLiked(Post post)
     {
-    boolean isLiked = false;
+        boolean isLiked = false;
         for (String uid:post.getLikes())
         {
             if(uid.equals(GamePartnerUtills.connectedUser.getUid()))
@@ -356,7 +361,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
                 break;
             }
         }
-    return isLiked;
+        return isLiked;
     }
     public class MyViewHolder extends RecyclerView.ViewHolder
     {
@@ -432,23 +437,23 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
                 allPostsArrayList = new ArrayList<>(postArrayList);
             }
             ArrayList<Post> filteredList = new ArrayList<>();
-                for (Post post : allPostsArrayList) {
-                    if (isPostContainsString(post,searchString)&&(
-                            (GamePartnerUtills.getKmFromLatLong(Float.parseFloat(String.valueOf(GamePartnerUtills.latitude)), Float.parseFloat(String.valueOf(GamePartnerUtills.longitude)), (float) post.getLatitude(), (float) post.getLongitude())<= filterDistance)
-                            || filterDistance == -1))
-                    {
-                        if(favouriteFilterOn) {
-                            for (Game favGame : GamePartnerUtills.connectedUser.getFavouriteGames()) {
-                                if (favGame.getGameName().equals(post.getGame().getGameName())) {
-                                    filteredList.add(post);
-                                }
+            for (Post post : allPostsArrayList) {
+                if (isPostContainsString(post,searchString)&&(
+                        (GamePartnerUtills.getKmFromLatLong(Float.parseFloat(String.valueOf(GamePartnerUtills.latitude)), Float.parseFloat(String.valueOf(GamePartnerUtills.longitude)), (float) post.getLatitude(), (float) post.getLongitude())<= filterDistance)
+                                || filterDistance == -1))
+                {
+                    if(favouriteFilterOn) {
+                        for (Game favGame : GamePartnerUtills.connectedUser.getFavouriteGames()) {
+                            if (favGame.getGameName().equals(post.getGame().getGameName())) {
+                                filteredList.add(post);
                             }
                         }
-                        else
-                        {
-                            filteredList.add(post);
-                        }
                     }
+                    else
+                    {
+                        filteredList.add(post);
+                    }
+                }
             }
             FilterResults results = new FilterResults();
             results.values = filteredList;

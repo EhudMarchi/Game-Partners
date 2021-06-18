@@ -146,7 +146,7 @@ public class FriendsFragment extends Fragment implements SwipeRefreshLayout.OnRe
                 Intent shareIntent =   new Intent(android.content.Intent.ACTION_SEND);
                 shareIntent.setType("text/plain");
                 shareIntent.putExtra(Intent.EXTRA_SUBJECT,"Invite Friends");
-                String app_url = " https://play.google.com/store/apps/details?id=my.example.javatpoint";
+                String app_url = "Download Game Partners for free:\nhttps://play.google.com/store/apps";
                 shareIntent.putExtra(android.content.Intent.EXTRA_TEXT,app_url);
                 startActivity(Intent.createChooser(shareIntent, "Share Game Partners via"));
             }

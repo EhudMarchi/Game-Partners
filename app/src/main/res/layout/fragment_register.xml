@@ -177,7 +177,6 @@
                 android:backgroundTint="@color/darkPurple"
                 android:background="@drawable/round_dialog"
                 android:foreground="?attr/selectableItemBackgroundBorderless"
-                android:onClick="signUp"
                 android:text="Sign Up"
                 android:textAllCaps="false"
                 android:textColor="@color/white"

@@ -46,7 +46,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class MapsFragment extends DialogFragment {
-     GoogleMap mMap;
+    GoogleMap mMap;
     Marker mCurrLocationMarker;
     Location mLastLocation;
     Button selectLocation;
@@ -63,28 +63,36 @@ public class MapsFragment extends DialogFragment {
 
         @Override
         public void onMapReady(GoogleMap googleMap) {
-            mMap = googleMap;
-            mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
-            geocoder = new Geocoder(getContext());
-            LatLng latlng = new LatLng(GamePartnerUtills.latitude, GamePartnerUtills.longitude);
-            getAddress(latlng);
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, 10));
-            MarkerOptions markerOptions = new MarkerOptions();
-            markerOptions.position(latlng);
-            markerOptions.title("Selected Location");
-            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-            mCurrLocationMarker = mMap.addMarker(markerOptions);
-            mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
-                @Override
-                public void onMapLongClick(LatLng latLng) {
-                    try {
-                        setLocationToClicked(latLng);
-                    } catch (Exception e) {
-                        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+            try {
+                mMap = googleMap;
+                mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+                geocoder = new Geocoder(getContext());
+                LatLng latlng = new LatLng(GamePartnerUtills.latitude, GamePartnerUtills.longitude);
+                getAddress(latlng);
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, 10));
+                MarkerOptions markerOptions = new MarkerOptions();
+                markerOptions.position(latlng);
+                markerOptions.title("Selected Location");
+                markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                mCurrLocationMarker = mMap.addMarker(markerOptions);
+                mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+                    @Override
+                    public void onMapLongClick(LatLng latLng) {
+                        try {
+                            setLocationToClicked(latLng);
+                        } catch (Exception e) {
+                            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
                     }
-                }
-            });
+                });
+            }
+            catch (Exception e)
+            {
+                dismiss();
+                Toast.makeText(getContext(), "Something went wrong..\nplease check your GPS service again", Toast.LENGTH_SHORT).show();
+            }
         }
+
     };
 
     @Nullable

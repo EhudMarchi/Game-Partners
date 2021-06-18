@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -29,6 +30,7 @@ public class AdminFragment extends Fragment {
 
     private DatabaseReference myRef;
     public Chip reality, pc, playstation, xbox;
+    Button add, delete;
     public boolean realityCheck = false, pcCheck = false, playstationCheck = false, xboxCheck = false, isExist = false;
     EditText addGameName, gameImageURL, deleteGameName;
     public AdminFragment() {
@@ -58,6 +60,20 @@ public class AdminFragment extends Fragment {
         pc = getActivity().findViewById(R.id.pc);
         playstation = getActivity().findViewById(R.id.playstation);
         xbox = getActivity().findViewById(R.id.xbox);
+        add = getActivity().findViewById(R.id.addGame);
+        add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addGame();
+            }
+        });
+        delete = getActivity().findViewById(R.id.deleteGame);
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteGame();
+            }
+        });
         setPlatformsManagement();
     }
     private void setPlatformsManagement() {
@@ -115,7 +131,7 @@ public class AdminFragment extends Fragment {
         });
     }
 
-    public void addGame(View view) {
+    public void addGame() {
         if(validateGame()) {
             FirebaseDatabase database = FirebaseDatabase.getInstance();
             myRef = database.getReference("games").child(addGameName.getText().toString());
@@ -166,13 +182,12 @@ public class AdminFragment extends Fragment {
         return isValid;
     }
 
-    public void deleteGame(View view) {
+    public void deleteGame() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         myRef = database.getReference("games");
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                int i =0;
                 for (DataSnapshot game :dataSnapshot.getChildren()) {
                     if(game.getValue(Game.class).getGameName().equals(deleteGameName.getText().toString()))
                     {

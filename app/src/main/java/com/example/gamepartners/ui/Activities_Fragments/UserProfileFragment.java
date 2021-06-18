@@ -132,7 +132,7 @@ public class UserProfileFragment extends Fragment implements GameAdapter.OnSelec
         }
         settingsAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.settings_in);
         final FloatingActionButton adminFab = getView().findViewById(R.id.fabAdmin);
-        if (mAuth.getCurrentUser().getUid().equals("63AGeVdeGcZDJpfwCh3Gs1UOhTH2")) {
+        if (mAuth.getCurrentUser().getUid().equals("gRT9wWdzhjN6jpjl8ed97n3mDaG3")) {
             adminFab.setVisibility(View.VISIBLE);
             adminFab.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -375,23 +375,32 @@ public class UserProfileFragment extends Fragment implements GameAdapter.OnSelec
         imgViewProfilePic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog dialog = new AlertDialog.Builder(getContext())
-                        .setTitle("Change Profile Picture?")
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                            }
-                        })
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                choosePicture();
-                            }
-                        })
-                        .setIcon(R.mipmap.ic_launcher)
-                        .create();
-                dialog.show();
+
+                    AlertDialog dialog = new AlertDialog.Builder(getContext())
+                            .setTitle("Change Profile Picture?")
+                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+                            })
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    if (!mAuth.getCurrentUser().getEmail().isEmpty()||!mAuth.getCurrentUser().getEmail().equals("")) {
+                                    choosePicture();
+                                    }
+                                    else
+                                    {
+                                        Toast.makeText(getContext(), "Game Partners is using your Facebook profile picture", Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                            })
+                            .setIcon(R.mipmap.ic_launcher)
+                            .create();
+                    dialog.show();
+
             }
+
         });
         fillUserData();
         return view;
