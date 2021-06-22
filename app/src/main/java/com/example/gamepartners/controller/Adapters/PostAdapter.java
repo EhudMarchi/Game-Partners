@@ -209,23 +209,25 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
                 addComment.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        try {
-                            DatabaseReference reference = FirebaseDatabase.getInstance().getReference("posts").child(post.getPostID()).child("comments").child(String.valueOf(post.getComments().size()));
-                            Comment comment = new Comment(GamePartnerUtills.connectedUser, ((TextView)dialog.findViewById(R.id.commentText)).getText().toString());
-                            post.getComments().add(comment);
-                            comment.Post(reference);
-                            Toast.makeText(context, "Comment Added!", Toast.LENGTH_SHORT).show();
-                            if(!post.getPublisher().getUid().equals(GamePartnerUtills.connectedUser.getUid())) {
-                                Update update = new Update(Update.eUpdateType.COMMENT, GamePartnerUtills.connectedUser.getUid(),
-                                        GamePartnerUtills.getUserDisplayName(GamePartnerUtills.connectedUser.getUid()), post.getPublisher().getUid());
-                                GamePartnerUtills.sendMessage(update, context);
+                        Comment comment = new Comment(GamePartnerUtills.connectedUser, ((TextView)dialog.findViewById(R.id.commentText)).getText().toString());
+                        if(!comment.getText().equals("")) {
+                            try {
+                                DatabaseReference reference = FirebaseDatabase.getInstance().getReference("posts").child(post.getPostID()).child("comments").child(String.valueOf(post.getComments().size()));
+                                post.getComments().add(comment);
+                                comment.Post(reference);
+                                Toast.makeText(context, "Comment Added!", Toast.LENGTH_SHORT).show();
+                                if (!post.getPublisher().getUid().equals(GamePartnerUtills.connectedUser.getUid())) {
+                                    Update update = new Update(Update.eUpdateType.COMMENT, GamePartnerUtills.connectedUser.getUid(),
+                                            GamePartnerUtills.getUserDisplayName(GamePartnerUtills.connectedUser.getUid()), post.getPublisher().getUid());
+                                    GamePartnerUtills.sendMessage(update, context);
+                                }
                             }
+                            catch (Exception e)
+                            {
+                                Toast.makeText(context, "Comment Failed", Toast.LENGTH_SHORT).show();
+                            }
+                            dialog.dismiss();
                         }
-                        catch (Exception e)
-                        {
-                            Toast.makeText(context, "Comment Failed", Toast.LENGTH_SHORT).show();
-                        }
-                        dialog.dismiss();
                     }
                 });
                 dialog.show();

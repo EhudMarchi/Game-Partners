@@ -23,12 +23,14 @@ import androidx.annotation.NonNull;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.navigation.NavController;
+import androidx.navigation.NavHost;
 import androidx.navigation.fragment.NavHostFragment;
 
 import android.widget.Toast;
 
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity implements NavHost {
     private static final int LOCATION_PERMISSION_REQUEST = 1;
     FusedLocationProviderClient client;
     BroadcastReceiver receiver;
@@ -51,7 +53,7 @@ public class MainActivity extends AppCompatActivity{
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                NavHostFragment nav = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+                NavHostFragment nav = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host);
                 String type = intent.getStringExtra("type");
                 String fragmentName = nav.getChildFragmentManager().getFragments().get(0).getClass().getName();
                 if(!((fragmentName.contains("ChatFragment"))&&(type.equals("MESSAGE"))&&(intent.getStringExtra("message").contains(GroupsAdapter.getCurrentGroup().getGroupName()))))
@@ -108,5 +110,11 @@ public class MainActivity extends AppCompatActivity{
             client.requestLocationUpdates(request,callback,null);
         else if(Build.VERSION.SDK_INT<=22)
             client.requestLocationUpdates(request,callback,null);
+    }
+
+    @NonNull
+    @Override
+    public NavController getNavController() {
+        return null;
     }
 }
