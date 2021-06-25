@@ -7,7 +7,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.Activities_Fragments.MapsFragment">
-
     <ImageButton
         android:id="@+id/exit"
         android:layout_width="42dp"
@@ -15,60 +14,62 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:background="@drawable/exit"
-/>
-<RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="horizontal"
-    android:paddingBottom="25dp"
-    android:padding="20dp"
-    android:gravity="bottom">
+        />
+
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
-        android:layout_alignParentBottom="true"
-        android:background="@drawable/map_float">
-<EditText
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:id="@+id/searchLocation"
-    android:layout_weight="0.5"
-    android:inputType="textPersonName"
-    android:hint="Search Location"
-    android:layout_toLeftOf="@+id/searchButton"
-    android:layout_marginRight="10dp"
-    android:layout_above="@id/selectLocation"/>
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:paddingBottom="25dp"
+        android:padding="20dp"
+        android:gravity="bottom">
 
-<ImageButton
-    android:id="@+id/searchButton"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_weight="0.5"
-    android:src="@drawable/ic_search_black_24dp"
-    android:layout_above="@id/selectLocation"
-    android:layout_alignParentRight="true"
-    android:background="@color/white"
-    android:foregroundGravity="center"
-    android:layout_marginBottom="10dp"/>
-
-        <Button
-            android:id="@+id/selectLocation"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="150dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
             android:layout_alignParentBottom="true"
-            android:layout_marginLeft="25dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginRight="25dp"
-            android:layout_marginBottom="15dp"
-            android:background="@drawable/choose_button"
-            android:foreground="?attr/selectableItemBackground"
-            android:text="Select Location"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textSize="18dp"
-            android:translationZ="2dp" />
+            android:background="@drawable/map_float">
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/searchLocation"
+                android:layout_weight="0.5"
+                android:inputType="textPersonName"
+                android:hint="Search Location"
+                android:layout_toLeftOf="@+id/searchButton"
+                android:layout_marginRight="10dp"
+                android:layout_above="@id/selectLocation"/>
+
+            <ImageButton
+                android:id="@+id/searchButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:src="@drawable/ic_search_black_24dp"
+                android:layout_above="@id/selectLocation"
+                android:layout_alignParentRight="true"
+                android:background="@color/white"
+                android:foregroundGravity="center"
+                android:layout_marginBottom="10dp"/>
+
+            <Button
+                android:id="@+id/selectLocation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="25dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginRight="25dp"
+                android:layout_marginBottom="15dp"
+                android:background="@drawable/choose_button"
+                android:foreground="?attr/selectableItemBackground"
+                android:text="Select Location"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="18dp"
+                android:translationZ="2dp" />
+        </RelativeLayout>
     </RelativeLayout>
-</RelativeLayout>
 </fragment>

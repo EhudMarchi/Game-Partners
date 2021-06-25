@@ -15,15 +15,19 @@ import androidx.annotation.UiThread;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentContainerView;
 import androidx.navigation.Navigation;
 
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.example.gamepartners.R;
@@ -38,6 +42,7 @@ import com.google.android.gms.maps.model.Gap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.io.IOException;
 
@@ -56,6 +61,7 @@ public class MapsFragment extends DialogFragment {
     Geocoder geocoder;
     List<Address> addressList = null;
     EditText locationSearch;
+    private boolean isValid = true;
     public interface OnLocationPickedListener {
         void onLocationPicked(Address selectedAddress);
     }
@@ -151,6 +157,8 @@ public class MapsFragment extends DialogFragment {
                 searchLocation();
             }
         });
+        Snackbar.make(view, "Choose location by long press on map or search by name", Snackbar.LENGTH_LONG).show();
+
     }
     private void exit()
     {
@@ -166,11 +174,17 @@ public class MapsFragment extends DialogFragment {
         markerOptions.title("Selected Location");
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
         mCurrLocationMarker = mMap.addMarker(markerOptions);
+        isValid= true;
     }
     public void selectLocation() {
-        if (selectedAddress != null) {
+        searchLocation();
+        if (selectedAddress != null && isValid) {
             listener.onLocationPicked(selectedAddress);
             this.dismiss();
+        }
+        else
+        {
+            Toast.makeText(getContext(), "Unable to find this address", Toast.LENGTH_SHORT).show();
         }
     }
     public void searchLocation() {
@@ -187,10 +201,12 @@ public class MapsFragment extends DialogFragment {
                     markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
                     mCurrLocationMarker = mMap.addMarker(markerOptions);
                     mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
-                    Toast.makeText(getContext(), selectedAddress.getCountryName() + " " + selectedAddress.getLongitude(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), selectedAddress.getAddressLine(0), Toast.LENGTH_LONG).show();
+                    isValid= true;
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                isValid= false;
+                Toast.makeText(getContext(), "Unable to find this address", Toast.LENGTH_SHORT).show();
             }
         }
     }

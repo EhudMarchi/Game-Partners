@@ -68,6 +68,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
                     new Intent(this, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
             builder.setContentIntent(contentIntent);
+            builder.setAutoCancel(true);
         }
         //checking Message type
         switch ( type) {
