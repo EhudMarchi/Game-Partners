@@ -46,13 +46,16 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
-            Intent intent = new Intent("message_received");
-            intent.putExtra("message", remoteMessage.getData().get("message"));
-            intent.putExtra("type", remoteMessage.getData().get("type"));
-            LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
             if(!isAppOnForeground(getBaseContext(),"com.example.gamepartners")) {
                 //if the application is not in foreground post notification
                 generateNotification(remoteMessage.getData().get("message"), remoteMessage.getData().get("type"));
+            }
+            else
+            {
+                Intent intent = new Intent("message_received");
+                intent.putExtra("message", remoteMessage.getData().get("message"));
+                intent.putExtra("type", remoteMessage.getData().get("type"));
+                LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
             }
         }
     }
